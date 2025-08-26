@@ -1,0 +1,26 @@
+package com.example.football_field_management.model;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import lombok.Data;
+import lombok.Getter;
+
+@Getter
+@Entity
+@Data
+public class Account {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int account_id;
+    private String full_name;
+    private String email;
+    private String password;
+    private String phone;
+    private String avt_Path;
+
+
+
+
+}
