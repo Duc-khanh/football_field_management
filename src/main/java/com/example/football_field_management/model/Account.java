@@ -1,11 +1,20 @@
 package com.example.football_field_management.model;
 
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
+
+import java.util.HashSet;
+import java.util.Set;
+
 
 @Entity
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Table(name = "account")
 public class Account {
 
@@ -20,10 +29,14 @@ public class Account {
     private String email;
     private String address;
     private String avt_path;
-    private Boolean status;
+    private String status;
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "account_roles",
+            joinColumns = @JoinColumn(name = "account_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    private Set<Role> roles = new HashSet<>();
 
-    @ManyToOne
-    @JoinColumn(name = "role_id")
-    @JsonBackReference
-    private Role role;
+
 }

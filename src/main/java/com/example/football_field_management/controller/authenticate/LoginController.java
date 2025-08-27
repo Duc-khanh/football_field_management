@@ -1,5 +1,8 @@
 package com.example.football_field_management.controller.authenticate;
 
+import com.example.football_field_management.dto.AuthResponse;
+import com.example.football_field_management.dto.LoginRequest;
+import com.example.football_field_management.service.User.AccountService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,23 +19,17 @@ public class LoginController {
 
     @Autowired
     private AuthenticationManager authenticationManager;
+    @Autowired
+    private AccountService authService;
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestParam String email,
-                                   @RequestParam String password,
-                                   HttpSession session) {
+    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
+        AuthResponse authResponse = authService.login(loginRequest);
         try {
-            UsernamePasswordAuthenticationToken authToken =
-                    new UsernamePasswordAuthenticationToken(email, password);
-
-            Authentication authentication = authenticationManager.authenticate(authToken);
-
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-            session.setAttribute("SPRING_SECURITY_CONTEXT", SecurityContextHolder.getContext());
-
-            return ResponseEntity.ok("Login success!");
+            return ResponseEntity.ok(authResponse);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password");
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Đăng nhap thất bại: " + e.getMessage());
         }
     }
 

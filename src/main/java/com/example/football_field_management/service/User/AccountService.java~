@@ -21,7 +21,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 @AllArgsConstructor
 @Service
@@ -57,26 +56,15 @@ public class AccountService implements IAccountService {
 
     @Override
     public AuthResponse login(LoginRequest request) {
-        // Xác thực username/password
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail(), request.getPassword()
                 )
         );
 
-        // Tạo JWT token
         String token = jwtUtil.generateToken(authentication);
+        Account account = accountRepository.findByEmail(request.getEmail()).get();
 
-        // Lấy account từ DB
-        Account account = accountRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new RuntimeException("Account not found"));
-
-        // Lấy danh sách role từ account
-        Set<String> roles = account.getRoles().stream()
-                .map(Role::getRole_name)   // giả sử field trong Role là roleName
-                .collect(Collectors.toSet());
-
-        // Build response
         AuthResponse response = new AuthResponse();
         response.setFullName(account.getFull_name());
         response.setEmail(account.getEmail());
@@ -84,9 +72,8 @@ public class AccountService implements IAccountService {
         response.setAddress(account.getAddress());
         response.setStatus(account.getStatus());
         response.setToken(token);
-        response.setRoles(roles);   // thêm roles vào response
-
+          .roles(Set.of(roleRepo.findByName("ROLE_PATIENT")
+                .orElseThrow(() -> new RuntimeException("Role USER not found"))))
         return response;
     }
-
 }
