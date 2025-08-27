@@ -1,8 +1,11 @@
 package com.example.football_field_management.model;
 
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
+
+import java.util.List;
 
 @Entity
 @Data
@@ -11,7 +14,10 @@ public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long role_id;
-    private String name,description;
+    private String role_name,description;
+    @OneToMany(mappedBy = "role")
+    @JsonManagedReference
+    private List<Account> accounts;
 
 
 

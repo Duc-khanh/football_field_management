@@ -1,6 +1,5 @@
 package com.example.football_field_management.controller.authenticate;
 
-import com.example.football_field_management.service.User.IUserService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,7 +11,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/api/authenticate")
 public class LoginController {
 
     @Autowired
