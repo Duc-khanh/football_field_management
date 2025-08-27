@@ -1,26 +1,27 @@
 package com.example.football_field_management.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Data;
-import lombok.Getter;
 
-@Getter
 @Entity
 @Data
+@Table(name = "account")
 public class Account {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int account_id;
-    private String full_name;
-    private String email;
+    @Column(name = "account_id")
+    private Long account_id;
+
     private String password;
+    private String full_name;
     private String phone;
-    private String avt_Path;
+    private String email;
+    private String address;
+    private String avt_path;
+    private Boolean status;
 
-
-
-
+    @ManyToOne
+    @JoinColumn(name = "role_id", referencedColumnName = "role_id")
+    private Role role;
 }

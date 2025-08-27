@@ -35,7 +35,7 @@ public class AccountService implements IAccountService {
             Path path = Paths.get(uploadDir + File.separator + fileName);
             Files.createDirectories(path.getParent());
             Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
-            account.setAvt_Path(fileName);
+            account.setAvt_path(fileName);
         }
 
         return accountRepository.save(account);
@@ -64,7 +64,7 @@ public class AccountService implements IAccountService {
             Path path = Paths.get(uploadDir + File.separator + fileName);
             Files.createDirectories(path.getParent());
             Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
-            account.setAvt_Path(fileName);
+            account.setAvt_path(fileName);
             return accountRepository.save(account);
         }
         return null;
