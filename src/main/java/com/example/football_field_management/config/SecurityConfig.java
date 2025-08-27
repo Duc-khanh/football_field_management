@@ -1,4 +1,4 @@
-package com.example.football_field_management.controller.config;
+package com.example.football_field_management.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,13 +24,8 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/api/host/**").hasRole("HOST")
-                        .requestMatchers("/api/user/**").hasAnyRole("USER","ADMIN")
-                        .anyRequest().authenticated()
-                )
-                .formLogin(Customizer.withDefaults())
-                .httpBasic(Customizer.withDefaults());
+                        .anyRequest().permitAll()
+                );
         return http.build();
     }
     @Bean

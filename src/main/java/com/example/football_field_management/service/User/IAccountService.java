@@ -6,7 +6,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Optional;
 
-public interface IUserService extends IGeneraService<Account> {
+public interface IAccountService extends IGeneraService<Account> {
     Optional<Account> findByEmail(String email, String password);
     UserDetails loadUserByUsername(String email);
 }

@@ -1,5 +1,6 @@
 package com.example.football_field_management.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 @Entity
@@ -11,7 +12,8 @@ public class Account {
     private String password,full_name,phone,email,address,avt_path;
     private Boolean status;
     @ManyToOne
-    @JoinColumn(name = "role_id", referencedColumnName = "role_id")
+    @JoinColumn(name = "role_id")
+    @JsonBackReference
     private Role role;
 
     public Account() {
