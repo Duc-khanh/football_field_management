@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("api/admin")
-public class HomeController {
+public class HomeAdminController {
     @GetMapping("/test")
     public String testApi() {
         return "✅ API connected successfully!";

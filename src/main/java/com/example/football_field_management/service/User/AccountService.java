@@ -39,6 +39,7 @@ public class AccountService implements IAccountService {
         return null;
     }
 
+
     @Override
     public Optional<Account> findById(Long id) {
         return Optional.empty();
@@ -87,6 +88,9 @@ public class AccountService implements IAccountService {
         response.setRoles(roles);   // thêm roles vào response
 
         return response;
+    }
+    public List<Account> getAllAccounts() {
+        return accountRepository.findAll();
     }
 
 }
