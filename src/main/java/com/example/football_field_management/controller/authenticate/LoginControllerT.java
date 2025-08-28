@@ -36,7 +36,7 @@ public class LoginControllerT {
             session.setAttribute("user", authResponse);
 
             // chuyển hướng sang trang chủ (home.html)
-            return "redirect:/home";
+            return "admin/home";
         } catch (Exception e) {
             model.addAttribute("error", "Sai tài khoản hoặc mật khẩu!");
             return "login";
@@ -48,6 +48,6 @@ public class LoginControllerT {
     public String logout(HttpSession session) {
         SecurityContextHolder.clearContext();
         session.invalidate();
-        return "redirect:/auth/login";
+        return "redirect:auth/login";
     }
 }
