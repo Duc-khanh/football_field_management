@@ -36,7 +36,7 @@ public class LoginControllerT {
             session.setAttribute("user", authResponse);
 
             // chuyển hướng sang trang chủ (home.html)
-            return "admin/home";
+            return "redirect:/admin/homeAdmin";
         } catch (Exception e) {
             model.addAttribute("error", "Sai tài khoản hoặc mật khẩu!");
             return "login";
