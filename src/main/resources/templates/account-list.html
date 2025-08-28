@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Danh sách Account</title>
+</head>
+<body>
+<h1>Danh sách Account</h1>
+<table border="1">
+    <tr>
+        <th>ID</th>
+        <th>Full Name</th>
+        <th>Email</th>
+        <th>Phone</th>
+        <th>Action</th>
+    </tr>
+    <tr th:each="acc : ${accounts}">
+        <td th:text="${acc.account_id}"></td>
+        <td th:text="${acc.full_name}"></td>
+        <td th:text="${acc.email}"></td>
+        <td th:text="${acc.phone}"></td>
+        <td><a th:href="@{|/accounts/${acc.account_id}|}">Chi tiết</a></td>
+    </tr>
+</table>
+</body>
+</html>

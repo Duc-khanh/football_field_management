@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Trang chủ</title>
+</head>
+<body>
+<h2>Xin chào <span th:text="${session.user.fullName}"></span>!</h2>
+<a th:href="@{/auth/logout}">Đăng xuất</a>
+</body>
+</html>

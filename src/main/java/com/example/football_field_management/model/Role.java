@@ -18,9 +18,6 @@ public class Role {
     @ManyToMany(mappedBy = "roles")
     @JsonManagedReference
     private List<Account> accounts;
-
-
-
 }
 
 
