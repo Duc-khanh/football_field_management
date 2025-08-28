@@ -42,19 +42,18 @@ public class SecurityConfig {
                 .cors(withDefaults())
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/login/**").permitAll()
+                        .requestMatchers("/auth/login", "/auth/login/**").permitAll()
                         .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
-//                        .requestMatchers(HttpMethod.GET, "/api/products/**").hasAnyRole("USER", "ADMIN")
-                        .requestMatchers(HttpMethod.GET, "/admin/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/api/products/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/api/products/**").hasRole("ADMIN")
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)) // dùng session
                 .authenticationProvider(authenticationProvider())
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+                // ❌ BỎ jwtFilter nếu dùng session
                 .build();
     }
+
+
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
