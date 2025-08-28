@@ -27,26 +27,6 @@ public class LoginControllerT {
         model.addAttribute("loginRequest", new LoginRequest());
         return "login";
     }
-    @PostMapping("/login")
-    public String login(@ModelAttribute("loginRequest") LoginRequest loginRequest,
-                        Model model, HttpSession session) {
-        try {
-            AuthResponse authResponse = accountService.login(loginRequest);
-            UserDetails userDetails = userDetailService.loadUserByUsername(loginRequest.getEmail());
-            UsernamePasswordAuthenticationToken authenticationToken =
-                    new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-
-            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-            session.setAttribute("user", authResponse);
-            return "redirect:/admin/homeAdmin";
-        } catch (Exception e) {
-            model.addAttribute("error", "Sai tài khoản hoặc mật khẩu!");
-            return "login"; // login.html
-        }
-    }
-
-
-    // Xử lý logout
     @GetMapping("/logout")
     public String logout(HttpSession session) {
         SecurityContextHolder.clearContext();

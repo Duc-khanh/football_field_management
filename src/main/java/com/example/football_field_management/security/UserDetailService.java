@@ -30,15 +30,14 @@ public class UserDetailService implements UserDetailsService {
                     .orElseThrow(() -> new UsernameNotFoundException("Phone number not found: " + username));
         }
 
-        // ✅ Thêm prefix ROLE_ để Spring Security hiểu đúng
         List<SimpleGrantedAuthority> authorities = account.getRoles().stream()
-                .map(role -> new SimpleGrantedAuthority("ROLE_" + role.getRole_name()))
+                .map(role -> new SimpleGrantedAuthority(role.getRole_name()))
                 .toList();
 
         return new User(
-                username,               // username or email/phone
-                account.getPassword(),  // mật khẩu đã mã hoá
-                authorities             // quyền như ROLE_ADMIN, ROLE_USER
+                username,
+                account.getPassword(),
+                authorities
         );
     }
 }
