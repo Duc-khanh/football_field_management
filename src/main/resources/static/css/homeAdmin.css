@@ -179,6 +179,35 @@ main {
     padding: 16px;
     overflow-y: auto;
 }
+/* Tăng khoảng cách giữa các nav-card */
+.nav-card-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 50px; /* Khoảng cách giữa các card */
+    justify-content: center;
+}
+
+/* Tùy chỉnh nav-card */
+.nav-card {
+    width: 200px;
+    height: 200px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border-radius: 12px;
+}
+
+/* Hover effect */
+.nav-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    background-color: #f1f5f9;
+}
+.card-gap-large {
+    gap: 6rem;
+}
+
+
+
+
 
 /* === FOOTER === */
 footer {
@@ -191,3 +220,4 @@ footer {
     font-size: 14px;
     color: #475569;
 }
+
