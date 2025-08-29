@@ -24,12 +24,13 @@ public class Account {
     private Long account_id;
 
     private String password;
-    private String full_name;
+    private String fullName;
     private String phone;
     private String email;
     private String address;
     private String avt_path;
-    private String status;
+    @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT TRUE")
+    private Boolean status = true;
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "account_roles",
