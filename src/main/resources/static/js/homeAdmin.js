@@ -1,6 +1,6 @@
 (function () {
     const sidebar = document.getElementById('sidebar');
-    const toggleBtn = document.getElementById('toggleSidebar'); // ← đổi tên này cho khớp
+    const toggleBtn = document.getElementById('toggleSidebar')
     const LS_COLLAPSED = 'sidebar_collapsed';
     const savedCollapsed = localStorage.getItem(LS_COLLAPSED) === '1';
 
