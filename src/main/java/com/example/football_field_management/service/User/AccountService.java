@@ -88,5 +88,15 @@ public class AccountService implements IAccountService {
     public List<Account> searchAccounts(String keyword) {
         return accountRepository.findByFullNameContainingIgnoreCaseOrEmailContainingIgnoreCase(keyword, keyword);
     }
+    public void toggleStatus(Long id) {
+        Account account = accountRepository.findById(Math.toIntExact(id))
+                .orElseThrow(() -> new RuntimeException("Account not found"));
+        if ("ACTIVE".equalsIgnoreCase(String.valueOf(account.getStatus()))) {
+            account.setStatus(Boolean.valueOf("BLOCK"));
+        } else {
+            account.setStatus(Boolean.valueOf("ACTIVE"));
+        }
+        accountRepository.save(account);
+    }
 
 }

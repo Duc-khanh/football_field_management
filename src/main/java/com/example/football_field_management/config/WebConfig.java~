@@ -1,0 +1,4 @@
+package com.example.football_field_management.config;
+
+public class WebConfig {
+}

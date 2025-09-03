@@ -6,13 +6,13 @@
 </head>
 <body>
 <h2>Thông tin chi tiết User</h2>
-<h3>Avatar:</h3>
-<img th:src="@{/uploads/avatars/{filename}(filename=${account.avt_path})}" alt="Avatar" style="max-width: 150px;"/>
+
 <p><b>Full Name:</b> <span th:text="${account.fullName}"></span></p>
 <p><b>Email:</b> <span th:text="${account.email}"></span></p>
 <p><b>Phone:</b> <span th:text="${account.phone}"></span></p>
 <p><b>Address:</b> <span th:text="${account.address}"></span></p>
 <p><b>Status:</b> <span th:text="${account.status}"></span></p>
+
 <h3>Roles:</h3>
 <ul>
     <li th:each="role : ${account.roles}" th:text="${role.role_name}"></li>

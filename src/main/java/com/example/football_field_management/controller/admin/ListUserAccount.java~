@@ -52,8 +52,6 @@ public class ListUserAccount {
     @PostMapping("/add")
     public String addAccount(@ModelAttribute Account account,
                              @RequestParam("avatarFile") MultipartFile avatarFile) throws IOException {
-        account.setStatus(true);
-
         if (!avatarFile.isEmpty()) {
             String fileName = System.currentTimeMillis() + "_" + avatarFile.getOriginalFilename();
             Path path = Paths.get(uploadDir, fileName);
@@ -70,6 +68,7 @@ public class ListUserAccount {
         accountService.save(account);
         return "redirect:/accounts";
     }
+
     @GetMapping("/edit/{id}")
     public String editAccountForm(@PathVariable Long id, Model model) {
         Account account = accountService.getAccountById(id)

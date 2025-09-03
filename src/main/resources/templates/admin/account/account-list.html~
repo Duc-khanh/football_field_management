@@ -38,7 +38,6 @@
                  style="width:50px; height:50px; object-fit:cover; border-radius:50%;">
 
 
-
         </td>
         <td th:text="${account.fullName}"></td>
         <td th:text="${account.email}"></td>
