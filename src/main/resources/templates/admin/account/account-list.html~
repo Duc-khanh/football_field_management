@@ -9,16 +9,20 @@
 <h2>Danh sách User</h2>
 <a th:href="@{/accounts/add}" class="btn btn-primary mb-2">➕ Thêm account</a>
 
-<form th:action="@{/accounts/search}" method="get" class="mb-3">
-    <input type="text" name="keyword" th:value="${keyword}" placeholder="Tìm kiếm theo tên hoặc email">
+<form th:action="@{/accounts}" method="get" class="mb-3" id="searchForm">
+    <input type="text" id="keywordInput" name="keyword" th:value="${keyword}" placeholder="Tìm kiếm theo tên hoặc email" class="form-control d-inline-block w-25">
     <button type="submit" class="btn btn-secondary">Tìm kiếm</button>
 </form>
 
-<table class="table table-bordered align-middle text-center">
+<div th:if="${#lists.isEmpty(accounts)}" class="alert alert-warning">
+     Không tìm thấy tài khoản nào phù hợp với từ khóa "<span th:text="${keyword}"></span>"
+</div>
+
+<table class="table table-bordered align-middle text-center" th:if="${not #lists.isEmpty(accounts)}">
     <thead>
     <tr>
         <th>ID</th>
-        <th>Avatar</th> <!-- ✅ Thêm cột avatar -->
+        <th>Avatar</th>
         <th>Full Name</th>
         <th>Email</th>
         <th>Phone</th>
@@ -29,15 +33,12 @@
     </tr>
     </thead>
     <tbody>
-    <tr th:each="account : ${accounts}">
-        <td th:text="${account.account_id}"></td>
+    <tr th:each="account, iterStat : ${accounts}">
+        <td th:text="${currentPage * pageSize + iterStat.index + 1}"></td>
         <td>
-            <!-- ✅ Hiển thị avatar, mặc định nếu null -->
             <img th:src="@{'/uploads/avatars/' + ${account.avt_path}}"
                  alt="Avatar"
                  style="width:50px; height:50px; object-fit:cover; border-radius:50%;">
-
-
         </td>
         <td th:text="${account.fullName}"></td>
         <td th:text="${account.email}"></td>
@@ -61,17 +62,61 @@
     </tbody>
 </table>
 
+<nav th:if="${totalPages > 1}">
+    <ul class="pagination justify-content-center">
+
+        <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+            <a class="page-link"
+               th:href="@{/accounts(page=${currentPage - 1}, keyword=${keyword})}">
+                Trước
+            </a>
+        </li>
+
+        <li class="page-item"
+            th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+            th:classappend="${i == currentPage} ? 'active'">
+            <a class="page-link"
+               th:href="@{/accounts(page=${i}, keyword=${keyword})}"
+               th:text="${i + 1}">
+            </a>
+        </li>
+
+        <li class="page-item" th:classappend="${currentPage + 1 >= totalPages} ? 'disabled'">
+            <a class="page-link"
+               th:href="@{/accounts(page=${currentPage + 1}, keyword=${keyword})}">
+                Sau
+            </a>
+        </li>
+    </ul>
+</nav>
+
 <script>
     document.addEventListener("DOMContentLoaded", function () {
+        // Xác nhận khi Khóa / Mở khóa
         const toggleButtons = document.querySelectorAll(".toggle-btn");
         toggleButtons.forEach(btn => {
             btn.addEventListener("click", function (event) {
                 const status = btn.getAttribute("data-status") === "true"; // true = Active
                 const action = status ? "khóa" : "mở khóa";
                 if (!confirm(`Bạn có chắc chắn muốn ${action} tài khoản này không?`)) {
-                    event.preventDefault(); // Hủy điều hướng nếu bấm Cancel
+                    event.preventDefault();
                 }
             });
+        });
+
+        const keywordInput = document.getElementById("keywordInput");
+        const searchForm = document.getElementById("searchForm");
+        let typingTimer;
+
+        keywordInput.addEventListener("keyup", function () {
+            clearTimeout(typingTimer);
+            typingTimer = setTimeout(() => {
+                searchForm.submit();
+            }, 2000); // 2000ms = 2 giây
+        });
+
+        keywordInput.addEventListener("keydown", function () {
+            clearTimeout(typingTimer); // reset nếu tiếp tục gõ
         });
     });
 </script>

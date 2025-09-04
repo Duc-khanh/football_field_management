@@ -12,7 +12,7 @@
     <form th:action="@{/auth/login}" method="post">
         <div class="mb-3">
             <label for="email" class="form-label">Email</label>
-            <input name="email" type="email" class="form-control" id="email" required>
+            <input name="email" type="text" class="form-control" id="email" required>
         </div>
 
         <div class="mb-3">
@@ -20,9 +20,13 @@
             <input name="password" type="password" class="form-control" id="password" required>
         </div>
 
+<!--        <div th:if="${param.error}" class="alert alert-danger">-->
+<!--            Sai tài khoản hoặc mật khẩu!-->
+<!--        </div>-->
         <div th:if="${param.error}" class="alert alert-danger">
-            Sai tài khoản hoặc mật khẩu!
+            Sai tài khoản/mật khẩu hoặc tài khoản đã bị khóa.
         </div>
+
 
         <button type="submit" class="btn btn-primary w-100">Đăng nhập</button>
     </form>

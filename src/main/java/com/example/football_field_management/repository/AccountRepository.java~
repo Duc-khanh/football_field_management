@@ -22,8 +22,6 @@ public interface AccountRepository extends JpaRepository<Account, Integer> {
 
     List<Account> findByFullNameContainingIgnoreCaseOrEmailContainingIgnoreCase(String keyword, String keyword1);
     Page<Account> findByFullNameContainingIgnoreCaseOrEmailContainingIgnoreCase(String fullName, String email, Pageable pageable);
-    Page<Account> findByFullNameContainingOrEmailContaining(String name, String email, Pageable pageable);
-
 
 
 }

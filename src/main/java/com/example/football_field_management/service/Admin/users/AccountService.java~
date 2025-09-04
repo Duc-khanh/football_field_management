@@ -8,7 +8,6 @@ import com.example.football_field_management.repository.AccountRepository;
 import com.example.football_field_management.util.JwtUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -29,20 +28,11 @@ public class AccountService implements IAccountService {
     private final JwtUtil jwtUtil;
     private final AccountRepository accountRepository;
     private final BCryptPasswordEncoder passwordEncoder;
-    private final AccountRepository accountRepo;
 
 
     @Override
     public Page<Account> getAccountsPaginated(Pageable pageable) {
         return accountRepository.findAll(pageable);
-    }
-    public Page<Account> getAccounts(int page, int size, String keyword) {
-        Pageable pageable = PageRequest.of(page, size);
-
-        if (keyword != null && !keyword.isEmpty()) {
-            return accountRepo.findByFullNameContainingOrEmailContaining(keyword, keyword, pageable);
-        }
-        return accountRepo.findAll(pageable);
     }
 
     @Override

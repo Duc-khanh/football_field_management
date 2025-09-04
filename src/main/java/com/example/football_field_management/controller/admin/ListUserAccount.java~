@@ -49,7 +49,7 @@ public String listAccounts(Model model,
     model.addAttribute("pageSize", size);
     model.addAttribute("keyword", keyword);
 
-    return "admin/account/account-list";
+    return "admin/account/account-list"; 
 }
 
 //    @GetMapping
