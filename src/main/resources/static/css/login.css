@@ -1,9 +1,10 @@
 /* Nền trang */
 body {
-    background-image: url('https://sukavietnam.com/wp-content/uploads/2024/09/sukavietnam.com-hinh-anh-mau-san-pickleball-dep-7.webp');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
+    /*background-image: url('https://media');*/
+    /*background-size: cover;*/
+    /*background-position: center;*/
+    /*background-repeat: no-repeat;*/
+    background-color: #eeebeb;
     height: 100vh;
     margin: 0;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
