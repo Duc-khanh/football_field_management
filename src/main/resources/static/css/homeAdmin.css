@@ -174,7 +174,7 @@ main {
 }
 
 /* === CONTENT === */
-.content {
+.content, #content {
     flex: 1;
     padding: 16px;
     overflow-y: auto;
@@ -202,12 +202,8 @@ main {
     background-color: #f1f5f9;
 }
 .card-gap-large {
-    gap: 6rem;
+    gap: 2rem;
 }
-
-
-
-
 
 /* === FOOTER === */
 footer {
