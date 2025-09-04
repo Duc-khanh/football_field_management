@@ -31,11 +31,6 @@ public class ListUserAccount {
     @Value("${file.upload-dir}")
     private String uploadDir;
 
-//    @GetMapping
-//    public String viewAccounts(Model model) {
-//        model.addAttribute("accounts", accountService.getAllAccounts());
-//        return "admin/account/account-list";
-//    }
 @GetMapping
 public String listAccounts(Model model,
                            @RequestParam(defaultValue = "0") int page,
@@ -52,20 +47,6 @@ public String listAccounts(Model model,
     return "admin/account/account-list";
 }
 
-//    @GetMapping
-//    public String viewAccounts(@RequestParam(defaultValue = "0") int page, Model model) {
-//        int pageSize = 10;
-//        Page<Account> accountPage = accountService.getAccountsPaginated(PageRequest.of(page, pageSize));
-//
-//        model.addAttribute("accounts", accountPage.getContent());
-//        model.addAttribute("currentPage", page);
-//        model.addAttribute("totalPages", accountPage.getTotalPages());
-//
-//        return "admin/account/account-list";
-//    }
-
-
-
 
     @GetMapping("/{id}")
     public String viewAccountDetail(@PathVariable Long id, Model model) {
@@ -81,10 +62,25 @@ public String listAccounts(Model model,
         return "admin/account/add-account";
     }
 
+    @GetMapping("/edit/{id}")
+    public String editAccountForm(@PathVariable Long id, Model model) {
+        Account account = accountService.getAccountById(id)
+                .orElseThrow(() -> new RuntimeException("Account not found"));
+        model.addAttribute("account", account);
+        return "admin/account/edit-account";
+    }
     @PostMapping("/add")
     public String addAccount(@ModelAttribute Account account,
-                             @RequestParam("avatarFile") MultipartFile avatarFile) throws IOException {
+                             @RequestParam("avatarFile") MultipartFile avatarFile,
+                             Model model) throws IOException {
         account.setStatus(true);
+
+        // Kiểm tra email trùng
+        if (accountService.existsByEmail(account.getEmail())) {
+            model.addAttribute("errorMessage", "Email này đã tồn tại!");
+            model.addAttribute("account", account);
+            return "admin/account/add-account";
+        }
 
         if (!avatarFile.isEmpty()) {
             String fileName = System.currentTimeMillis() + "_" + avatarFile.getOriginalFilename();
@@ -102,20 +98,22 @@ public String listAccounts(Model model,
         accountService.save(account);
         return "redirect:/accounts";
     }
-    @GetMapping("/edit/{id}")
-    public String editAccountForm(@PathVariable Long id, Model model) {
-        Account account = accountService.getAccountById(id)
-                .orElseThrow(() -> new RuntimeException("Account not found"));
-        model.addAttribute("account", account);
-        return "admin/account/edit-account";
-    }
 
     @PostMapping("/edit/{id}")
     public String editAccount(@PathVariable Long id,
                               @ModelAttribute Account account,
-                              @RequestParam("avatarFile") MultipartFile avatarFile) throws IOException {
+                              @RequestParam("avatarFile") MultipartFile avatarFile,
+                              Model model) throws IOException {
         Account existing = accountService.getAccountById(id)
                 .orElseThrow(() -> new RuntimeException("Account not found"));
+
+        // Check nếu đổi email sang cái đã tồn tại
+        if (!existing.getEmail().equals(account.getEmail())
+                && accountService.existsByEmail(account.getEmail())) {
+            model.addAttribute("errorMessage", "Email này đã tồn tại!");
+            model.addAttribute("account", existing);
+            return "admin/account/edit-account";
+        }
 
         account.setRoles(existing.getRoles());
 
@@ -133,31 +131,23 @@ public String listAccounts(Model model,
                 }
             }
 
-            // Lưu ảnh mới
             String fileName = System.currentTimeMillis() + "_" + avatarFile.getOriginalFilename();
             Path path = Paths.get(uploadDir, fileName);
             Files.createDirectories(path.getParent());
             avatarFile.transferTo(path.toFile());
-// 👉 chỉ lưu tên file
             account.setAvt_path(fileName);
-
         } else {
-            account.setAvt_path(existing.getAvt_path()); // giữ ảnh cũ
+            account.setAvt_path(existing.getAvt_path());
         }
 
         accountService.save(account);
         return "redirect:/accounts";
     }
 
-//
-//    @GetMapping("/search")
-//    public String searchAccounts(@RequestParam("keyword") String keyword, Model model) {
-//        List<Account> accounts = accountService.searchAccounts(keyword);
-//        model.addAttribute("accounts", accounts);
-//        model.addAttribute("keyword", keyword);
-//        return "admin/account/account-list";
-//    }
-@GetMapping("/search")
+
+
+
+    @GetMapping("/search")
 public String searchAccounts(@RequestParam("keyword") String keyword,
                              @RequestParam(defaultValue = "0") int page,
                              Model model) {

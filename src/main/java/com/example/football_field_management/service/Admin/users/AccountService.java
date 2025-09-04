@@ -136,4 +136,7 @@ public class AccountService implements IAccountService {
     }
 
 
+    public boolean existsByEmail(String email) {
+        return accountRepository.findByEmail(email).isPresent();
+    }
 }
