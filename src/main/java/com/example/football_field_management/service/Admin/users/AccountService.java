@@ -1,4 +1,4 @@
-package com.example.football_field_management.service.User;
+package com.example.football_field_management.service.Admin.users;
 
 import com.example.football_field_management.dto.AuthResponse;
 import com.example.football_field_management.dto.LoginRequest;

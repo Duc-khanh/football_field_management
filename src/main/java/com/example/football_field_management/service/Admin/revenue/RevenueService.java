@@ -1,4 +1,4 @@
-package com.example.football_field_management.service;
+package com.example.football_field_management.service.Admin.revenue;
 
 import com.example.football_field_management.dto.RevenuePoint;
 import com.example.football_field_management.dto.RevenueSummary;
