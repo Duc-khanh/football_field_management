@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Thống kê doanh thu</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="p-3">
+<h3>Thống kê doanh thu</h3>
+
+<form class="row g-2 mb-3" method="get" th:action="@{/admin/revenue}">
+    <div class="col-auto">
+        <label class="form-label">Từ ngày</label>
+        <input type="date" class="form-control" name="from" th:value="${from}">
+    </div>
+    <div class="col-auto">
+        <label class="form-label">Đến ngày</label>
+        <input type="date" class="form-control" name="to" th:value="${to}">
+    </div>
+    <div class="col-auto">
+        <label class="form-label">Nhóm theo</label>
+        <select class="form-select" name="groupBy">
+            <option th:value="DAY"   th:selected="${groupBy.name() == 'DAY'}">Ngày</option>
+            <option th:value="MONTH" th:selected="${groupBy.name() == 'MONTH'}">Tháng</option>
+            <option th:value="YEAR"  th:selected="${groupBy.name() == 'YEAR'}">Năm</option>
+        </select>
+    </div>
+    <div class="col-auto align-self-end">
+        <button class="btn btn-primary">Lọc</button>
+        <a class="btn btn-outline-secondary"
+           th:href="@{/admin/revenue/export(from=${from},to=${to},groupBy=${groupBy})}">Xuất CSV</a>
+    </div>
+</form>
+
+<!-- KPI -->
+<div class="row g-3 mb-3">
+    <div class="col-md-4">
+        <div class="card p-3">
+            <div class="text-muted">Tổng doanh thu</div>
+            <div class="fs-4"
+                 th:text="${summary != null ? #numbers.formatDecimal(summary.totalRevenue,1,'POINT',2,'COMMA') + ' đ' : '0 đ'}"></div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card p-3">
+            <div class="text-muted">Số đơn</div>
+            <div class="fs-4" th:text="${summary != null ? summary.totalOrders : 0}"></div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card p-3">
+            <div class="text-muted">Giá trị TB/đơn</div>
+            <div class="fs-4"
+                 th:text="${summary != null ? #numbers.formatDecimal(summary.avgOrderValue,1,'POINT',2,'COMMA') + ' đ' : '0 đ'}"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Chart -->
+<div class="card p-3 mb-3">
+    <canvas id="revenueChart" height="120"></canvas>
+</div>
+
+<!-- Bảng -->
+<div class="card p-3">
+    <div class="table-responsive">
+        <table class="table table-striped table-bordered align-middle text-center">
+            <thead>
+            <tr>
+                <th>Label</th>
+                <th>Số đơn</th>
+                <th>Doanh thu</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="p : ${series}">
+                <td th:text="${p != null ? p.label : ''}"></td>
+                <td th:text="${p != null ? p.orders : 0}"></td>
+                <td th:text="${p != null ? #numbers.formatDecimal(p.amount,1,'POINT',2,'COMMA') + ' đ' : '0 đ'}"></td>
+            </tr>
+
+            <tr th:if="${#lists.isEmpty(series)}">
+                <td colspan="3" class="text-muted">Không có dữ liệu</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script th:inline="javascript">
+    const labels = [
+        <th:block th:each="p,iter : ${#lists.select(series, s -> s != null)}">
+            "[[${p.label}]]"<th:block th:if="${!iter.last}">,</th:block>
+        </th:block>
+    ];
+    const amounts = [
+        <th:block th:each="p,iter : ${#lists.select(series, s -> s != null)}">
+            [[${p.amount}]]<th:block th:if="${!iter.last}">,</th:block>
+        </th:block>
+    ];
+
+    if (labels.length > 0) {
+        const ctx = document.getElementById('revenueChart');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Doanh thu',
+                    data: amounts,
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    backgroundColor: 'rgba(54, 162, 235, 0.3)',
+                    tension: 0.3,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function (value) {
+                                return value.toLocaleString('vi-VN') + ' đ';
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    legend: { display: true },
+                    tooltip: {
+                        callbacks: {
+                            label: function (context) {
+                                let value = context.raw || 0;
+                                return value.toLocaleString('vi-VN') + ' đ';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+</script>
+
+</body>
+</html>
