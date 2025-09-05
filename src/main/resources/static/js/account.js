@@ -1,15 +1,9 @@
 (function () {
     const sidebar = document.getElementById('sidebar');
-    const toggleBtn = document.getElementById('toggleSidebar');
+    const toggleBtn = document.getElementById('toggleSidebar')
     const LS_COLLAPSED = 'sidebar_collapsed';
-
-    if (!sidebar || !toggleBtn) {
-        // Nếu thiếu phần tử thì log và dừng, tránh lỗi runtime.
-        console.warn('Sidebar or toggle button not found. Sidebar script disabled.');
-        return;
-    }
-
     const savedCollapsed = localStorage.getItem(LS_COLLAPSED) === '1';
+
     if (savedCollapsed) sidebar.classList.add('collapsed');
 
     toggleBtn.addEventListener('click', () => {

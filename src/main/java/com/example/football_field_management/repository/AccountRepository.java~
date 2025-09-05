@@ -12,7 +12,7 @@ import java.util.Optional;
 
 @Repository
 
-public interface AccountRepository extends JpaRepository<Account, Long> {
+public interface AccountRepository extends JpaRepository<Account, Integer> {
     Optional<Account> findByEmail(String email);
     Optional<Account> findByPhone(String phone);
     boolean existsByEmail(String email);
@@ -22,8 +22,6 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
 
     List<Account> findByFullNameContainingIgnoreCaseOrEmailContainingIgnoreCase(String keyword, String keyword1);
     Page<Account> findByFullNameContainingIgnoreCaseOrEmailContainingIgnoreCase(String fullName, String email, Pageable pageable);
-    Page<Account> findByFullNameContainingOrEmailContaining(String name, String email, Pageable pageable);
-
 
 
 }

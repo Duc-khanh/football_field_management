@@ -199,7 +199,7 @@ public class VenueService implements IVenueService {
         }
         if (venue.getOwner() != null) {
             dto.setOwnerId(venue.getOwner().getAccount_id());
-            dto.setOwnerName(venue.getOwner().getFull_name());
+            dto.setOwnerName(venue.getOwner().getFullName());
         }
 
         List<VenueImageDTO> images = venue.getImages() != null ? venue.getImages().stream()

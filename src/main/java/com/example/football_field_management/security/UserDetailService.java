@@ -30,12 +30,16 @@ public class UserDetailService implements UserDetailsService {
                     .orElseThrow(() -> new UsernameNotFoundException("Phone number not found: " + username));
         }
 
+        if (Boolean.FALSE.equals(account.getStatus())) {
+            throw new UsernameNotFoundException("Tài khoản đã bị khóa, vui lòng liên hệ admin");
+        }
+
         List<SimpleGrantedAuthority> authorities = account.getRoles().stream()
                 .map(role -> new SimpleGrantedAuthority(role.getRole_name()))
                 .toList();
 
         return new User(
-                username,
+                account.getEmail() != null ? account.getEmail() : account.getPhone(),
                 account.getPassword(),
                 authorities
         );
