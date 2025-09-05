@@ -8,6 +8,7 @@ import com.example.football_field_management.repository.AccountRepository;
 import com.example.football_field_management.repository.DistrictRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -34,12 +35,22 @@ public class VenueController {
     @Value("${file.upload-dir}")
     private String uploadDir;
 
-    @GetMapping
-    public String listVenues(Model model) {
-        Iterable<VenueDTO> venues = venueService.findAll();
-        model.addAttribute("venues", venues);
+    @GetMapping("list")
+    public String listVenues(@RequestParam(defaultValue = "0") int page,
+                             @RequestParam(defaultValue = "5") int size,
+                             @RequestParam(required = false) String keyword,
+                             Model model) {
+
+        Page<VenueDTO> venues = venueService.findAll(page, size, keyword);
+
+        model.addAttribute("venues", venues.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", venues.getTotalPages());
+        model.addAttribute("keyword", keyword);
+
         return "admin/venue/venue-list";
     }
+
 
     @GetMapping("/add")
     public String showAddForm(Model model) {
@@ -149,14 +160,6 @@ public class VenueController {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
         }
         return "redirect:/admin/venue";
-    }
-    @GetMapping("/search")
-    public String searchVenue(@RequestParam(value = "keyword") String keyword,
-                             Model model) {
-        List<Venue> venues = venueService.searchByName(keyword);
-        model.addAttribute("venues", venues);
-        model.addAttribute("keyword", keyword);
-        return "admin/venue/venue-list";
     }
 
 }

@@ -10,6 +10,10 @@ import com.example.football_field_management.repository.VenueImageRepository;
 import com.example.football_field_management.repository.VenueRepository;
 import com.example.football_field_management.service.admin.venue.IVenueService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,10 +36,22 @@ public class VenueService implements IVenueService {
     private final String uploadDir = "uploads";
 
     @Override
+    public Page<VenueDTO> findAll(int page, int size, String keyword) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("venueId").descending());
+
+        Page<Venue> venues;
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            venues = venueRepository.findByVenueNameContainingIgnoreCase(keyword, pageable);
+        } else {
+            venues = venueRepository.findAll(pageable);
+        }
+
+        return venues.map(this::mapToDTO);
+    }
+
+    @Override
     public Iterable<VenueDTO> findAll() {
-        return venueRepository.findAll().stream()
-                .map(this::mapToDTO)
-                .collect(Collectors.toList());
+        return null;
     }
 
     @Override
@@ -176,13 +192,6 @@ public class VenueService implements IVenueService {
         venueRepository.save(venue);
     }
 
-    @Override
-    public List<Venue> searchByName(String name) {
-        if (name == null || name.trim().isEmpty()) {
-            return venueRepository.findAll();
-        }
-        return venueRepository.findByVenueNameContainingIgnoreCase(name);
-    }
 
     private VenueDTO mapToDTO(Venue venue) {
         VenueDTO dto = new VenueDTO();
