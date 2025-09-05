@@ -1,7 +1,7 @@
 package com.example.football_field_management.controller.admin;
 
 import com.example.football_field_management.model.Account;
-import com.example.football_field_management.service.User.AccountService;
+import com.example.football_field_management.service.user.AccountService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

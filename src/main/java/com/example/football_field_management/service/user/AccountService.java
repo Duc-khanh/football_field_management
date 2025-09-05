@@ -1,4 +1,4 @@
-package com.example.football_field_management.service.User;
+package com.example.football_field_management.service.user;
 
 import com.example.football_field_management.dto.AuthResponse;
 import com.example.football_field_management.dto.LoginRequest;
@@ -7,15 +7,9 @@ import com.example.football_field_management.model.Role;
 import com.example.football_field_management.repository.AccountRepository;
 import com.example.football_field_management.util.JwtUtil;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
