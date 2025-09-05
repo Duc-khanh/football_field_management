@@ -22,26 +22,6 @@
     });
 })();
 
-function toggleTheme() {
-    const current = document.documentElement.getAttribute("data-theme");
-    const newTheme = current === "dark" ? "light" : "dark";
-
-    document.documentElement.setAttribute("data-theme", newTheme);
-    localStorage.setItem("theme", newTheme);
-    updateThemeIcon();
-}
-
-function updateThemeIcon() {
-    const themeIcon = document.getElementById('themeIcon');
-    if (!themeIcon) return;
-
-    const currentTheme = document.documentElement.getAttribute("data-theme");
-
-    themeIcon.className = currentTheme === "dark"
-        ? "fa-solid fa-sun"
-        : "fa-solid fa-moon";
-}
-
 window.addEventListener("DOMContentLoaded", () => {
     const savedTheme = localStorage.getItem("theme") || "light";
     document.documentElement.setAttribute("data-theme", savedTheme);

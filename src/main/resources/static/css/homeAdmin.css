@@ -19,20 +19,6 @@
     --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-[data-theme="dark"] {
-    --bg-color: #1e293b;
-    --text-color: #f8fafc;
-    --surface: #334155;
-    --hover-bg: #475569;
-    --primary-color: #38bdf8;
-    --primary-color-dark: #0ea5e9;
-
-    --hover-bg-danger: #7f1d1d;
-    --hover-color-danger: #fecaca;
-
-    --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.4);
-}
-
 /* === RESET === */
 * {
     box-sizing: border-box;
