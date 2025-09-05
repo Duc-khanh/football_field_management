@@ -1,0 +1,50 @@
+/* === HEADER === */
+.header {
+    background-color: #fff;
+    padding: 0.5rem 1rem;
+    border-bottom: 1px solid #e0e0e0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: var(--header-h);
+}
+
+.header .left {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+}
+
+.header .logo {
+    height: 40px;
+}
+
+.header h5 {
+    margin: 0;
+    font-size: 18px;
+    color: var(--text-color);
+}
+
+.header .right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.header .right img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+.icon-btn {
+    font-size: 1.2rem;
+    color: #555;
+    cursor: pointer;
+}
+
+#toggleSidebar {
+    font-size: 1.4rem;
+    color: #555;
+    cursor: pointer;
+}

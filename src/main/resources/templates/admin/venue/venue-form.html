@@ -87,7 +87,7 @@
             <option value="" disabled th:selected="${venue.ownerId == null}">-- Chọn chủ sở hữu --</option>
             <option th:each="o : ${owners}"
                     th:value="${o.account_id}"
-                    th:text="${o.full_name}"
+                    th:text="${o.fullName}"
                     th:selected="${o.account_id == venue.ownerId}"></option>
         </select>
     </div>

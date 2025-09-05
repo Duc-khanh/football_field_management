@@ -78,7 +78,7 @@
                     <td>
                         <img th:each="img : ${venue.images}"
                              th:if="${img.isPrimary}"
-                             th:src="@{'/uploads/' + ${img.photoPath}}"
+                             th:src="@{'/uploads/avatars/' + ${img.photoPath}}"
                              style="max-width:100px; border-radius:5px;"/>
                     </td>
                     <td th:text="${venue.venueName}"></td>
