@@ -3,8 +3,7 @@ package com.example.football_field_management.controller.admin;
 import com.example.football_field_management.dto.VenueDTO;
 import com.example.football_field_management.dto.VenueImageDTO;
 import com.example.football_field_management.model.Venue;
-import com.example.football_field_management.model.VenueImage;
-import com.example.football_field_management.service.admin.IVenueService;
+import com.example.football_field_management.service.admin.venue.IVenueService;
 import com.example.football_field_management.repository.AccountRepository;
 import com.example.football_field_management.repository.DistrictRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +20,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -73,39 +71,32 @@ public class VenueController {
                             @RequestParam(value = "existingMainImageId", required = false) Long existingMainImageId,
                             @RequestParam(value = "existingImageIds", required = false) List<Long> existingImageIds) throws IOException {
 
-        // 1. Xử lý ảnh chính
-        VenueImageDTO mainImage = null;
+        List<VenueImageDTO> images = new ArrayList<>();
+
+        // 1. Ảnh chính
         if (mainImageFile != null && !mainImageFile.isEmpty()) {
+            // Có ảnh chính mới
             String path = saveFile(mainImageFile);
-            mainImage = new VenueImageDTO();
+            VenueImageDTO mainImage = new VenueImageDTO();
             mainImage.setPhotoPath(path);
             mainImage.setPrimary(true);
+            images.add(mainImage);
 
-            // Xóa ảnh chính cũ nếu có
+            // Xoá ảnh cũ
             if (existingMainImageId != null) {
                 venueService.deleteImageById(existingMainImageId);
             }
 
         } else if (existingMainImageId != null) {
-            // Lấy ảnh chính cũ từ DB
-            mainImage = venueService.getImageById(existingMainImageId);
+            // Giữ nguyên ảnh chính cũ
+            VenueImageDTO mainImage = venueService.getImageById(existingMainImageId);
+            if (mainImage != null) images.add(mainImage);
         }
 
-        // 2. Xử lý ảnh phụ
-        List<VenueImageDTO> images = new ArrayList<>();
-        if (mainImage != null) images.add(mainImage);
-
-        // Xóa các ảnh phụ đã bị remove
+        // 2. Ảnh phụ
         List<Long> keepIds = existingImageIds != null ? existingImageIds : new ArrayList<>();
+        // Xoá ảnh phụ bị remove
         venueService.deleteSubImagesNotInList(venueDTO.getVenueId(), keepIds);
-
-        // Thêm ảnh phụ còn giữ
-        if (existingImageIds != null) {
-            for (Long id : existingImageIds) {
-                VenueImageDTO dto = venueService.getImageById(id);
-                if (dto != null) images.add(dto);
-            }
-        }
 
         // Thêm ảnh phụ mới
         if (subImageFiles != null) {
@@ -119,9 +110,10 @@ public class VenueController {
             }
         }
 
+        // Gán images vào venue
         venueDTO.setImages(images);
 
-        // 3. Gọi service lưu venue
+        // 3. Lưu venue
         venueService.save(venueDTO);
 
         return "redirect:/admin/venue";

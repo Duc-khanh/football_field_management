@@ -1,15 +1,14 @@
-package com.example.football_field_management.service.admin;
+package com.example.football_field_management.service.admin.venue;
 
 import com.example.football_field_management.dto.VenueDTO;
 import com.example.football_field_management.dto.VenueImageDTO;
-import com.example.football_field_management.model.Account;
-import com.example.football_field_management.model.District;
 import com.example.football_field_management.model.Venue;
 import com.example.football_field_management.model.VenueImage;
 import com.example.football_field_management.repository.AccountRepository;
 import com.example.football_field_management.repository.DistrictRepository;
 import com.example.football_field_management.repository.VenueImageRepository;
 import com.example.football_field_management.repository.VenueRepository;
+import com.example.football_field_management.service.admin.venue.IVenueService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -201,16 +200,22 @@ public class VenueService implements IVenueService {
             dto.setOwnerId(venue.getOwner().getAccount_id());
             dto.setOwnerName(venue.getOwner().getFullName());
         }
+        List<VenueImageDTO> images = new ArrayList<>();
+        if (venue.getImages() != null) {
+            for (VenueImage img : venue.getImages()) {
+                VenueImageDTO imgDTO = new VenueImageDTO();
+                imgDTO.setPhotoId(img.getPhotoId());
+                imgDTO.setPhotoPath(img.getPhotoPath());
+                imgDTO.setPrimary(img.isPrimary());
 
-        List<VenueImageDTO> images = venue.getImages() != null ? venue.getImages().stream()
-                .map(img -> {
-                    VenueImageDTO imgDTO = new VenueImageDTO();
-                    imgDTO.setPhotoId(img.getPhotoId());
-                    imgDTO.setPhotoPath(img.getPhotoPath());
-                    imgDTO.setPrimary(img.isPrimary());
-                    return imgDTO;
-                }).collect(Collectors.toList()) : Collections.emptyList();
-
+                if (img.isPrimary()) {
+                    dto.setMainImageId(img.getPhotoId());
+                    dto.setMainImagePath(img.getPhotoPath());
+                } else {
+                    images.add(imgDTO);
+                }
+            }
+        }
         dto.setImages(images);
         return dto;
     }

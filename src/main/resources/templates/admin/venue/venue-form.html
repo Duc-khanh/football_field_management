@@ -10,26 +10,28 @@
 <h2 th:text="${#strings.isEmpty(venue.venueId) ? 'Thêm Địa Điểm Mới' : 'Chỉnh Sửa Địa Điểm'}"
     class="mb-4 text-center"></h2>
 
-<form th:action="@{/admin/venue/save}" th:object="${venue}" enctype="multipart/form-data" method="post">
+<form th:action="@{/admin/venue/save}" th:object="${venue}" enctype="multipart/form-data"
+      method="post" class="needs-validation" novalidate>
     <input type="hidden" th:field="*{venueId}"/>
 
-    <!-- Ảnh chính -->
     <div class="mb-3">
         <label class="form-label">Ảnh chính</label><br>
         <div id="mainPreviewContainer" class="mb-2">
             <img id="mainPreview"
-                 th:src="${#lists.isEmpty(venue.images) ? '' : '/uploads/' + venue.images[0].photoPath}"
+                 th:if="${venue.mainImagePath != null}"
+                 th:src="@{'/uploads/avatars/' + ${venue.mainImagePath}}"
                  class="img-thumbnail" style="max-width:200px; display:block;">
         </div>
-        <input type="hidden" name="existingMainImageId"
-               th:value="${#lists.isEmpty(venue.images) ? '' : venue.images[0].photoId}">
+        <input type="hidden" name="mainImageId" th:value="${venue.mainImageId}">
         <input type="file" id="mainImage" name="mainImageFile" class="form-control" accept="image/*">
+        <div class="form-text">Nếu không chọn ảnh mới thì sẽ giữ nguyên ảnh cũ.</div>
     </div>
+
 
     <!-- Ảnh phụ cũ -->
     <div id="subPreviewContainer" class="d-flex flex-wrap gap-2 mb-2">
         <div th:each="img : ${venue.images}" th:if="${!img.primary}" class="position-relative me-2 mb-2">
-            <img th:src="@{'/uploads/' + ${img.photoPath}}" class="img-thumbnail" style="max-width:120px;">
+            <img th:src="@{'/uploads/avatars/' + ${img.photoPath}}" class="img-thumbnail" style="max-width:120px;">
             <input type="hidden" name="existingImageIds" th:value="${img.photoId}">
             <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0 remove-old-btn">×</button>
         </div>
@@ -44,27 +46,34 @@
     <!-- Thông tin địa điểm -->
     <div class="mb-3">
         <label for="venueName" class="form-label">Tên địa điểm</label>
-        <input type="text" id="venueName" class="form-control" th:field="*{venueName}" required>
+        <input type="text" id="venueName" class="form-control" th:field="*{venueName}"
+               required maxlength="100" placeholder="Nhập tên địa điểm">
+        <div class="invalid-feedback">Vui lòng nhập tên địa điểm (tối đa 100 ký tự).</div>
     </div>
 
     <div class="mb-3">
         <label for="address" class="form-label">Địa chỉ</label>
-        <input type="text" id="address" class="form-control" th:field="*{address}" required>
+        <input type="text" id="address" class="form-control" th:field="*{address}"
+               required maxlength="255" placeholder="Nhập địa chỉ">
+        <div class="invalid-feedback">Vui lòng nhập địa chỉ (tối đa 255 ký tự).</div>
     </div>
 
     <div class="mb-3">
         <label for="contactNumber" class="form-label">Số điện thoại liên hệ</label>
-        <input type="text" id="contactNumber" class="form-control" th:field="*{contactNumber}" required>
+        <input type="text" id="contactNumber" class="form-control" th:field="*{contactNumber}"
+               required pattern="^0[0-9]{9,10}$" placeholder="Ví dụ: 0912345678">
+        <div class="invalid-feedback">Số điện thoại phải bắt đầu bằng 0 và có 10-11 chữ số.</div>
     </div>
 
     <div class="mb-3">
         <label for="description" class="form-label">Mô tả</label>
-        <textarea id="description" class="form-control" th:field="*{description}" rows="3"></textarea>
+        <textarea id="description" class="form-control" th:field="*{description}" rows="3"
+                  maxlength="1000" placeholder="Nhập mô tả (tối đa 1000 ký tự)"></textarea>
     </div>
 
     <div class="mb-3">
         <label for="status" class="form-label">Trạng thái</label>
-        <select id="status" class="form-control" th:field="*{status}">
+        <select id="status" class="form-control" th:field="*{status}" required>
             <option th:value="true" th:selected="${venue.status == true}">Mở</option>
             <option th:value="false" th:selected="${venue.status == false}">Đóng</option>
         </select>
@@ -79,6 +88,7 @@
                     th:text="${d.district_name}"
                     th:selected="${d.district_id == venue.districtId}"></option>
         </select>
+        <div class="invalid-feedback">Vui lòng chọn quận.</div>
     </div>
 
     <div class="mb-3">
@@ -90,6 +100,7 @@
                     th:text="${o.fullName}"
                     th:selected="${o.account_id == venue.ownerId}"></option>
         </select>
+        <div class="invalid-feedback">Vui lòng chọn chủ sở hữu.</div>
     </div>
 
     <div class="d-flex justify-content-between">
@@ -148,12 +159,27 @@
 
     // Xóa ảnh phụ cũ
     document.querySelectorAll('.remove-old-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
+        btn.addEventListener('click', function () {
             const hiddenInput = this.parentElement.querySelector('input[type="hidden"]');
-            if(hiddenInput) hiddenInput.remove();
+            if (hiddenInput) hiddenInput.remove();
             this.parentElement.remove();
         });
     });
+
+    // Bootstrap validation
+    (function () {
+        'use strict';
+        const forms = document.querySelectorAll('.needs-validation');
+        Array.from(forms).forEach(form => {
+            form.addEventListener('submit', event => {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        });
+    })();
 </script>
 
 </body>

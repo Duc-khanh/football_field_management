@@ -1,4 +1,4 @@
-package com.example.football_field_management.service.admin;
+package com.example.football_field_management.service.admin.venue;
 
 import com.example.football_field_management.dto.VenueDTO;
 import com.example.football_field_management.dto.VenueImageDTO;

@@ -62,11 +62,11 @@
                 <thead class="table-light">
                 <tr>
                     <th>STT</th>
-                    <th>Ảnh chính</th>
+                    <th>Ảnh</th>
                     <th>Tên sân</th>
                     <th>Chủ sở hữu</th>
                     <th>Địa chỉ</th>
-                    <th>SĐT liên hệ</th>
+                    <th>Số điện thoại</th>
                     <th>Mô tả</th>
                     <th>Trạng thái</th>
                     <th>Thao tác</th>
@@ -76,9 +76,7 @@
                 <tr th:each="venue, iterStat : ${venues}">
                     <td th:text="${iterStat.count}"></td>
                     <td>
-                        <img th:each="img : ${venue.images}"
-                             th:if="${img.isPrimary}"
-                             th:src="@{'/uploads/avatars/' + ${img.photoPath}}"
+                        <img th:src="@{'/uploads/avatars/' + ${venue.mainImagePath}}"
                              style="max-width:100px; border-radius:5px;"/>
                     </td>
                     <td th:text="${venue.venueName}"></td>

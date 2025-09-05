@@ -17,9 +17,14 @@ public class VenueDTO {
     private Long districtId;
     private Long ownerId;
     private String ownerName;
+
+    private Long mainImageId;
+    private String mainImagePath;
+    private MultipartFile mainImageFile;
+
     private List<String> imagePaths;
     private List<VenueImageDTO> images;
     private List<Long> existingImageIds;
-    private MultipartFile mainImageFile;
     private List<MultipartFile> subImagesFiles;
 }
+
