@@ -24,6 +24,6 @@ public class LoginControllerT {
     public String logout(HttpSession session) {
         SecurityContextHolder.clearContext();
         session.invalidate();
-        return "redirect:auth/login";
+        return "redirect:/auth/login";
     }
 }
