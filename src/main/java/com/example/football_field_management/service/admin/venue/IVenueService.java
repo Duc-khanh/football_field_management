@@ -2,7 +2,6 @@ package com.example.football_field_management.service.admin.venue;
 
 import com.example.football_field_management.dto.VenueDTO;
 import com.example.football_field_management.dto.VenueImageDTO;
-import com.example.football_field_management.model.Venue;
 import com.example.football_field_management.service.IGeneraService;
 import org.springframework.data.domain.Page;
 
