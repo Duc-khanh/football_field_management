@@ -31,14 +31,19 @@ body {
 
 /* Left side styling (branding) */
 .bg-side {
-    /*background: linear-gradient(135deg, rgba(14, 165, 233, 0.95), rgba(99, 102, 241, 0.92)),*/
-    background: url('/resources/static/images/hinh-nen-bong-da.jpg') no-repeat center center;
+    background: linear-gradient(135deg, rgba(14, 165, 233, 0.95), rgba(99, 102, 241, 0.92));
     background-size: cover;
     color: #fff;
     padding: 3rem;
     min-height: 320px;
 }
 
+.bg-cover {
+    background: url('/static/images/hinh-nen-bong-da.jpg') no-repeat center center;
+    background-size: cover;
+    padding: 3rem;
+    border-radius: 10px;
+}
 
 .brand-title {
     font-weight: 700;
