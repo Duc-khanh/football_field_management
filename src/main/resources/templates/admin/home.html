@@ -9,48 +9,55 @@
 </head>
 <body class="d-flex flex-column min-vh-100">
 
-<!-- Sửa tại đây -->
+<!-- Header -->
 <div th:replace="~{fragments/headerAdmin :: header}"></div>
 
 <div class="d-flex flex-grow-1">
 
-    <!-- Sửa tại đây -->
+    <!-- Sidebar menu -->
     <div th:replace="~{fragments/menuAdmin :: menuAdmin}"></div>
 
-    <div id="content" class="flex-grow-1 p-4">
-        <h2 class="fw-bold mb-4 text-center text-primary">Bảng điều khiển</h2>
-        <div class="nav-card-container">
-            <a href="/accounts" class="nav-card text-decoration-none">
-                <div class="nav-card-icon">
-                    <i class="fa-solid fa-user"></i>
-                </div>
-                <div class="nav-card-text">Quản lý tài khoản</div>
-            </a>
-            <a href="/admin/products" class="nav-card text-decoration-none">
-                <div class="nav-card-icon">
-                    <i class="fa-solid fa-futbol"></i>
-                </div>
-                <div class="nav-card-text">Quản lý sân bóng</div>
-            </a>
-            <a href="/admin/revenue" class="nav-card text-decoration-none">
-                <div class="nav-card-icon">
-                    <i class="fa-solid fa-coins"></i>
-                </div>
-                <div class="nav-card-text">Quản lý doanh thu</div>
-            </a>
-            <a href="/admin/reports" class="nav-card text-decoration-none">
-                <div class="nav-card-icon">
-                    <i class="fa-solid fa-chart-bar"></i>
-                </div>
-                <div class="nav-card-text">Quản lý báo cáo</div>
-            </a>
+    <!-- Main content -->
+    <div class="d-flex flex-column flex-grow-1">
+        <div id="content" class="flex-grow-1 p-4">
+            <h2 class="fw-bold mb-4 text-center text-primary">Bảng điều khiển</h2>
+            <div class="nav-card-container">
+
+                <a href="/accounts" class="nav-card text-decoration-none">
+                    <div class="nav-card-icon">
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+                    <div class="nav-card-text">Quản lý tài khoản</div>
+                </a>
+
+                <a href="/admin/venue/list" class="nav-card text-decoration-none">
+                    <div class="nav-card-icon">
+                        <i class="fa-solid fa-futbol"></i>
+                    </div>
+                    <div class="nav-card-text">Quản lý sân bóng</div>
+                </a>
+
+                <a href="/admin/revenue" class="nav-card text-decoration-none">
+                    <div class="nav-card-icon">
+                        <i class="fa-solid fa-coins"></i>
+                    </div>
+                    <div class="nav-card-text">Quản lý doanh thu</div>
+                </a>
+
+                <a href="/admin/reports" class="nav-card text-decoration-none">
+                    <div class="nav-card-icon">
+                        <i class="fa-solid fa-chart-bar"></i>
+                    </div>
+                    <div class="nav-card-text">Quản lý báo cáo</div>
+                </a>
+
+            </div>
         </div>
     </div>
-
 </div>
 
+<!-- Footer -->
 <div id="footer">
-    <!-- Sửa tại đây -->
     <div th:replace="~{fragments/footerAdmin :: adminFooter}"></div>
 </div>
 

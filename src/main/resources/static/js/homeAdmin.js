@@ -4,9 +4,13 @@
     const LS_COLLAPSED = 'sidebar_collapsed';
 
     if (!sidebar || !toggleBtn) {
-        // Nếu thiếu phần tử thì log và dừng, tránh lỗi runtime.
         console.warn('Sidebar or toggle button not found. Sidebar script disabled.');
         return;
+    }
+
+    // Luôn mặc định collapsed khi load lần đầu
+    if (!localStorage.getItem(LS_COLLAPSED)) {
+        localStorage.setItem(LS_COLLAPSED, '1');
     }
 
     const savedCollapsed = localStorage.getItem(LS_COLLAPSED) === '1';

@@ -1,4 +1,5 @@
-package com.example.football_field_management.service.Admin.users;
+package com.example.football_field_management.service.admin.users;
+
 
 import com.example.football_field_management.dto.AuthResponse;
 import com.example.football_field_management.dto.LoginRequest;
@@ -59,13 +60,13 @@ public class AccountService implements IAccountService {
 
     @Override
     public Optional<Account> findById(Long id) {
-        return accountRepository.findById(id.intValue());
+        return accountRepository.findById((long) id.intValue());
     }
 
     @Override
     public void save(Account account) {
         if (account.getAccount_id() != null) {
-            Account existingAccount = accountRepository.findById(Math.toIntExact(account.getAccount_id()))
+            Account existingAccount = accountRepository.findById((long) Math.toIntExact(account.getAccount_id()))
                     .orElseThrow(() -> new RuntimeException("Account not found"));
 
             if (account.getPassword() == null || account.getPassword().isEmpty()) {
@@ -85,7 +86,7 @@ public class AccountService implements IAccountService {
 
     @Override
     public void remote(Long id) {
-        accountRepository.deleteById(id.intValue());
+        accountRepository.deleteById((long) id.intValue());
     }
 
     @Override
@@ -121,13 +122,13 @@ public class AccountService implements IAccountService {
     }
 
     public Optional<Account> getAccountById(Long id) {
-        return accountRepository.findById(id.intValue());
+        return accountRepository.findById((long) id.intValue());
     }
     public List<Account> searchAccounts(String keyword) {
         return accountRepository.findByFullNameContainingIgnoreCaseOrEmailContainingIgnoreCase(keyword, keyword);
     }
     public void toggleStatus(Long id) {
-        Account account = accountRepository.findById(Math.toIntExact(id))
+        Account account = accountRepository.findById((long) Math.toIntExact(id))
                 .orElseThrow(() -> new RuntimeException("Account not found"));
 
         account.setStatus(!Boolean.TRUE.equals(account.getStatus()));
@@ -137,6 +138,12 @@ public class AccountService implements IAccountService {
 
 
     public boolean existsByEmail(String email) {
-        return accountRepository.existsByEmail(email);
+        return accountRepository.findByEmail(email).isPresent();
+    }
+
+    public Account register(Account account) {
+        // Mã hóa mật khẩu trước khi lưu
+        account.setPassword(passwordEncoder.encode(account.getPassword()));
+        return accountRepository.save(account);
     }
 }

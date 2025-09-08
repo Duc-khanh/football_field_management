@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Danh sách địa điểm sân bóng</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/homeAdmin.css}">
+    <style>
+        img {
+            max-width: 100px;
+            height: auto;
+            border-radius: 5px;
+        }
+        .table-wrapper {
+            background-color: #fff;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.05);
+        }
+        .page-title {
+            font-size: 26px;
+            font-weight: 600;
+        }
+        td, th {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 200px;
+        }
+    </style>
+</head>
+<body class="d-flex flex-column min-vh-100">
+
+<!-- Header -->
+<div th:replace="fragments/headerAdmin :: header"></div>
+
+<div class="d-flex flex-grow-1">
+    <!-- Sidebar -->
+    <div th:replace="fragments/menuAdmin :: menuAdmin"></div>
+
+    <!-- Main Content -->
+    <div class="d-flex flex-column flex-grow-1 p-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="page-title mb-0">Danh sách địa điểm sân bóng</h2>
+            <a th:href="@{/admin/venue/add}" class="btn btn-primary">
+                <i class="fa fa-plus"></i> Thêm địa điểm
+            </a>
+        </div>
+        <form class="mb-3" th:action="@{/admin/venue/list}"  method="get">
+            <div class="input-group">
+                <input type="text" name="keyword" class="form-control"
+                       placeholder="Tìm kiếm tên địa điểm..." th:value="${keyword}">
+                <button class="btn btn-outline-secondary" type="submit">
+                    <i class="fa fa-search"></i> Tìm
+                </button>
+            </div>
+        </form>
+
+        <div class="table-wrapper">
+            <table class="table table-bordered table-hover align-middle text-center">
+                <thead class="table-light">
+                <tr>
+                    <th>STT</th>
+                    <th>Ảnh</th>
+                    <th>Tên sân</th>
+                    <th>Chủ sở hữu</th>
+                    <th>Địa chỉ</th>
+                    <th>Số điện thoại</th>
+                    <th>Mô tả</th>
+                    <th>Trạng thái</th>
+                    <th>Thao tác</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="venue, iterStat : ${venues}">
+                    <td th:text="${iterStat.count}"></td>
+                    <td>
+                        <img th:src="@{'/uploads/avatars/' + ${venue.mainImagePath}}"
+                             style="max-width:100px; border-radius:5px;"/>
+                    </td>
+                    <td th:text="${venue.venueName}"></td>
+                    <td th:text="${venue.ownerName} ?: 'Chưa cập nhật'"></td>
+                    <td th:text="${venue.address}"></td>
+                    <td th:text="${venue.contactNumber}"></td>
+                    <td th:text="${venue.description}"></td>
+                    <td th:text="${venue.status ? 'Mở' : 'Đóng'}"></td>
+                    <td>
+                        <a th:href="@{'/admin/venue/edit/' + ${venue.venueId}}"
+                           class="btn btn-sm btn-warning"
+                           title="Sửa">
+                            <i class="fa fa-pen"></i>
+                        </a>
+                        <a th:href="@{'/admin/venue/status/' + ${venue.venueId} + '/true'}"
+                           th:if="${!venue.status}"
+                           class="btn btn-sm btn-success"
+                           title="Click để mở">
+                            <i class="fa fa-unlock"></i>
+                        </a>
+                        <a th:href="@{'/admin/venue/status/' + ${venue.venueId} + '/false'}"
+                           th:if="${venue.status}"
+                           class="btn btn-sm btn-secondary"
+                           title="Click để đóng">
+                            <i class="fa fa-lock"></i>
+                        </a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <!-- Pagination -->
+            <nav th:if="${totalPages > 1}" aria-label="Page navigation">
+                <ul class="pagination justify-content-center">
+
+                    <!-- Previous -->
+                    <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                        <a class="page-link"
+                           th:href="@{/admin/venue/list(page=__${currentPage - 1}__, keyword=${keyword})}">
+                            Trước
+                        </a>
+                    </li>
+
+                    <!-- Page numbers -->
+                    <li class="page-item"
+                        th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                        th:classappend="${i == currentPage} ? 'active'">
+                        <a class="page-link"
+                           th:href="@{/admin/venue/list(page=${i}, keyword=${keyword})}"
+                           th:text="${i + 1}">
+                        </a>
+                    </li>
+
+                    <!-- Next -->
+                    <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                        <a class="page-link"
+                           th:href="@{/admin/venue/list(page=__${currentPage + 1}__, keyword=${keyword})}">
+                            Sau
+                        </a>
+                    </li>
+
+                </ul>
+            </nav>
+        </div>
+
+    </div>
+</div>
+
+<!-- Footer -->
+<div id="footer">
+    <div th:replace="fragments/footerAdmin :: adminFooter"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/homeAdmin.js}"></script>
+</body>
+</html>

@@ -17,11 +17,11 @@
             <h2 class="m-0 mb-4">Danh sách tài khoản</h2>
 
             <div class="d-flex flex-wrap align-items-center justify-content-between mb-4 gap-3">
-                <form th:action="@{/accounts/search}" method="get"
-                      class="search-form d-flex flex-grow-1 gap-2 mb-0">
+                <form th:action="@{/accounts}" method="get"
+                      class="search-form d-flex flex-grow-1 gap-2 mb-0" id="searchForm">
                     <input type="text" name="keyword" th:value="${keyword}"
                            class="form-control search-input"
-                           placeholder="Tìm kiếm theo email">
+                           placeholder="Tìm kiếm theo email" id="searchInput">
                     <button type="submit" class="btn btn-outline-primary">
                         <i class="fa-solid fa-magnifying-glass"></i>
                     </button>
@@ -48,8 +48,8 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr th:each="account : ${accounts}">
-                        <td th:text="${account.account_id}"></td>
+                    <tr th:each="account, stat : ${accounts}">
+                        <td th:text="${currentPage * pageSize + stat.index + 1}"></td>
                         <td>
                             <img th:src="@{'/uploads/avatars/' + ${account.avt_path}}"
                                  alt="Avatar"
@@ -60,7 +60,7 @@
                         <td th:text="${account.phone}"></td>
                         <td th:text="${account.address}"></td>
                         <td>
-                            <span th:text="${account.status} ? 'Active' : 'Block'"
+                            <span th:text="${account.status} ? 'Hoạt động' : 'Bị khóa'"
                                   th:classappend="${account.status} ? 'badge status-active' : 'badge status-block'">
                             </span>
                         </td>
@@ -160,15 +160,15 @@
             });
         });
 
-        const keywordInput = document.getElementById("keywordInput");
-        const searchForm = document.getElementById("searchForm");
         let typingTimer;
+        const searchInput = document.getElementById("searchInput");
+        const searchForm = document.getElementById("searchForm");
 
-        keywordInput.addEventListener("keyup", function () {
+        searchInput.addEventListener("keyup", function () {
             clearTimeout(typingTimer);
             typingTimer = setTimeout(() => {
                 searchForm.submit();
-            }, 1500); // 2000ms = 2 giây
+            }, 1000);
         });
 
         keywordInput.addEventListener("keydown", function () {

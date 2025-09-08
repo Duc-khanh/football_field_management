@@ -1,4 +1,4 @@
-package com.example.football_field_management.service.Admin.users;
+package com.example.football_field_management.service.admin.users;
 
 import com.example.football_field_management.dto.AuthResponse;
 import com.example.football_field_management.dto.LoginRequest;
@@ -14,4 +14,5 @@ public interface IAccountService extends IGeneraService<Account> {
     Page<Account> searchAccounts(String keyword, Pageable pageable);
 
 
+    boolean existsByEmail(String email);
 }

@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Form Địa Điểm</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+</head>
+<body class="container mt-4">
+
+<h2 th:text="${#strings.isEmpty(venue.venueId) ? 'Thêm Địa Điểm Mới' : 'Chỉnh Sửa Địa Điểm'}"
+    class="mb-4 text-center"></h2>
+
+<form th:action="@{/admin/venue/save}" th:object="${venue}" enctype="multipart/form-data"
+      method="post" class="needs-validation" novalidate>
+    <input type="hidden" th:field="*{venueId}"/>
+
+    <div class="mb-3">
+        <label class="form-label">Ảnh chính</label><br>
+        <div id="mainPreviewContainer" class="mb-2">
+            <img id="mainPreview"
+                 th:if="${venue.mainImagePath != null}"
+                 th:src="@{'/uploads/avatars/' + ${venue.mainImagePath}}"
+                 class="img-thumbnail" style="max-width:200px; display:block;">
+        </div>
+        <input type="hidden" name="mainImageId" th:value="${venue.mainImageId}">
+        <input type="file" id="mainImage" name="mainImageFile" class="form-control" accept="image/*">
+        <div class="form-text">Nếu không chọn ảnh mới thì sẽ giữ nguyên ảnh cũ.</div>
+    </div>
+
+
+    <!-- Ảnh phụ cũ -->
+    <div id="subPreviewContainer" class="d-flex flex-wrap gap-2 mb-2">
+        <div th:each="img : ${venue.images}" th:if="${!img.primary}" class="position-relative me-2 mb-2">
+            <img th:src="@{'/uploads/avatars/' + ${img.photoPath}}" class="img-thumbnail" style="max-width:120px;">
+            <input type="hidden" name="existingImageIds" th:value="${img.photoId}">
+            <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0 remove-old-btn">×</button>
+        </div>
+    </div>
+
+    <!-- Ảnh phụ mới -->
+    <div class="mb-3">
+        <label class="form-label">Thêm ảnh phụ</label>
+        <input type="file" id="subImages" name="subImagesFiles" class="form-control" accept="image/*" multiple>
+    </div>
+
+    <!-- Thông tin địa điểm -->
+    <div class="mb-3">
+        <label for="venueName" class="form-label">Tên địa điểm</label>
+        <input type="text" id="venueName" class="form-control" th:field="*{venueName}"
+               required maxlength="100" placeholder="Nhập tên địa điểm">
+        <div class="invalid-feedback">Vui lòng nhập tên địa điểm (tối đa 100 ký tự).</div>
+    </div>
+
+    <div class="mb-3">
+        <label for="address" class="form-label">Địa chỉ</label>
+        <input type="text" id="address" class="form-control" th:field="*{address}"
+               required maxlength="255" placeholder="Nhập địa chỉ">
+        <div class="invalid-feedback">Vui lòng nhập địa chỉ (tối đa 255 ký tự).</div>
+    </div>
+
+    <div class="mb-3">
+        <label for="contactNumber" class="form-label">Số điện thoại liên hệ</label>
+        <input type="text" id="contactNumber" class="form-control" th:field="*{contactNumber}"
+               required pattern="^0[0-9]{9,10}$" placeholder="Ví dụ: 0912345678">
+        <div class="invalid-feedback">Số điện thoại phải bắt đầu bằng 0 và có 10-11 chữ số.</div>
+    </div>
+
+    <div class="mb-3">
+        <label for="description" class="form-label">Mô tả</label>
+        <textarea id="description" class="form-control" th:field="*{description}" rows="3"
+                  maxlength="1000" placeholder="Nhập mô tả (tối đa 1000 ký tự)"></textarea>
+    </div>
+
+    <div class="mb-3">
+        <label for="status" class="form-label">Trạng thái</label>
+        <select id="status" class="form-control" th:field="*{status}" required>
+            <option th:value="true" th:selected="${venue.status == true}">Mở</option>
+            <option th:value="false" th:selected="${venue.status == false}">Đóng</option>
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label for="districtId" class="form-label">Quận</label>
+        <select th:field="*{districtId}" class="form-select" id="districtId" required>
+            <option value="" disabled th:selected="${venue.districtId == null}">-- Chọn quận --</option>
+            <option th:each="d : ${districts}"
+                    th:value="${d.district_id}"
+                    th:text="${d.district_name}"
+                    th:selected="${d.district_id == venue.districtId}"></option>
+        </select>
+        <div class="invalid-feedback">Vui lòng chọn quận.</div>
+    </div>
+
+    <div class="mb-3">
+        <label for="ownerId" class="form-label">Chủ sở hữu</label>
+        <select th:field="*{ownerId}" class="form-select" id="ownerId" required>
+            <option value="" disabled th:selected="${venue.ownerId == null}">-- Chọn chủ sở hữu --</option>
+            <option th:each="o : ${owners}"
+                    th:value="${o.account_id}"
+                    th:text="${o.fullName}"
+                    th:selected="${o.account_id == venue.ownerId}"></option>
+        </select>
+        <div class="invalid-feedback">Vui lòng chọn chủ sở hữu.</div>
+    </div>
+
+    <div class="d-flex justify-content-between">
+        <button type="submit" class="btn btn-success">Lưu</button>
+        <a th:href="@{/admin/venue/list}" class="btn btn-secondary">Quay lại danh sách</a>
+    </div>
+</form>
+
+<script>
+    // Preview ảnh chính
+    const mainImageInput = document.getElementById("mainImage");
+    const mainPreview = document.getElementById("mainPreview");
+    mainImageInput.addEventListener("change", () => {
+        const file = mainImageInput.files[0];
+        mainPreview.src = file ? URL.createObjectURL(file) : '';
+    });
+
+    // Ảnh phụ mới
+    const subImagesInput = document.getElementById("subImages");
+    const subPreviewContainer = document.getElementById("subPreviewContainer");
+    let subFiles = [];
+
+    subImagesInput.addEventListener("change", () => {
+        Array.from(subImagesInput.files).forEach(file => addSubImagePreview(URL.createObjectURL(file), file));
+    });
+
+    function addSubImagePreview(src, fileObj) {
+        const wrapper = document.createElement("div");
+        wrapper.style.position = "relative";
+        wrapper.className = "me-2 mb-2";
+
+        const img = document.createElement("img");
+        img.src = src;
+        img.className = "img-thumbnail";
+        img.style.maxWidth = "120px";
+
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.innerHTML = "&times;";
+        btn.className = "btn btn-sm btn-danger";
+        btn.style.position = "absolute";
+        btn.style.top = "0";
+        btn.style.right = "0";
+
+        btn.addEventListener("click", () => {
+            wrapper.remove();
+            if (fileObj) subFiles = subFiles.filter(f => f !== fileObj);
+        });
+
+        wrapper.appendChild(img);
+        wrapper.appendChild(btn);
+        subPreviewContainer.appendChild(wrapper);
+
+        if (fileObj) subFiles.push(fileObj);
+    }
+
+    // Xóa ảnh phụ cũ
+    document.querySelectorAll('.remove-old-btn').forEach(btn => {
+        btn.addEventListener('click', function () {
+            const hiddenInput = this.parentElement.querySelector('input[type="hidden"]');
+            if (hiddenInput) hiddenInput.remove();
+            this.parentElement.remove();
+        });
+    });
+
+    // Bootstrap validation
+    (function () {
+        'use strict';
+        const forms = document.querySelectorAll('.needs-validation');
+        Array.from(forms).forEach(form => {
+            form.addEventListener('submit', event => {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        });
+    })();
+</script>
+
+</body>
+</html>

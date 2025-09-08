@@ -2,7 +2,7 @@ package com.example.football_field_management.controller.admin;
 
 import com.example.football_field_management.model.Account;
 import com.example.football_field_management.model.Role;
-import com.example.football_field_management.service.Admin.users.AccountService;
+import com.example.football_field_management.service.admin.users.AccountService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
