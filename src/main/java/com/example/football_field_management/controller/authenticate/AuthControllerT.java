@@ -51,7 +51,7 @@ public class AuthControllerT {
         if (result.hasErrors()) {
             return "auth/register";
         }
-
+// aaaaaa
         if (!account.getPassword().equals(account.getConfirmPassword())) {
             model.addAttribute("errorMessage", "Mật khẩu xác nhận không khớp!");
             return "auth/register";
