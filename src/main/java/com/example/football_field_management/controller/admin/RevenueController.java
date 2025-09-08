@@ -1,6 +1,6 @@
 package com.example.football_field_management.controller.admin;
 
-import com.example.football_field_management.service.Admin.revenue.RevenueService;
+import com.example.football_field_management.service.admin.revenue.RevenueService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
