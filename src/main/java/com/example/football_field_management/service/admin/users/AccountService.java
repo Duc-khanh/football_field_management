@@ -140,4 +140,10 @@ public class AccountService implements IAccountService {
     public boolean existsByEmail(String email) {
         return accountRepository.findByEmail(email).isPresent();
     }
+
+    public Account register(Account account) {
+        // Mã hóa mật khẩu trước khi lưu
+        account.setPassword(passwordEncoder.encode(account.getPassword()));
+        return accountRepository.save(account);
+    }
 }
