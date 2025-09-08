@@ -8,7 +8,6 @@ import com.example.football_field_management.repository.AccountRepository;
 import com.example.football_field_management.repository.DistrictRepository;
 import com.example.football_field_management.repository.VenueImageRepository;
 import com.example.football_field_management.repository.VenueRepository;
-import com.example.football_field_management.service.admin.venue.IVenueService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
