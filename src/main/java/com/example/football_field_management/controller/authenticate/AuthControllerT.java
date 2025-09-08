@@ -9,6 +9,7 @@ import com.example.football_field_management.service.admin.users.IAccountService
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -23,6 +24,7 @@ import java.util.List;
 public class AuthControllerT {
     private final IAccountService accountService;
     private final RoleRepository roleRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
 
     @GetMapping("/login")
     public String loginPage(Model model) {
@@ -43,29 +45,33 @@ public class AuthControllerT {
     }
 
     @PostMapping("/register")
-    public String registerAccount( @ModelAttribute("account") Account account,
+    public String registerAccount(@ModelAttribute("account") Account account,
                                   BindingResult result,
                                   Model model) {
         if (result.hasErrors()) {
             return "auth/register";
         }
+// aaaaaa
+        if (!account.getPassword().equals(account.getConfirmPassword())) {
+            model.addAttribute("errorMessage", "Mật khẩu xác nhận không khớp!");
+            return "auth/register";
+        }
 
-        // Check email đã tồn tại
         if (accountService.existsByEmail(account.getEmail())) {
             model.addAttribute("errorMessage", "Email này đã tồn tại!");
             return "auth/register";
         }
 
-        // Gán role mặc định cho user
         Role userRole = roleRepository.findByRoleName("ROLE_USER")
                 .orElseThrow(() -> new RuntimeException("Role USER không tồn tại"));
         account.setRoles(new HashSet<>(List.of(userRole)));
 
-        // Lưu user
+        account.setPassword(passwordEncoder.encode(account.getPassword()));
+
         accountService.save(account);
 
-        // Chuyển về trang login
         model.addAttribute("successMessage", "Đăng ký thành công, mời bạn đăng nhập!");
         return "redirect:/auth/login";
     }
+
 }

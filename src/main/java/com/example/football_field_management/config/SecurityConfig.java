@@ -2,6 +2,7 @@
 package com.example.football_field_management.config;
 
 
+import com.example.football_field_management.CustomSuccessHandler;
 import com.example.football_field_management.security.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -36,6 +37,7 @@ public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtFilter;
     private final UserDetailsService userDetailsService;
+    private final CustomSuccessHandler customSuccessHandler;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -47,15 +49,20 @@ public class SecurityConfig {
                                 "/auth/register", "/auth/register/**").permitAll()
 
                         .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
+                        // phân quyền theo role
                         .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/owner/**").hasRole("OWNER")
+                        .requestMatchers("/user/**").hasRole("USER")
+
+                        // còn lại yêu cầu đăng nhập
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
                         .loginPage("/auth/login")
                         .loginProcessingUrl("/auth/login")
-                        .usernameParameter("email")      // đổi username param thành email
+                        .usernameParameter("email")
                         .passwordParameter("password")
-                        .defaultSuccessUrl("/admin/homeAdmin", true)
+                        .successHandler(customSuccessHandler)
                         .failureUrl("/auth/login?error=true")
                         .permitAll()
                 )
