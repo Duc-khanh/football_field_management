@@ -14,4 +14,12 @@ public interface IAccountService extends IGeneraService<Account> {
     Page<Account> searchAccounts(String keyword, Pageable pageable);
 
 
+    boolean existsByEmail(String email);
+
+    Account register(Account account);
+
+//    public interface IAccountService {
+//        void register(Account account);
+//    }
+
 }

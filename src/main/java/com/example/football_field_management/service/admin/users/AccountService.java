@@ -34,36 +34,6 @@ public class AccountService implements IAccountService {
 
 
     @Override
-    public Page<Account> getAccountsPaginated(Pageable pageable) {
-        return accountRepository.findAll(pageable);
-    }
-    public Page<Account> getAccounts(int page, int size, String keyword) {
-        Pageable pageable = PageRequest.of(page, size);
-
-        if (keyword != null && !keyword.isEmpty()) {
-            return accountRepo.findByFullNameContainingOrEmailContaining(keyword, keyword, pageable);
-        }
-        return accountRepo.findAll(pageable);
-    }
-
-    @Override
-    public Page<Account> searchAccounts(String keyword, Pageable pageable) {
-        return accountRepository.findByFullNameContainingIgnoreCaseOrEmailContainingIgnoreCase(keyword, keyword, pageable);
-    }
-
-
-
-    @Override
-    public Iterable<Account> findAll() {
-        return accountRepository.findAll();
-    }
-
-    @Override
-    public Optional<Account> findById(Long id) {
-        return accountRepository.findById((long) id.intValue());
-    }
-
-    @Override
     public void save(Account account) {
         if (account.getAccount_id() != null) {
             Account existingAccount = accountRepository.findById((long) Math.toIntExact(account.getAccount_id()))
@@ -82,6 +52,44 @@ public class AccountService implements IAccountService {
 
         accountRepository.save(account);
     }
+
+    public Account register(Account account) {
+        if (account.getPassword() != null && !account.getPassword().isEmpty()) {
+            account.setPassword(passwordEncoder.encode(account.getPassword()));
+        }
+        return accountRepository.save(account);
+    }
+
+    @Override
+    public Page<Account> getAccountsPaginated(Pageable pageable) {
+        return accountRepository.findAll(pageable);
+    }
+    public Page<Account> getAccounts(int page, int size, String keyword) {
+        Pageable pageable = PageRequest.of(page, size);
+
+        if (keyword != null && !keyword.isEmpty()) {
+            return accountRepo.findByFullNameContainingOrEmailContaining(keyword, keyword, pageable);
+        }
+        return accountRepo.findAll(pageable);
+    }
+
+    @Override
+    public Page<Account> searchAccounts(String keyword, Pageable pageable) {
+        return accountRepository.findByFullNameContainingIgnoreCaseOrEmailContainingIgnoreCase(keyword, keyword, pageable);
+    }
+
+    @Override
+    public Iterable<Account> findAll() {
+        return accountRepository.findAll();
+    }
+
+    @Override
+    public Optional<Account> findById(Long id) {
+        return accountRepository.findById((long) id.intValue());
+    }
+
+
+
 
 
     @Override
@@ -124,20 +132,9 @@ public class AccountService implements IAccountService {
     public Optional<Account> getAccountById(Long id) {
         return accountRepository.findById((long) id.intValue());
     }
-    public List<Account> searchAccounts(String keyword) {
-        return accountRepository.findByFullNameContainingIgnoreCaseOrEmailContainingIgnoreCase(keyword, keyword);
-    }
-    public void toggleStatus(Long id) {
-        Account account = accountRepository.findById((long) Math.toIntExact(id))
-                .orElseThrow(() -> new RuntimeException("Account not found"));
-
-        account.setStatus(!Boolean.TRUE.equals(account.getStatus()));
-
-        accountRepository.save(account);
-    }
-
 
     public boolean existsByEmail(String email) {
         return accountRepository.findByEmail(email).isPresent();
     }
+
 }

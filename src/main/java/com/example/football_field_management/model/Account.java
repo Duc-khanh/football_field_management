@@ -25,6 +25,8 @@ public class Account {
     @Column(name = "account_id")
     private Long account_id;
     private String password;
+    @Transient
+    private String confirmPassword;
     private String fullName;
     private String phone;
     private String email;
