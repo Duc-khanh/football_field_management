@@ -1,10 +1,13 @@
 document.addEventListener('DOMContentLoaded', function () {
     const pwd = document.getElementById('password');
-    const showPassword = document.getElementById('showPassword');
+    const togglePassword = document.getElementById('togglePassword');
 
-    if (showPassword && pwd) {
-        showPassword.addEventListener('change', function () {
-            pwd.type = this.checked ? 'text' : 'password';
+    if (togglePassword && pwd) {
+        togglePassword.addEventListener('click', function () {
+            const type = pwd.getAttribute('type') === 'password' ? 'text' : 'password';
+            pwd.setAttribute('type', type);
+            this.classList.toggle('bi-eye');
+            this.classList.toggle('bi-eye-slash');
         });
     }
 
