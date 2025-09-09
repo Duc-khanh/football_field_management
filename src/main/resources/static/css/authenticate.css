@@ -1,4 +1,3 @@
-/* ---------- Base ---------- */
 :root {
     --accent-1: #0ea5e9;
     --accent-2: #6366f1;
@@ -6,11 +5,6 @@
     --card-radius: 14px;
 }
 
-* {
-    box-sizing: border-box
-}
-
-/* Background */
 body {
     margin: 0;
     font-family: Inter, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
@@ -21,7 +15,6 @@ body {
     min-height: 100vh;
 }
 
-/* Wrap the auth component */
 .auth-wrap {
     max-width: 920px;
     margin: 40px auto;
@@ -29,20 +22,19 @@ body {
     overflow: hidden;
 }
 
-/* Left side styling (branding) */
+/* Left side branding */
 .bg-side {
-    background: linear-gradient(135deg, rgba(14, 165, 233, 0.95), rgba(99, 102, 241, 0.92));
+    position: relative;
+    background: url('https://hoanghamobile.com/tin-tuc/wp-content/uploads/2023/09/hinh-nen-bong-da.jpg') no-repeat center center;
     background-size: cover;
-    color: #fff;
     padding: 3rem;
-    min-height: 320px;
 }
 
-.bg-cover {
-    background: url('/static/images/hinh-nen-bong-da.jpg') no-repeat center center;
-    background-size: cover;
-    padding: 3rem;
-    border-radius: 10px;
+.bg-side::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.35);
 }
 
 .brand-title {
@@ -52,9 +44,7 @@ body {
 }
 
 /* Right side card */
-.bg-white {
-    background: #ffffff;
-}
+.bg-white { background: #ffffff; }
 
 /* Inputs */
 .input-group .form-control {
@@ -70,13 +60,7 @@ body {
     background: #fff;
     border-radius: 6px 0 0 6px;
 }
-
-.input-group .btn {
-    border-left: 0;
-    border-radius: 0 6px 6px 0;
-}
-
-.form-control:focus, .form-control:active {
+.form-control:focus {
     box-shadow: 0 6px 18px rgba(14, 165, 233, 0.12);
     border-color: var(--accent-1);
     outline: none;
@@ -91,18 +75,9 @@ body {
     border-radius: 8px;
     font-weight: 600;
 }
-
-.btn-primary:hover, .btn-primary:focus {
+.btn-primary:hover {
     transform: translateY(-1px);
     box-shadow: 0 12px 30px rgba(99, 102, 241, 0.17);
-}
-
-/* Social buttons */
-.btn-outline-dark, .btn-outline-primary {
-    background: #fff;
-    border-radius: 8px;
-    border: 1px solid #e6e9ee;
-    padding: 10px 12px;
 }
 
 /* Alerts */
@@ -111,33 +86,9 @@ body {
     font-size: 14px;
 }
 
-/* Footer small text */
-footer small {
-    font-size: 12px
-}
-
-/* Responsiveness */
+/* Mobile responsive */
 @media (max-width: 767.98px) {
-    .auth-wrap {
-        margin: 20px;
-        border-radius: 12px;
-    }
-
-    .bg-side {
-        display: none !important;
-    }
-
-    .input-group .form-control {
-        padding: 10px;
-    }
-
-    .btn-primary {
-        padding: 12px;
-        font-size: 16px;
-    }
-}
-
-/* Tiny polish */
-.shadow-sm {
-    box-shadow: 0 6px 18px rgba(17, 24, 39, 0.06) !important;
+    .auth-wrap { margin: 20px; border-radius: 12px; }
+    .bg-side { display: none !important; }
+    .btn-primary { font-size: 16px; }
 }

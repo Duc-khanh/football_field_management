@@ -1,10 +1,6 @@
-// Toggle password visibility bằng checkbox
 document.addEventListener('DOMContentLoaded', function () {
     const pwd = document.getElementById('password');
-    const showPassword = document.getElementById('showPassword'); // checkbox
-    const yearEl = document.getElementById('currentYear');
-
-    if (yearEl) yearEl.textContent = new Date().getFullYear();
+    const showPassword = document.getElementById('showPassword');
 
     if (showPassword && pwd) {
         showPassword.addEventListener('change', function () {
@@ -12,7 +8,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Bootstrap-like client validation (simple)
+    // Bootstrap-like client validation
     const forms = document.querySelectorAll('.needs-validation');
     Array.prototype.slice.call(forms).forEach(function (form) {
         form.addEventListener('submit', function (event) {
