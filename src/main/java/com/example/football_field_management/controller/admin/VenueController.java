@@ -22,6 +22,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Controller
@@ -47,10 +48,10 @@ public class VenueController {
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", venues.getTotalPages());
         model.addAttribute("keyword", keyword);
+        model.addAttribute("pageSize", size);
 
         return "admin/venue/venue-list";
     }
-
 
     @GetMapping("/add")
     public String showAddForm(Model model) {
@@ -161,5 +162,14 @@ public class VenueController {
         }
         return "redirect:/admin/venue";
     }
+    @GetMapping("/detail/{id}")
+    public String detailVenue(@PathVariable Long id, Model model) {
+        VenueDTO venue = venueService.findById(id)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy sân với id: " + id));
+
+        model.addAttribute("venue", venue);
+        return "admin/venue/venue-detail";
+    }
+
 
 }

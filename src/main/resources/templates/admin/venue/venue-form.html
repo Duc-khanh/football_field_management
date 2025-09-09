@@ -24,11 +24,8 @@
         </div>
         <input type="hidden" name="mainImageId" th:value="${venue.mainImageId}">
         <input type="file" id="mainImage" name="mainImageFile" class="form-control" accept="image/*">
-        <div class="form-text">Nếu không chọn ảnh mới thì sẽ giữ nguyên ảnh cũ.</div>
     </div>
 
-
-    <!-- Ảnh phụ cũ -->
     <div id="subPreviewContainer" class="d-flex flex-wrap gap-2 mb-2">
         <div th:each="img : ${venue.images}" th:if="${!img.primary}" class="position-relative me-2 mb-2">
             <img th:src="@{'/uploads/avatars/' + ${img.photoPath}}" class="img-thumbnail" style="max-width:120px;">
@@ -37,7 +34,6 @@
         </div>
     </div>
 
-    <!-- Ảnh phụ mới -->
     <div class="mb-3">
         <label class="form-label">Thêm ảnh phụ</label>
         <input type="file" id="subImages" name="subImagesFiles" class="form-control" accept="image/*" multiple>
@@ -62,21 +58,22 @@
         <label for="contactNumber" class="form-label">Số điện thoại liên hệ</label>
         <input type="text" id="contactNumber" class="form-control" th:field="*{contactNumber}"
                required pattern="^0[0-9]{9,10}$" placeholder="Ví dụ: 0912345678">
-        <div class="invalid-feedback">Số điện thoại phải bắt đầu bằng 0 và có 10-11 chữ số.</div>
+        <div class="invalid-feedback">Số điện thoại phải bắt đầu bằng 0 và có 10.</div>
     </div>
 
     <div class="mb-3">
         <label for="description" class="form-label">Mô tả</label>
         <textarea id="description" class="form-control" th:field="*{description}" rows="3"
-                  maxlength="1000" placeholder="Nhập mô tả (tối đa 1000 ký tự)"></textarea>
+                   placeholder="Nhập mô tả "></textarea>
     </div>
 
     <div class="mb-3">
         <label for="status" class="form-label">Trạng thái</label>
-        <select id="status" class="form-control" th:field="*{status}" required>
+        <select id="status" class="form-select" th:field="*{status}" required>
             <option th:value="true" th:selected="${venue.status == true}">Mở</option>
             <option th:value="false" th:selected="${venue.status == false}">Đóng</option>
         </select>
+        <div class="invalid-feedback">Vui lòng chọn trạng thái.</div>
     </div>
 
     <div class="mb-3">
