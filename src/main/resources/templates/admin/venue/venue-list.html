@@ -74,7 +74,7 @@
                 </thead>
                 <tbody>
                 <tr th:each="venue, iterStat : ${venues}">
-                    <td th:text="${iterStat.count}"></td>
+                    <td th:text="${currentPage * pageSize + iterStat.count}"></td>
                     <td>
                         <img th:src="@{'/uploads/avatars/' + ${venue.mainImagePath}}"
                              style="max-width:100px; border-radius:5px;"/>
@@ -90,6 +90,11 @@
                            class="btn btn-sm btn-warning"
                            title="Sửa">
                             <i class="fa fa-pen"></i>
+                        </a>
+                        <a th:href="@{'/admin/venue/detail/' + ${venue.venueId}}"
+                           class="btn btn-sm btn-info"
+                           title="Xem">
+                            <i class="fa fa-eye"></i>
                         </a>
                         <a th:href="@{'/admin/venue/status/' + ${venue.venueId} + '/true'}"
                            th:if="${!venue.status}"

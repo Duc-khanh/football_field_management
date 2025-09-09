@@ -79,23 +79,6 @@ main {
     background: #dc2626;
 }
 
-/* Collapsed sidebar */
-.sidebar.collapsed {
-    width: var(--sidebar-min);
-    padding: 12px 0;
-}
-
-.sidebar.collapsed .sidebar-header,
-.sidebar.collapsed .logout-btn,
-.sidebar.collapsed .menu a span.text {
-    display: none;
-}
-
-.sidebar.collapsed .menu a {
-    justify-content: center;
-    padding: 12px 0;
-}
-
 /* === CONTENT === */
 .content, #content {
     flex: 1;
