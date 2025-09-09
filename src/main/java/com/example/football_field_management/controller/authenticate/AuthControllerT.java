@@ -65,8 +65,6 @@ public class AuthControllerT {
                 .orElseThrow(() -> new RuntimeException("Role USER không tồn tại"));
         account.setRoles(new HashSet<>(List.of(userRole)));
 
-//        account.setPassword(passwordEncoder.encode(account.getPassword()));
-
 
         accountService.register(account);
         model.addAttribute("successMessage", "Đăng ký thành công, mời bạn đăng nhập!");

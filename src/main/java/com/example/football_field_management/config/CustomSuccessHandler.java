@@ -1,4 +1,4 @@
-package com.example.football_field_management;
+package com.example.football_field_management.config;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -15,7 +15,7 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler {
     public void onAuthenticationSuccess(HttpServletRequest request,
                                         HttpServletResponse response,
                                         Authentication authentication) throws IOException {
-        String redirectUrl = "/auth/login"; // fallback
+        String redirectUrl = "/auth/login";
 
         var authorities = authentication.getAuthorities();
         for (GrantedAuthority authority : authorities) {
