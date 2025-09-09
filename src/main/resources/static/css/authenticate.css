@@ -1,0 +1,94 @@
+:root {
+    --accent-1: #0ea5e9;
+    --accent-2: #6366f1;
+    --muted: #6b7280;
+    --card-radius: 14px;
+}
+
+body {
+    margin: 0;
+    font-family: Inter, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: linear-gradient(180deg, #f4f7fb 0%, #eef2f7 100%);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    color: #111827;
+    min-height: 100vh;
+}
+
+.auth-wrap {
+    max-width: 920px;
+    margin: 40px auto;
+    border-radius: var(--card-radius);
+    overflow: hidden;
+}
+
+/* Left side branding */
+.bg-side {
+    position: relative;
+    background: url('https://hoanghamobile.com/tin-tuc/wp-content/uploads/2023/09/hinh-nen-bong-da.jpg') no-repeat center center;
+    background-size: cover;
+    padding: 3rem;
+}
+
+.bg-side::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.35);
+}
+
+.brand-title {
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    font-size: 28px;
+}
+
+/* Right side card */
+.bg-white { background: #ffffff; }
+
+/* Inputs */
+.input-group .form-control {
+    border: 1px solid #e6e9ee;
+    padding: 12px 12px;
+    font-size: 15px;
+    border-radius: 6px;
+}
+
+.input-group-text {
+    border: 1px solid #e6e9ee;
+    border-right: 0;
+    background: #fff;
+    border-radius: 6px 0 0 6px;
+}
+.form-control:focus {
+    box-shadow: 0 6px 18px rgba(14, 165, 233, 0.12);
+    border-color: var(--accent-1);
+    outline: none;
+}
+
+/* Buttons */
+.btn-primary {
+    background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
+    border: none;
+    box-shadow: 0 8px 20px rgba(99, 102, 241, 0.14);
+    padding: 12px 18px;
+    border-radius: 8px;
+    font-weight: 600;
+}
+.btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 12px 30px rgba(99, 102, 241, 0.17);
+}
+
+/* Alerts */
+.alert {
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+/* Mobile responsive */
+@media (max-width: 767.98px) {
+    .auth-wrap { margin: 20px; border-radius: 12px; }
+    .bg-side { display: none !important; }
+    .btn-primary { font-size: 16px; }
+}
