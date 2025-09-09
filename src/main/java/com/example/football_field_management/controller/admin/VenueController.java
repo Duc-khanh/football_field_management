@@ -126,7 +126,7 @@ public class VenueController {
         // 3. Lưu venue
         venueService.save(venueDTO);
 
-        return "redirect:/admin/venue";
+        return "redirect:/admin/venue/list";
     }
 
     private String saveFile(MultipartFile file) throws IOException {
