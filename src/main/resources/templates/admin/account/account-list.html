@@ -33,7 +33,7 @@
             </div>
 
             <div class="table-responsive shadow-sm rounded-3 bg-white p-2">
-                <table class="table table-hover align-middle admin-table mb-0">
+                <table class="table table-hover align-middle admin-table mb-0 text-center">
                     <thead class="table-light">
                     <tr>
                         <th style="width:70px">STT</th>
@@ -55,19 +55,19 @@
                                  alt="Avatar"
                                  style="width:50px; height:50px; object-fit:cover; border-radius:50%;">
                         </td>
-                        <td th:text="${account.fullName}"></td>
-                        <td th:text="${account.email}"></td>
+                        <td class="text-start" th:text="${account.fullName}"></td>
+                        <td class="text-start" th:text="${account.email}"></td>
                         <td th:text="${account.phone}"></td>
-                        <td th:text="${account.address}"></td>
+                        <td class="text-start" th:text="${account.address}"></td>
                         <td>
-                            <span th:text="${account.status} ? 'Hoạt động' : 'Bị khóa'"
-                                  th:classappend="${account.status} ? 'badge status-active' : 'badge status-block'">
-                            </span>
+                <span th:text="${account.status} ? 'Hoạt động' : 'Bị khóa'"
+                      th:classappend="${account.status} ? 'badge status-active' : 'badge status-block'">
+                </span>
                         </td>
                         <td>
-                            <span th:each="role : ${account.roles}"
-                                  th:text="${role.role_name}"
-                                  class="role-badge me-1">Role</span>
+                <span th:each="role : ${account.roles}"
+                      th:text="${role.role_name}"
+                      class="role-badge me-1">Role</span>
                         </td>
                         <td class="actions">
                             <!-- Edit -->
@@ -99,9 +99,10 @@
                     </tr>
                     </tbody>
                 </table>
-                <nav th:if="${totalPages > 1}">
-                    <ul class="pagination justify-content-center">
 
+                <!-- Thêm margin-top cho phân trang -->
+                <nav th:if="${totalPages > 1}" class="mt-4">
+                    <ul class="pagination justify-content-center">
                         <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
                             <a class="page-link"
                                th:href="@{/accounts(page=${currentPage - 1}, keyword=${keyword})}">
@@ -127,6 +128,7 @@
                     </ul>
                 </nav>
             </div>
+
         </div>
     </div>
 </div>
