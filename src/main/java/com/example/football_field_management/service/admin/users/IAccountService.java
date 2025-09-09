@@ -15,4 +15,11 @@ public interface IAccountService extends IGeneraService<Account> {
 
 
     boolean existsByEmail(String email);
+
+    Account register(Account account);
+
+//    public interface IAccountService {
+//        void register(Account account);
+//    }
+
 }

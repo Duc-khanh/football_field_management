@@ -51,7 +51,6 @@ public class AuthControllerT {
         if (result.hasErrors()) {
             return "auth/register";
         }
-// aaaaaa
         if (!account.getPassword().equals(account.getConfirmPassword())) {
             model.addAttribute("errorMessage", "Mật khẩu xác nhận không khớp!");
             return "auth/register";
@@ -66,10 +65,10 @@ public class AuthControllerT {
                 .orElseThrow(() -> new RuntimeException("Role USER không tồn tại"));
         account.setRoles(new HashSet<>(List.of(userRole)));
 
-        account.setPassword(passwordEncoder.encode(account.getPassword()));
+//        account.setPassword(passwordEncoder.encode(account.getPassword()));
 
-        accountService.save(account);
 
+        accountService.register(account);
         model.addAttribute("successMessage", "Đăng ký thành công, mời bạn đăng nhập!");
         return "redirect:/auth/login";
     }
