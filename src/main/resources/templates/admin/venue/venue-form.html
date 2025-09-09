@@ -4,108 +4,124 @@
     <meta charset="UTF-8">
     <title>Form Địa Điểm</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/homeAdmin.css}">
 </head>
-<body class="container mt-4">
+<body class="d-flex flex-column min-vh-100">
 
-<h2 th:text="${#strings.isEmpty(venue.venueId) ? 'Thêm Địa Điểm Mới' : 'Chỉnh Sửa Địa Điểm'}"
-    class="mb-4 text-center"></h2>
+<div th:replace="fragments/headerAdmin :: header"></div>
 
-<form th:action="@{/admin/venue/save}" th:object="${venue}" enctype="multipart/form-data"
-      method="post" class="needs-validation" novalidate>
-    <input type="hidden" th:field="*{venueId}"/>
+<div class="d-flex flex-grow-1">
 
-    <div class="mb-3">
-        <label class="form-label">Ảnh chính</label><br>
-        <div id="mainPreviewContainer" class="mb-2">
-            <img id="mainPreview"
-                 th:if="${venue.mainImagePath != null}"
-                 th:src="@{'/uploads/avatars/' + ${venue.mainImagePath}}"
-                 class="img-thumbnail" style="max-width:200px; display:block;">
-        </div>
-        <input type="hidden" name="mainImageId" th:value="${venue.mainImageId}">
-        <input type="file" id="mainImage" name="mainImageFile" class="form-control" accept="image/*">
+    <div th:replace="fragments/menuAdmin :: menuAdmin"></div>
+
+    <div class="d-flex flex-column flex-grow-1 p-4">
+
+        <h2 th:text="${#strings.isEmpty(venue.venueId) ? 'Thêm Địa Điểm Mới' : 'Chỉnh Sửa Địa Điểm'}"
+            class="mb-4 text-center"></h2>
+
+        <form th:action="@{/admin/venue/save}" th:object="${venue}" enctype="multipart/form-data"
+              method="post" class="needs-validation" novalidate>
+            <input type="hidden" th:field="*{venueId}"/>
+
+            <div class="mb-3">
+                <label class="form-label">Ảnh chính</label><br>
+                <div id="mainPreviewContainer" class="mb-2">
+                    <img id="mainPreview"
+                         th:if="${venue.mainImagePath != null}"
+                         th:src="@{'/uploads/avatars/' + ${venue.mainImagePath}}"
+                         class="img-thumbnail" style="max-width:200px; display:block;">
+                </div>
+                <input type="hidden" name="mainImageId" th:value="${venue.mainImageId}">
+                <input type="file" id="mainImage" name="mainImageFile" class="form-control" accept="image/*">
+            </div>
+
+            <div id="subPreviewContainer" class="d-flex flex-wrap gap-2 mb-2">
+                <div th:each="img : ${venue.images}" th:if="${!img.primary}" class="position-relative me-2 mb-2">
+                    <img th:src="@{'/uploads/avatars/' + ${img.photoPath}}" class="img-thumbnail"
+                         style="max-width:120px;">
+                    <input type="hidden" name="existingImageIds" th:value="${img.photoId}">
+                    <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0 remove-old-btn">×
+                    </button>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Thêm ảnh phụ</label>
+                <input type="file" id="subImages" name="subImagesFiles" class="form-control" accept="image/*" multiple>
+            </div>
+
+            <!-- Thông tin địa điểm -->
+            <div class="mb-3">
+                <label for="venueName" class="form-label">Tên địa điểm</label>
+                <input type="text" id="venueName" class="form-control" th:field="*{venueName}"
+                       required maxlength="100" placeholder="Nhập tên địa điểm">
+                <div class="invalid-feedback">Vui lòng nhập tên địa điểm (tối đa 100 ký tự).</div>
+            </div>
+
+            <div class="mb-3">
+                <label for="address" class="form-label">Địa chỉ</label>
+                <input type="text" id="address" class="form-control" th:field="*{address}"
+                       required maxlength="255" placeholder="Nhập địa chỉ">
+                <div class="invalid-feedback">Vui lòng nhập địa chỉ (tối đa 255 ký tự).</div>
+            </div>
+
+            <div class="mb-3">
+                <label for="contactNumber" class="form-label">Số điện thoại liên hệ</label>
+                <input type="text" id="contactNumber" class="form-control" th:field="*{contactNumber}"
+                       required pattern="^0[0-9]{9,10}$" placeholder="Ví dụ: 0912345678">
+                <div class="invalid-feedback">Số điện thoại phải bắt đầu bằng 0 và có 10.</div>
+            </div>
+
+            <div class="mb-3">
+                <label for="description" class="form-label">Mô tả</label>
+                <textarea id="description" class="form-control" th:field="*{description}" rows="3"
+                          placeholder="Nhập mô tả "></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label for="status" class="form-label">Trạng thái</label>
+                <select id="status" class="form-select" th:field="*{status}" required>
+                    <option th:value="true" th:selected="${venue.status == true}">Mở</option>
+                    <option th:value="false" th:selected="${venue.status == false}">Đóng</option>
+                </select>
+                <div class="invalid-feedback">Vui lòng chọn trạng thái.</div>
+            </div>
+
+            <div class="mb-3">
+                <label for="districtId" class="form-label">Quận</label>
+                <select th:field="*{districtId}" class="form-select" id="districtId" required>
+                    <option value="" disabled th:selected="${venue.districtId == null}">-- Chọn quận --</option>
+                    <option th:each="d : ${districts}"
+                            th:value="${d.district_id}"
+                            th:text="${d.district_name}"
+                            th:selected="${d.district_id == venue.districtId}"></option>
+                </select>
+                <div class="invalid-feedback">Vui lòng chọn quận.</div>
+            </div>
+
+            <div class="mb-3">
+                <label for="ownerId" class="form-label">Chủ sở hữu</label>
+                <select th:field="*{ownerId}" class="form-select" id="ownerId" required>
+                    <option value="" disabled th:selected="${venue.ownerId == null}">-- Chọn chủ sở hữu --</option>
+                    <option th:each="o : ${owners}"
+                            th:value="${o.account_id}"
+                            th:text="${o.fullName}"
+                            th:selected="${o.account_id == venue.ownerId}"></option>
+                </select>
+                <div class="invalid-feedback">Vui lòng chọn chủ sở hữu.</div>
+            </div>
+
+            <div class="d-flex justify-content-between">
+                <button type="submit" class="btn btn-success">Lưu</button>
+                <a th:href="@{/admin/venue/list}" class="btn btn-secondary">Quay lại danh sách</a>
+            </div>
+        </form>
     </div>
-
-    <div id="subPreviewContainer" class="d-flex flex-wrap gap-2 mb-2">
-        <div th:each="img : ${venue.images}" th:if="${!img.primary}" class="position-relative me-2 mb-2">
-            <img th:src="@{'/uploads/avatars/' + ${img.photoPath}}" class="img-thumbnail" style="max-width:120px;">
-            <input type="hidden" name="existingImageIds" th:value="${img.photoId}">
-            <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0 remove-old-btn">×</button>
-        </div>
-    </div>
-
-    <div class="mb-3">
-        <label class="form-label">Thêm ảnh phụ</label>
-        <input type="file" id="subImages" name="subImagesFiles" class="form-control" accept="image/*" multiple>
-    </div>
-
-    <!-- Thông tin địa điểm -->
-    <div class="mb-3">
-        <label for="venueName" class="form-label">Tên địa điểm</label>
-        <input type="text" id="venueName" class="form-control" th:field="*{venueName}"
-               required maxlength="100" placeholder="Nhập tên địa điểm">
-        <div class="invalid-feedback">Vui lòng nhập tên địa điểm (tối đa 100 ký tự).</div>
-    </div>
-
-    <div class="mb-3">
-        <label for="address" class="form-label">Địa chỉ</label>
-        <input type="text" id="address" class="form-control" th:field="*{address}"
-               required maxlength="255" placeholder="Nhập địa chỉ">
-        <div class="invalid-feedback">Vui lòng nhập địa chỉ (tối đa 255 ký tự).</div>
-    </div>
-
-    <div class="mb-3">
-        <label for="contactNumber" class="form-label">Số điện thoại liên hệ</label>
-        <input type="text" id="contactNumber" class="form-control" th:field="*{contactNumber}"
-               required pattern="^0[0-9]{9,10}$" placeholder="Ví dụ: 0912345678">
-        <div class="invalid-feedback">Số điện thoại phải bắt đầu bằng 0 và có 10.</div>
-    </div>
-
-    <div class="mb-3">
-        <label for="description" class="form-label">Mô tả</label>
-        <textarea id="description" class="form-control" th:field="*{description}" rows="3"
-                   placeholder="Nhập mô tả "></textarea>
-    </div>
-
-    <div class="mb-3">
-        <label for="status" class="form-label">Trạng thái</label>
-        <select id="status" class="form-select" th:field="*{status}" required>
-            <option th:value="true" th:selected="${venue.status == true}">Mở</option>
-            <option th:value="false" th:selected="${venue.status == false}">Đóng</option>
-        </select>
-        <div class="invalid-feedback">Vui lòng chọn trạng thái.</div>
-    </div>
-
-    <div class="mb-3">
-        <label for="districtId" class="form-label">Quận</label>
-        <select th:field="*{districtId}" class="form-select" id="districtId" required>
-            <option value="" disabled th:selected="${venue.districtId == null}">-- Chọn quận --</option>
-            <option th:each="d : ${districts}"
-                    th:value="${d.district_id}"
-                    th:text="${d.district_name}"
-                    th:selected="${d.district_id == venue.districtId}"></option>
-        </select>
-        <div class="invalid-feedback">Vui lòng chọn quận.</div>
-    </div>
-
-    <div class="mb-3">
-        <label for="ownerId" class="form-label">Chủ sở hữu</label>
-        <select th:field="*{ownerId}" class="form-select" id="ownerId" required>
-            <option value="" disabled th:selected="${venue.ownerId == null}">-- Chọn chủ sở hữu --</option>
-            <option th:each="o : ${owners}"
-                    th:value="${o.account_id}"
-                    th:text="${o.fullName}"
-                    th:selected="${o.account_id == venue.ownerId}"></option>
-        </select>
-        <div class="invalid-feedback">Vui lòng chọn chủ sở hữu.</div>
-    </div>
-
-    <div class="d-flex justify-content-between">
-        <button type="submit" class="btn btn-success">Lưu</button>
-        <a th:href="@{/admin/venue/list}" class="btn btn-secondary">Quay lại danh sách</a>
-    </div>
-</form>
-
+</div>
+<div id="footer">
+    <div th:replace="fragments/footerAdmin :: adminFooter"></div>
+</div>
 <script>
     // Preview ảnh chính
     const mainImageInput = document.getElementById("mainImage");
