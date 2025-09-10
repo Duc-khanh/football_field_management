@@ -6,6 +6,46 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link rel="stylesheet" th:href="@{/css/home-admin.css}">
+    <style>
+        .venue-card {
+            background: #fff;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .venue-main-img {
+            width: 300px;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+        }
+        .venue-gallery img {
+            width: 150px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 6px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+            transition: transform 0.2s ease-in-out;
+        }
+        .venue-gallery img:hover {
+            transform: scale(1.05);
+        }
+        .status-badge {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        .status-badge.active {
+            background-color: #d1e7dd;
+            color: #0f5132;
+        }
+        .status-badge.inactive {
+            background-color: #f8d7da;
+            color: #842029;
+        }
+    </style>
 </head>
 <body class="d-flex flex-column min-vh-100">
 
@@ -18,19 +58,19 @@
 
     <!-- Main content -->
     <div class="d-flex flex-column flex-grow-1 p-4">
-        <h2 class="mb-4">Chi tiết sân bóng</h2>
+        <h2 class="mb-4 text-center fw-bold">Chi tiết sân bóng</h2>
 
         <div class="venue-card mx-auto">
-            <div class="row g-4">
+            <div class="row g-4 align-items-center">
                 <!-- Main Image -->
                 <div class="col-md-4 text-center">
                     <img th:src="@{'/uploads/avatars/' + ${venue.mainImagePath}}"
                          class="venue-main-img"
-                         alt="Main Image">
+                         alt="Ảnh chính">
                 </div>
 
                 <!-- Info -->
-                <div class="col-md-8 d-flex flex-column justify-content-center">
+                <div class="col-md-8">
                     <h3 th:text="${venue.venueName}" class="fw-bold mb-3"></h3>
                     <p><strong>Chủ sở hữu:</strong> <span th:text="${venue.ownerName} ?: 'Chưa cập nhật'"></span></p>
                     <p><strong>Số điện thoại:</strong> <span th:text="${venue.contactNumber}"></span></p>
@@ -52,9 +92,9 @@
             <!-- Gallery -->
             <div class="mt-5">
                 <h5 class="border-bottom pb-2 mb-3">Hình ảnh khác</h5>
-                <div class="row g-3 venue-gallery">
-                    <div class="col-6 col-md-3" th:each="img : ${venue.images}">
-                        <img th:src="@{'/uploads/avatars/' + ${img.photoPath}}" alt="Sub Image">
+                <div class="d-flex flex-wrap gap-3 venue-gallery">
+                    <div th:each="img : ${venue.images}">
+                        <img th:src="@{'/uploads/avatars/' + ${img.photoPath}}" alt="Ảnh phụ">
                     </div>
                 </div>
             </div>

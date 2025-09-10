@@ -275,3 +275,14 @@ footer {
     .search-form { flex-direction: column; gap:8px; }
     .search-input { width:100%; }
 }
+#mainPreviewContainer img,
+#subPreviewContainer img {
+    border-radius: 6px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+}
+
+.btn-outline-primary,
+.btn-outline-success {
+    cursor: pointer;
+    margin-top: 5px;
+}

@@ -37,18 +37,31 @@ public class VenueService implements IVenueService {
     private final String uploadDir = "uploads";
 
     @Override
-    public Page<VenueDTO> findAll(int page, int size, String keyword) {
+    public Page<VenueDTO> findAll(int page, int size, String keyword, Boolean status) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("venueId").descending());
 
         Page<Venue> venues;
-        if (keyword != null && !keyword.trim().isEmpty()) {
+
+        // Trường hợp có keyword + status
+        if (keyword != null && !keyword.trim().isEmpty() && status != null) {
+            venues = venueRepository.findByVenueNameContainingIgnoreCaseAndStatus(keyword, status, pageable);
+        }
+        // Chỉ có keyword
+        else if (keyword != null && !keyword.trim().isEmpty()) {
             venues = venueRepository.findByVenueNameContainingIgnoreCase(keyword, pageable);
-        } else {
+        }
+        // Chỉ có status
+        else if (status != null) {
+            venues = venueRepository.findByStatus(status, pageable);
+        }
+        // Không có keyword + không có status
+        else {
             venues = venueRepository.findAll(pageable);
         }
 
         return venues.map(this::mapToDTO);
     }
+
 
     @Override
     public Iterable<VenueDTO> findAll() {

@@ -14,5 +14,5 @@ public interface IVenueService extends IGeneraService<VenueDTO> {
 
     void deleteSubImagesNotInList(Long venueId, List<Long> keepIds);
     void remove(Long id);
-    Page<VenueDTO> findAll(int page, int size, String keyword);
+    Page<VenueDTO> findAll(int page, int size, String keyword,Boolean status);
 }

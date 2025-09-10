@@ -39,15 +39,17 @@ public class VenueController {
     public String listVenues(@RequestParam(defaultValue = "0") int page,
                              @RequestParam(defaultValue = "5") int size,
                              @RequestParam(required = false) String keyword,
+                             @RequestParam(required = false) Boolean status,
                              Model model) {
 
-        Page<VenueDTO> venues = venueService.findAll(page, size, keyword);
+        Page<VenueDTO> venues = venueService.findAll(page, size, keyword,status);
 
         model.addAttribute("venues", venues.getContent());
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", venues.getTotalPages());
         model.addAttribute("keyword", keyword);
         model.addAttribute("pageSize", size);
+        model.addAttribute("status", status);
 
         return "admin/venue/venue-list";
     }
