@@ -57,7 +57,7 @@
                     <tr th:each="venue, stat : ${venues}">
                         <td th:text="${currentPage * pageSize + stat.index + 1}"></td>
                         <td>
-                            <img th:src="@{'/uploads/avatars/' + ${venue.mainImagePath}}"
+                            <img th:src="@{${venue.mainImagePath != null ? '/uploads/avatars/' + venue.mainImagePath : '/images/broken-image.png'}}"
                                  alt="Ảnh sân"
                                  style="width:120px; height:80px; object-fit:cover; border-radius:5px;">
                         </td>
