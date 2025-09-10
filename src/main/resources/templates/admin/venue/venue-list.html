@@ -12,14 +12,7 @@
             height: 60px;
             border-radius: 5px;
         }
-        .table-wrapper {
-            background-color: #fff;
-            padding: 25px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.05);
-            max-width: 900px;   /* ✅ Giới hạn chiều rộng */
-            margin: 0 auto;     /* ✅ Canh giữa */
-        }
+
         .page-title {
             font-size: 26px;
             font-weight: 600;
@@ -59,9 +52,7 @@
                 </button>
             </div>
         </form>
-
-        <div class="table-wrapper">
-            <table class="table table-bordered table-hover align-middle text-center">
+        <table class="table table-bordered table-hover align-middle text-center bg-white shadow-sm rounded-3">
                 <thead class="table-light">
                 <tr>
                     <th>STT</th>
@@ -76,6 +67,11 @@
                 </tr>
                 </thead>
                 <tbody>
+                <tr th:if="${#lists.isEmpty(venues)}">
+                    <td colspan="9" class="text-center text-muted">
+                        Không có dữ liệu
+                    </td>
+                </tr>
                 <tr th:each="venue, iterStat : ${venues}">
                     <td th:text="${currentPage * pageSize + iterStat.count}"></td>
                     <td>
@@ -150,8 +146,6 @@
         </div>
 
     </div>
-</div>
-
 <!-- Footer -->
 <div id="footer">
     <div th:replace="fragments/footerAdmin :: adminFooter"></div>
