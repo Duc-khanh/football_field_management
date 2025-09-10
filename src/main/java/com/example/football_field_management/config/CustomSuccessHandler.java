@@ -27,7 +27,7 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler {
                 redirectUrl = "/owner/homeOwner";
                 break;
             } else if (role.equals("ROLE_USER")) {
-                redirectUrl = "/";   // luôn vào trang chủ user
+                redirectUrl = "/user/home";   // luôn vào trang chủ user
                 break;
             }
         }

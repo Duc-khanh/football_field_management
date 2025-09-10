@@ -1,14 +1,36 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Trang chủ User</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body>
-<h1>Trang chủ người dùng <span th:text="${#authentication.name}"></span></h1>
-<a href="/auth/logout" class="logout-link">
-    <span class="icon"><i class="fa-solid fa-right-from-bracket"></i></span>
-    <span class="text">Đăng xuất</span>
-</a>
+<body class="p-3">
+
+<h2>Danh sách sân bóng</h2>
+<div id="venue-list" class="row"></div>
+
+<script>
+    fetch('/api/home')
+        .then(res => res.json())
+        .then(data => {
+            const listDiv = document.getElementById('venue-list');
+            listDiv.innerHTML = data.map(v => `
+                <div class="col-md-4 mb-3">
+                    <div class="card">
+                        <img src="${v.mainImagePath || '/img/default.png'}"
+                             class="card-img-top" alt="${v.venueName}">
+                        <div class="card-body">
+                            <h5 class="card-title">${v.venueName}</h5>
+                            <p class="card-text">${v.address}</p>
+                            <p><b>Liên hệ:</b> ${v.contactNumber}</p>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        })
+        .catch(err => console.error(err));
+</script>
+
 </body>
 </html>
