@@ -31,21 +31,49 @@ public class ListUserAccount {
     @Value("${file.upload-dir}")
     private String uploadDir;
 
+//@GetMapping
+//public String listAccounts(Model model,
+//                           @RequestParam(defaultValue = "0") int page,
+//                           @RequestParam(defaultValue = "10") int size,
+//                           @RequestParam(required = false) String keyword) {
+//    Page<Account> accountPage = accountService.getAccounts(page, size, keyword);
+//
+//    model.addAttribute("accounts", accountPage.getContent());
+//    model.addAttribute("currentPage", page);
+//    model.addAttribute("totalPages", accountPage.getTotalPages());
+//    model.addAttribute("pageSize", size);
+//    model.addAttribute("keyword", keyword);
+//
+//    return "admin/account/account-list";
+//}
 @GetMapping
 public String listAccounts(Model model,
                            @RequestParam(defaultValue = "0") int page,
                            @RequestParam(defaultValue = "10") int size,
-                           @RequestParam(required = false) String keyword) {
-    Page<Account> accountPage = accountService.getAccounts(page, size, keyword);
+                           @RequestParam(required = false) String keyword,
+                           @RequestParam(required = false) String role) {
+
+    Page<Account> accountPage;
+
+    if (role != null && !role.isBlank()) {
+        accountPage = accountService.getAccountsByRole(role, page, size, keyword);
+    } else {
+        accountPage = accountService.getAccounts(page, size, keyword);
+    }
 
     model.addAttribute("accounts", accountPage.getContent());
     model.addAttribute("currentPage", page);
     model.addAttribute("totalPages", accountPage.getTotalPages());
     model.addAttribute("pageSize", size);
     model.addAttribute("keyword", keyword);
+    model.addAttribute("role", role);
+
+    // Load danh sách role để hiển thị trong combobox/filter
+    model.addAttribute("roles", roleRepository.findAll());
 
     return "admin/account/account-list";
 }
+
 
 
     @GetMapping("/{id}")
@@ -59,7 +87,7 @@ public String listAccounts(Model model,
     @GetMapping("/add")
     public String addAccountForm(Model model) {
         model.addAttribute("account", new Account());
-        return "account-add";
+        return "admin/account/account-add";
     }
 
     @GetMapping("/edit/{id}")
@@ -67,7 +95,7 @@ public String listAccounts(Model model,
         Account account = accountService.getAccountById(id)
                 .orElseThrow(() -> new RuntimeException("Account not found"));
         model.addAttribute("account", account);
-        return "account-edit";
+        return "admin/account/account-edit";
     }
     @PostMapping("/add")
     public String addAccount(@ModelAttribute Account account,
@@ -79,7 +107,7 @@ public String listAccounts(Model model,
         if (accountService.existsByEmail(account.getEmail())) {
             model.addAttribute("errorMessage", "Email này đã tồn tại!");
             model.addAttribute("account", account);
-            return "account-add";
+            return "admin/account/account-add";
         }
 
         if (!avatarFile.isEmpty()) {
@@ -112,7 +140,7 @@ public String listAccounts(Model model,
                 && accountService.existsByEmail(account.getEmail())) {
             model.addAttribute("errorMessage", "Email này đã tồn tại!");
             model.addAttribute("account", existing);
-            return "account-edit";
+            return "admin/account/account-edit";
         }
 
         account.setRoles(existing.getRoles());

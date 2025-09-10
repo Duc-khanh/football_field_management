@@ -12,6 +12,8 @@ import java.util.List;
 public interface VenueRepository extends JpaRepository<Venue,Long> {
     Page<Venue> findByVenueNameContainingIgnoreCase(String keyword, Pageable pageable);
 
+    Page<Venue> findByStatus(Boolean status, Pageable pageable);
 
+    Page<Venue> findByVenueNameContainingIgnoreCaseAndStatus(String keyword, Boolean status, Pageable pageable);
 
 }

@@ -1,6 +1,5 @@
 package com.example.football_field_management.service.admin.users;
 
-
 import com.example.football_field_management.dto.AuthResponse;
 import com.example.football_field_management.dto.LoginRequest;
 import com.example.football_field_management.model.Account;
@@ -30,13 +29,11 @@ public class AccountService implements IAccountService {
     private final JwtUtil jwtUtil;
     private final AccountRepository accountRepository;
     private final BCryptPasswordEncoder passwordEncoder;
-    private final AccountRepository accountRepo;
-
 
     @Override
     public void save(Account account) {
         if (account.getAccount_id() != null) {
-            Account existingAccount = accountRepository.findById((long) Math.toIntExact(account.getAccount_id()))
+            Account existingAccount = accountRepository.findById(account.getAccount_id())
                     .orElseThrow(() -> new RuntimeException("Account not found"));
 
             if (account.getPassword() == null || account.getPassword().isEmpty()) {
@@ -64,13 +61,13 @@ public class AccountService implements IAccountService {
     public Page<Account> getAccountsPaginated(Pageable pageable) {
         return accountRepository.findAll(pageable);
     }
+
     public Page<Account> getAccounts(int page, int size, String keyword) {
         Pageable pageable = PageRequest.of(page, size);
-
         if (keyword != null && !keyword.isEmpty()) {
-            return accountRepo.findByFullNameContainingOrEmailContaining(keyword, keyword, pageable);
+            return accountRepository.findByFullNameContainingIgnoreCaseOrEmailContainingIgnoreCase(keyword, keyword, pageable);
         }
-        return accountRepo.findAll(pageable);
+        return accountRepository.findAll(pageable);
     }
 
     @Override
@@ -85,16 +82,12 @@ public class AccountService implements IAccountService {
 
     @Override
     public Optional<Account> findById(Long id) {
-        return accountRepository.findById((long) id.intValue());
+        return accountRepository.findById(id);
     }
-
-
-
-
 
     @Override
     public void remote(Long id) {
-        accountRepository.deleteById((long) id.intValue());
+        accountRepository.deleteById(id);
     }
 
     @Override
@@ -111,7 +104,7 @@ public class AccountService implements IAccountService {
                 .orElseThrow(() -> new RuntimeException("Account not found"));
 
         Set<String> roles = account.getRoles().stream()
-                .map(Role::getRole_name)
+                .map(Role::getRole_name) // vẫn dùng role_name trong entity
                 .collect(Collectors.toSet());
 
         return AuthResponse.builder()
@@ -125,12 +118,20 @@ public class AccountService implements IAccountService {
                 .build();
     }
 
+    public Page<Account> getAccountsByRole(String role_name, int page, int size, String keyword) {
+        Pageable pageable = PageRequest.of(page, size);
+        if (keyword != null && !keyword.isBlank()) {
+            return accountRepository.findByRoleNameAndKeyword(role_name, keyword, pageable);
+        }
+        return accountRepository.findByRoleName(role_name, pageable);
+    }
+
     public List<Account> getAllAccounts() {
         return accountRepository.findAll();
     }
 
     public Optional<Account> getAccountById(Long id) {
-        return accountRepository.findById((long) id.intValue());
+        return accountRepository.findById(id);
     }
 
     public boolean existsByEmail(String email) {

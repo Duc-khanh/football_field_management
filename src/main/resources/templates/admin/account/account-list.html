@@ -20,30 +20,44 @@
             <!-- Search + Add -->
             <div class="d-flex flex-wrap align-items-center justify-content-between mb-4 gap-3">
                 <form th:action="@{/accounts}" method="get"
-                      class="search-form d-flex gap-2 mb-0" id="searchForm">
+                      class="search-form d-flex flex-grow-1 gap-2 mb-0" id="searchForm">
                     <input type="text" name="keyword" th:value="${keyword}"
                            class="form-control search-input"
-                           placeholder="Tìm kiếm..." id="searchInput" style="width: 450px;">
+                           placeholder="Tìm kiếm..." id="searchInput">
                     <button type="submit" class="btn btn-outline-primary">
                         <i class="fa-solid fa-magnifying-glass"></i>
                     </button>
+                    <select name="role">
+                        <option value="">--Tất cả vai trò--</option>
+                        <th:block th:each="r : ${roles}">
+                            <option th:value="${r.role_name}"
+                                    th:selected="${role == r.role_name}">
+                                <span th:text="${r.role_name}"></span>
+                            </option>
+                        </th:block>
+                    </select>
+
+                    <button type="submit" class="btn btn-primary">Lọc</button>
                 </form>
 
                 <a class="btn btn-primary" th:href="@{/accounts/add}">
                     Thêm tài khoản
                 </a>
             </div>
-            <div class="table-responsive shadow-sm rounded-3 bg-white p-2 mb-3 d-flex justify-content-center">
-                <table class="table table-hover align-middle admin-table mb-0 text-center">
+
+
+            <!-- Table -->
+            <div class="table-responsive shadow-sm rounded-3 bg-white p-2 mb-3">
+                <table class="table table-hover align-middle admin-table mb-0">
                     <thead class="table-light">
                     <tr>
-                        <th>STT</th>
-                        <th>Ảnh</th>
+                        <th style="width:70px">STT</th>
+                        <th style="width:80px">Ảnh</th>
                         <th>Họ và tên</th>
                         <th>Email</th>
                         <th>Số điện thoại</th>
                         <th>Địa chỉ</th>
-                        <th>Trạng thái</th>
+                        <th style="width:110px">Trạng thái</th>
                         <th>Vai trò</th>
                         <th>Hành động</th>
                     </tr>
@@ -54,7 +68,7 @@
                         <td>
                             <img th:src="@{'/uploads/avatars/' + ${account.avt_path}}"
                                  alt="Avatar"
-                                 style="width:80px; height:80px; object-fit:cover; border-radius:50%;">
+                                 style="width:50px; height:50px; object-fit:cover; border-radius:50%;">
                         </td>
                         <td class="text-start" th:text="${account.fullName}"></td>
                         <td class="text-start" th:text="${account.email}"></td>
@@ -100,6 +114,7 @@
                     </tr>
                     </tbody>
                 </table>
+
             </div>
 
             <!-- Pagination -->

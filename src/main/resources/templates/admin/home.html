@@ -20,37 +20,138 @@
     <!-- Main content -->
     <div class="d-flex flex-column flex-grow-1">
         <div id="content" class="flex-grow-1 p-4">
-            <h2 class="fw-bold mb-4 text-center text-primary">Bảng điều khiển</h2>
-            <div class="nav-card-container">
+            <!-- Statistics Overview -->
+            <div class="row g-4 mb-5">
+                <div class="col-xl-3 col-md-6">
+                    <div class="stats-card">
+                        <div class="stats-icon bg-primary">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stats-content">
+                            <h3 class="stats-number">150</h3>
+                            <p class="stats-label">Tổng người dùng</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6">
+                    <div class="stats-card">
+                        <div class="stats-icon bg-success">
+                            <i class="fas fa-futbol"></i>
+                        </div>
+                        <div class="stats-content">
+                            <h3 class="stats-number">12</h3>
+                            <p class="stats-label">Tổng sân bóng</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6">
+                    <div class="stats-card">
+                        <div class="stats-icon bg-warning">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                        <div class="stats-content">
+                            <h3 class="stats-number">45</h3>
+                            <p class="stats-label">Đặt lịch hôm nay</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6">
+                    <div class="stats-card">
+                        <div class="stats-icon bg-info">
+                            <i class="fas fa-money-bill-wave"></i>
+                        </div>
+                        <div class="stats-content">
+                            <h3 class="stats-number">2.5M</h3>
+                            <p class="stats-label">Doanh thu tháng</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
+            <!-- Navigation Cards -->
+            <div class="nav-card-container">
                 <a href="/accounts" class="nav-card text-decoration-none">
                     <div class="nav-card-icon">
-                        <i class="fa-solid fa-user"></i>
+                        <i class="fas fa-users-cog"></i>
                     </div>
                     <div class="nav-card-text">Quản lý tài khoản</div>
+                    <div class="nav-card-desc">Quản lý người dùng và phân quyền</div>
                 </a>
 
                 <a href="/admin/venue/list" class="nav-card text-decoration-none">
                     <div class="nav-card-icon">
-                        <i class="fa-solid fa-futbol"></i>
+                        <i class="fas fa-futbol"></i>
                     </div>
                     <div class="nav-card-text">Quản lý sân bóng</div>
+                    <div class="nav-card-desc">Thêm, sửa, xóa thông tin sân</div>
                 </a>
 
                 <a href="/admin/revenue" class="nav-card text-decoration-none">
                     <div class="nav-card-icon">
-                        <i class="fa-solid fa-coins"></i>
+                        <i class="fas fa-chart-line"></i>
                     </div>
                     <div class="nav-card-text">Quản lý doanh thu</div>
+                    <div class="nav-card-desc">Thống kê và báo cáo doanh thu</div>
                 </a>
 
                 <a href="/admin/reports" class="nav-card text-decoration-none">
                     <div class="nav-card-icon">
-                        <i class="fa-solid fa-chart-bar"></i>
+                        <i class="fas fa-chart-bar"></i>
                     </div>
-                    <div class="nav-card-text">Quản lý báo cáo</div>
+                    <div class="nav-card-text">Báo cáo thống kê</div>
+                    <div class="nav-card-desc">Phân tích dữ liệu và báo cáo</div>
                 </a>
 
+                <a href="/admin/bookings" class="nav-card text-decoration-none">
+                    <div class="nav-card-icon">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <div class="nav-card-text">Quản lý đặt lịch</div>
+                    <div class="nav-card-desc">Xem và quản lý lịch đặt sân</div>
+                </a>
+
+                <a href="/admin/settings" class="nav-card text-decoration-none">
+                    <div class="nav-card-icon">
+                        <i class="fas fa-cogs"></i>
+                    </div>
+                    <div class="nav-card-text">Cài đặt hệ thống</div>
+                    <div class="nav-card-desc">Cấu hình và thiết lập</div>
+                </a>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="row mt-5">
+                <div class="col-12">
+                    <div class="quick-actions-card">
+                        <h4 class="mb-4">Thao tác nhanh</h4>
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <a href="/admin/venue/add" class="quick-action-btn">
+                                    <i class="fas fa-plus-circle"></i>
+                                    <span>Thêm sân mới</span>
+                                </a>
+                            </div>
+                            <div class="col-md-3">
+                                <a href="/accounts/add" class="quick-action-btn">
+                                    <i class="fas fa-user-plus"></i>
+                                    <span>Thêm tài khoản</span>
+                                </a>
+                            </div>
+                            <div class="col-md-3">
+                                <a href="/admin/revenue/today" class="quick-action-btn">
+                                    <i class="fas fa-chart-pie"></i>
+                                    <span>Xem doanh thu ngày</span>
+                                </a>
+                            </div>
+                            <div class="col-md-3">
+                                <a href="/admin/backup" class="quick-action-btn">
+                                    <i class="fas fa-download"></i>
+                                    <span>Sao lưu dữ liệu</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
