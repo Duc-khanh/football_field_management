@@ -87,7 +87,7 @@ public String listAccounts(Model model,
     @GetMapping("/add")
     public String addAccountForm(Model model) {
         model.addAttribute("account", new Account());
-        return "account-add";
+        return "admin/account/account-add";
     }
 
     @GetMapping("/edit/{id}")
@@ -95,7 +95,7 @@ public String listAccounts(Model model,
         Account account = accountService.getAccountById(id)
                 .orElseThrow(() -> new RuntimeException("Account not found"));
         model.addAttribute("account", account);
-        return "account-edit";
+        return "admin/account/account-edit";
     }
     @PostMapping("/add")
     public String addAccount(@ModelAttribute Account account,
@@ -107,7 +107,7 @@ public String listAccounts(Model model,
         if (accountService.existsByEmail(account.getEmail())) {
             model.addAttribute("errorMessage", "Email này đã tồn tại!");
             model.addAttribute("account", account);
-            return "account-add";
+            return "admin/account/account-add";
         }
 
         if (!avatarFile.isEmpty()) {
@@ -140,7 +140,7 @@ public String listAccounts(Model model,
                 && accountService.existsByEmail(account.getEmail())) {
             model.addAttribute("errorMessage", "Email này đã tồn tại!");
             model.addAttribute("account", existing);
-            return "account-edit";
+            return "admin/account/account-edit";
         }
 
         account.setRoles(existing.getRoles());
