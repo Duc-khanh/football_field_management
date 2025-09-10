@@ -27,6 +27,17 @@
                     <button type="submit" class="btn btn-outline-primary">
                         <i class="fa-solid fa-magnifying-glass"></i>
                     </button>
+                    <select name="role">
+                        <option value="">--Tất cả vai trò--</option>
+                        <th:block th:each="r : ${roles}">
+                            <option th:value="${r.role_name}"
+                                    th:selected="${role == r.role_name}">
+                                <span th:text="${r.role_name}"></span>
+                            </option>
+                        </th:block>
+                    </select>
+
+                    <button type="submit" class="btn btn-primary">Lọc</button>
                 </form>
 
                 <a class="btn btn-primary" th:href="@{/accounts/add}">
