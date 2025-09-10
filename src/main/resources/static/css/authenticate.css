@@ -15,14 +15,14 @@ body {
     min-height: 100vh;
 }
 
-@keyframes gradientMove {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-}
+/*@keyframes gradientMove {*/
+/*    0% { background-position: 0% 50%; }*/
+/*    50% { background-position: 100% 50%; }*/
+/*    100% { background-position: 0% 50%; }*/
+/*}*/
 
 .auth-wrap {
-    max-width: 120%;
+    max-width: 75%;
     margin: 40px auto;
     border-radius: var(--card-radius);
     overflow: hidden;
