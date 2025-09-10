@@ -19,7 +19,7 @@
     <!-- Main Content -->
     <div class="d-flex flex-column flex-grow-1">
         <div id="content" class="content p-4">
-            <h2 class="m-0 mb-4">Danh sách địa điểm sân bóng</h2>
+            <h2 class="m-0 mb-4">Danh sách sân bóng</h2>
 
             <!-- Search + Add -->
             <div class="d-flex flex-wrap align-items-center justify-content-between mb-4 gap-3">
@@ -27,7 +27,7 @@
                       class="search-form d-flex gap-2 mb-0" id="searchForm">
                     <input type="text" name="keyword" th:value="${keyword}"
                            class="form-control search-input"
-                           placeholder="Tìm kiếm tên địa điểm..."
+                           placeholder="Tìm kiếm..."
                            style="width: 450px;">
                     <button type="submit" class="btn btn-outline-primary">
                         <i class="fa-solid fa-magnifying-glass"></i>
@@ -35,7 +35,7 @@
                 </form>
 
                 <a class="btn btn-primary" th:href="@{/admin/venue/add}">
-                    Thêm địa điểm
+                    Thêm sân bóng
                 </a>
             </div>
 
@@ -46,7 +46,7 @@
                         <th>STT</th>
                         <th>Ảnh</th>
                         <th>Tên sân</th>
-                        <th>Chủ sở hữu</th>
+                        <th>Chủ sân</th>
                         <th>Địa chỉ</th>
                         <th>Số điện thoại</th>
                         <th>Mô tả</th>

@@ -101,17 +101,6 @@
     <div th:replace="fragments/footerAdmin :: adminFooter"></div>
 </div>
 
-<!-- Script -->
 <script th:src="@{/js/home-admin.js}"></script>
-<script>
-    function previewImage(event) {
-        const preview = document.getElementById("avatarPreview");
-        const file = event.target.files[0];
-        if (file) {
-            preview.src = URL.createObjectURL(file);
-        }
-    }
-</script>
-
 </body>
 </html>
