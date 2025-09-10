@@ -18,8 +18,7 @@
             listDiv.innerHTML = data.map(v => `
                 <div class="col-md-4 mb-3">
                     <div class="card">
-                        <img src="${v.mainImagePath || '/img/default.png'}"
-                             class="card-img-top" alt="${v.venueName}">
+                       <img src="/uploads/avatars/${v.mainImagePath || 'default.png'}">
                         <div class="card-body">
                             <h5 class="card-title">${v.venueName}</h5>
                             <p class="card-text">${v.address}</p>
