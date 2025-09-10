@@ -8,7 +8,7 @@
 body {
     margin: 0;
     font-family: Inter, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    background: linear-gradient(180deg, #f4f7fb 0%, #eef2f7 100%);
+    background: linear-gradient(180deg, #d4f1c5 0%, #71e18b 50%, #f0f4f8 100%);
     color: #111827;
     min-height: 100vh;
 }
