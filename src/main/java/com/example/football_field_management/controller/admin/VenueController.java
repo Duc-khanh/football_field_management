@@ -159,7 +159,7 @@ public class VenueController {
         } catch (RuntimeException e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
         }
-        return "redirect:/admin/venue";
+        return "redirect:/admin/venue/list";
     }
     @GetMapping("/detail/{id}")
     public String detailVenue(@PathVariable Long id, Model model) {
