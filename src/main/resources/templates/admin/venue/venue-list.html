@@ -8,8 +8,8 @@
     <link rel="stylesheet" th:href="@{/css/homeAdmin.css}">
     <style>
         img {
-            max-width: 100px;
-            height: auto;
+            width: 100px;
+            height: 60px;
             border-radius: 5px;
         }
         .table-wrapper {
@@ -17,6 +17,8 @@
             padding: 25px;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0,0,0,0.05);
+            max-width: 900px;   /* ✅ Giới hạn chiều rộng */
+            margin: 0 auto;     /* ✅ Canh giữa */
         }
         .page-title {
             font-size: 26px;
@@ -29,6 +31,7 @@
             max-width: 200px;
         }
     </style>
+
 </head>
 <body class="d-flex flex-column min-vh-100">
 
