@@ -166,6 +166,20 @@ main {
 }
 td.actions { white-space:nowrap; text-align:right; }
 
+/* === ACTION BUTTONS === */
+.btn-icon {
+    width: 35px;
+    height: 35px;
+    min-width: 35px;   /* tránh co lại */
+    min-height: 35px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;   /* icon to hơn */
+    border-radius: 8px; /* bo góc */
+}
+
 /* === BADGES === */
 .badge {
     display:inline-block;

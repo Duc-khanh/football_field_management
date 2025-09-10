@@ -20,10 +20,10 @@
             <!-- Search + Add -->
             <div class="d-flex flex-wrap align-items-center justify-content-between mb-4 gap-3">
                 <form th:action="@{/accounts}" method="get"
-                      class="search-form d-flex flex-grow-1 gap-2 mb-0" id="searchForm">
+                      class="search-form d-flex gap-2 mb-0" id="searchForm">
                     <input type="text" name="keyword" th:value="${keyword}"
                            class="form-control search-input"
-                           placeholder="Tìm kiếm..." id="searchInput">
+                           placeholder="Tìm kiếm..." id="searchInput" style="width: 450px;">
                     <button type="submit" class="btn btn-outline-primary">
                         <i class="fa-solid fa-magnifying-glass"></i>
                     </button>
@@ -34,18 +34,19 @@
                 </a>
             </div>
 
+
             <!-- Table -->
-            <div class="table-responsive shadow-sm rounded-3 bg-white p-2 mb-3">
-                <table class="table table-hover align-middle admin-table mb-0">
+            <div class="table-responsive shadow-sm rounded-3 bg-white p-2 mb-3 d-flex justify-content-center">
+                <table class="table table-hover align-middle admin-table mb-0 text-center">
                     <thead class="table-light">
                     <tr>
-                        <th style="width:70px">STT</th>
-                        <th style="width:80px">Ảnh</th>
+                        <th>STT</th>
+                        <th>Ảnh</th>
                         <th>Họ và tên</th>
                         <th>Email</th>
                         <th>Số điện thoại</th>
                         <th>Địa chỉ</th>
-                        <th style="width:110px">Trạng thái</th>
+                        <th>Trạng thái</th>
                         <th>Vai trò</th>
                         <th>Hành động</th>
                     </tr>
@@ -56,21 +57,21 @@
                         <td>
                             <img th:src="@{'/uploads/avatars/' + ${account.avt_path}}"
                                  alt="Avatar"
-                                 style="width:50px; height:50px; object-fit:cover; border-radius:50%;">
+                                 style="width:80px; height:80px; object-fit:cover; border-radius:50%;">
                         </td>
                         <td th:text="${account.fullName}"></td>
                         <td th:text="${account.email}"></td>
                         <td th:text="${account.phone}"></td>
                         <td th:text="${account.address}"></td>
                         <td>
-                            <span th:text="${account.status} ? 'Hoạt động' : 'Bị khóa'"
-                                  th:classappend="${account.status} ? 'badge status-active' : 'badge status-block'">
-                            </span>
+                <span th:text="${account.status} ? 'Hoạt động' : 'Bị khóa'"
+                      th:classappend="${account.status} ? 'badge status-active' : 'badge status-block'">
+                </span>
                         </td>
                         <td>
-                            <span th:each="role : ${account.roles}"
-                                  th:text="${role.role_name}"
-                                  class="role-badge me-1">Role</span>
+                <span th:each="role : ${account.roles}"
+                      th:text="${role.role_name}"
+                      class="role-badge me-1">Role</span>
                         </td>
                         <td class="actions">
                             <!-- Edit -->
