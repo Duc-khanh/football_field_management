@@ -229,4 +229,5 @@ public class VenueService implements IVenueService {
         dto.setImages(images);
         return dto;
     }
+
 }

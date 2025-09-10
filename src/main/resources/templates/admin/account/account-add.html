@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
     <!-- Custom CSS -->
-    <link rel="stylesheet" th:href="@{/css/account.css}">
+    <link rel="stylesheet" th:href="@{/css/home-admin.css}">
 </head>
 <body class="d-flex flex-column min-vh-100">
 
@@ -101,17 +101,6 @@
     <div th:replace="fragments/footerAdmin :: adminFooter"></div>
 </div>
 
-<!-- Script -->
-<script th:src="@{/js/homeAdmin.js}"></script>
-<script>
-    function previewImage(event) {
-        const preview = document.getElementById("avatarPreview");
-        const file = event.target.files[0];
-        if (file) {
-            preview.src = URL.createObjectURL(file);
-        }
-    }
-</script>
-
+<script th:src="@{/js/home-admin.js}"></script>
 </body>
 </html>
