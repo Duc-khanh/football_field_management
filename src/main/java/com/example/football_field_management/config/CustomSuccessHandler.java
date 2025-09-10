@@ -15,7 +15,7 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler {
     public void onAuthenticationSuccess(HttpServletRequest request,
                                         HttpServletResponse response,
                                         Authentication authentication) throws IOException {
-        String redirectUrl = "/auth/login";
+        String redirectUrl = "/";
 
         var authorities = authentication.getAuthorities();
         for (GrantedAuthority authority : authorities) {
@@ -27,12 +27,12 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler {
                 redirectUrl = "/owner/homeOwner";
                 break;
             } else if (role.equals("ROLE_USER")) {
-                redirectUrl = "/users/homeUser";
+                redirectUrl = "/";   // luôn vào trang chủ user
                 break;
             }
         }
-
         response.sendRedirect(redirectUrl);
     }
 }
+
 

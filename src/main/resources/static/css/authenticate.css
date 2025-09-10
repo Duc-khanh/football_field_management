@@ -8,13 +8,22 @@
 body {
     margin: 0;
     font-family: Inter, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    background: linear-gradient(180deg, #f4f7fb 0%, #eef2f7 100%);
+    background: linear-gradient(270deg, #d4f1c5, #78e071, #f0f4f8);
+    background-size: 600% 600%;
+    animation: gradientMove 12s ease infinite;
     color: #111827;
     min-height: 100vh;
 }
 
+/*@keyframes gradientMove {*/
+/*    0% { background-position: 0% 50%; }*/
+/*    50% { background-position: 100% 50%; }*/
+/*    100% { background-position: 0% 50%; }*/
+/*}*/
+
 .auth-wrap {
-    max-width: 920px;
+    max-width: 70%;
+    max-height: 90vh;
     margin: 40px auto;
     border-radius: var(--card-radius);
     overflow: hidden;
