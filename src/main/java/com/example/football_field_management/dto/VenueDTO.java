@@ -26,5 +26,6 @@ public class VenueDTO {
     private List<VenueImageDTO> images;
     private List<Long> existingImageIds;
     private List<MultipartFile> subImagesFiles;
+    private List<CourDTO> courts;
 }
 
