@@ -1,6 +1,9 @@
-<link rel="stylesheet" th:href="@{/static/css/css-admin-fragments/admin-menu.css}">
 <aside class="sidebar" id="sidebar" th:fragment="menuAdmin">
     <nav class="menu">
+        <a href="/dashboard">
+            <span class="icon"><i class="fa-solid fa-house"></i></span>
+            <span class="text">Trang chủ</span>
+        </a>
         <a href="/accounts">
             <span class="icon"><i class="fa-solid fa-user"></i></span>
             <span class="text">Quản lý tài khoản</span>
@@ -17,7 +20,6 @@
             <span class="icon"><i class="fa-solid fa-chart-bar"></i></span>
             <span class="text">Quản lý báo cáo</span>
         </a>
-        <!-- Đăng xuất -->
         <a href="/auth/logout" class="logout-link">
             <span class="icon"><i class="fa-solid fa-right-from-bracket"></i></span>
             <span class="text">Đăng xuất</span>
