@@ -62,11 +62,11 @@
 <body class="d-flex flex-column min-vh-100">
 
 <!-- Header -->
-<div th:replace="fragments/headerAdmin :: header"></div>
+<div th:replace="fragments/admin-header :: header"></div>
 
 <div class="d-flex flex-grow-1">
     <!-- Sidebar -->
-    <div th:replace="fragments/menuAdmin :: menuAdmin"></div>
+    <div th:replace="fragments/admin-sidebar :: menuAdmin"></div>
 
     <!-- Content -->
     <div class="d-flex flex-column flex-grow-1">
@@ -151,7 +151,7 @@
 
 <!-- Footer -->
 <div id="footer">
-    <div th:replace="fragments/footerAdmin :: adminFooter"></div>
+    <div th:replace="fragments/admin-footer :: adminFooter"></div>
 </div>
 
 <script th:src="@{/js/home-admin.js}"></script>
