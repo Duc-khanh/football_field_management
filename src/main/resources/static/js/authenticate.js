@@ -23,3 +23,29 @@ document.addEventListener('DOMContentLoaded', function () {
         }, false);
     });
 });
+// Xử lý autofill (email, password khi trình duyệt tự điền)
+const inputs = document.querySelectorAll('.input-field input');
+inputs.forEach(input => {
+    // Nếu có giá trị sẵn thì thêm class filled
+    if (input.value.trim() !== '') {
+        input.classList.add('filled');
+    }
+    // Khi người dùng nhập
+    input.addEventListener('input', function () {
+        if (this.value.trim() !== '') {
+            this.classList.add('filled');
+        } else {
+            this.classList.remove('filled');
+        }
+    });
+    // Check autofill sau khi load trang
+    window.addEventListener('load', () => {
+        const inputs = document.querySelectorAll('.input-field input');
+        inputs.forEach(input => {
+            if (input.value.trim() !== '') {
+                input.classList.add('filled');
+            }
+        });
+    });
+});
+
