@@ -34,10 +34,6 @@ html, body {
     min-height: 100vh;
 }
 
-<<<<<<< HEAD
-/* Background gradient animation cho auth */
-=======
->>>>>>> c5313fc91790b2d4d3de57a71dab3e8f8d84d109
 body.auth-page {
     background: linear-gradient(270deg, #d4f1c5, #78e071, #f0f4f8);
     background-size: 600% 600%;
@@ -272,17 +268,8 @@ footer {
 
 /* === AUTH PAGES === */
 .auth-wrap {
-<<<<<<< HEAD
-<<<<<<< HEAD
     max-width: 70%;
     max-height: 90vh;
-=======
-    max-width: 75%;
->>>>>>> e449ab8636a8394ede1598c66fe43df10605591c
-=======
-    max-height: 90vh;
-    max-width: 75%;
->>>>>>> c5313fc91790b2d4d3de57a71dab3e8f8d84d109
     margin: 40px auto;
     border-radius: var(--card-radius);
     overflow: hidden;
