@@ -12,11 +12,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @Controller
-@RequestMapping("/admin")
+@RequestMapping("/dashboard")
 @RequiredArgsConstructor
 public class HomeAdminController {
     private final AccountRepository accountRepo;
-    @GetMapping("/homeAdmin")
+    @GetMapping
     public String home(Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = auth.getName();
