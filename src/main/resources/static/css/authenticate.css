@@ -34,10 +34,6 @@ html, body {
     min-height: 100vh;
 }
 
-<<<<<<< HEAD
-/* Background gradient animation cho auth */
-=======
->>>>>>> c5313fc91790b2d4d3de57a71dab3e8f8d84d109
 body.auth-page {
     background: linear-gradient(270deg, #d4f1c5, #78e071, #f0f4f8);
     background-size: 600% 600%;
@@ -272,17 +268,8 @@ footer {
 
 /* === AUTH PAGES === */
 .auth-wrap {
-<<<<<<< HEAD
-<<<<<<< HEAD
-    max-width: 70%;
-    max-height: 90vh;
-=======
-    max-width: 75%;
->>>>>>> e449ab8636a8394ede1598c66fe43df10605591c
-=======
     max-height: 90vh;
     max-width: 75%;
->>>>>>> c5313fc91790b2d4d3de57a71dab3e8f8d84d109
     margin: 40px auto;
     border-radius: var(--card-radius);
     overflow: hidden;
@@ -382,3 +369,63 @@ footer {
     .bg-side { display: none !important; }
     .btn-primary { font-size: 16px; }
 }
+/* Floating input fields */
+.input-field {
+    position: relative;
+    width: 100%;
+}
+
+.input-field label {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #8d8d8d;
+    pointer-events: none;
+    transition: all 0.3s ease;
+    background: #fff;
+}
+
+.input-field input {
+    width: 100%;
+    padding: 12px 15px;
+    font-size: 1rem;
+    border: 1px solid #8d8d8d;
+    border-radius: 8px;
+    letter-spacing: 1px;
+}
+
+/* Border khi focus */
+.input-field input:focus {
+    outline: none;
+    border: 1px solid var(--accent-1);
+}
+
+/* Label nhảy lên khi input có giá trị hoặc đang focus */
+.input-field input:focus ~ label,
+.input-field input:valid ~ label,
+.input-field input.filled ~ label {
+    top: 0;
+    left: 10px;
+    font-size: 0.8rem;
+    color: var(--accent-1);
+    padding: 0 5px;
+    font-weight: 600;
+}/* Xử lý autofill của Chrome/Edge */
+.input-field input:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 30px white inset !important; /* đổi nền lại trắng */
+    -webkit-text-fill-color: #000 !important; /* màu chữ */
+    caret-color: #000; /* màu con trỏ */
+}
+
+/* Giữ floating label khi autofill */
+.input-field input:-webkit-autofill ~ label {
+    top: 0;
+    left: 10px;
+    font-size: 0.8rem;
+    color: var(--accent-1);
+    padding: 0 5px;
+    font-weight: 600;
+}
+
+
