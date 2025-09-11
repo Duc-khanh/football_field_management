@@ -8,6 +8,56 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
     <link rel="stylesheet" th:href="@{/css/home-admin.css}">
+    <style>
+        .avatar-wrapper {
+            --size: var(--avatar-size, 240px); /* mặc định to hơn */
+            position: relative;
+            width: var(--size);
+            height: var(--size);
+            border-radius: 50%;
+            overflow: hidden;
+            margin: 0 auto;
+            background: #eee;
+        }
+
+        .avatar-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .avatar-overlay {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            height: 20%;                /* 1/5 chiều cao avatar */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: rgba(0,0,0,0.6);
+            color: #fff;
+            cursor: pointer;
+            font-size: 14px;
+            gap: 2px;
+            user-select: none;
+        }
+
+        .avatar-overlay i {
+            font-size: 16px;
+            line-height: 1;
+        }
+
+        #avatarInput {
+            display: none;
+        }
+
+        .avatar-wrapper:hover .avatar-overlay {
+            background: rgba(0,0,0,0.75);
+        }
+    </style>
 </head>
 <body class="d-flex flex-column min-vh-100">
 
@@ -38,12 +88,17 @@
                     <div class="row gx-4 gy-3">
                         <!-- Cột trái: Avatar -->
                         <div class="col-12 col-md-4 text-center">
-                            <img id="avatarPreview"
-                                 th:src="@{'/uploads/avatars/' + ${account.avt_path}}"
-                                 alt="Avatar"
-                                 class="img-fluid rounded-circle mb-3"
-                                 style="width:160px; height:160px; object-fit:cover; border:1px solid #ddd;">
-                            <input type="file" name="avatarFile" class="form-control mt-2" accept="image/*" onchange="previewImage(event)">
+                            <div class="avatar-wrapper" style="--avatar-size:240px">
+                                <img id="avatarPreview"
+                                     th:src="@{'/uploads/avatars/' + ${account.avt_path}}"
+                                     alt="Avatar"
+                                     class="avatar-img">
+                                <label for="avatarInput" class="avatar-overlay">
+                                    <i class="fa-solid fa-camera"></i>
+                                    <span class="small">Đổi</span>
+                                </label>
+                                <input type="file" id="avatarInput" name="avatarFile" accept="image/*" onchange="previewImage(event)">
+                            </div>
                         </div>
 
                         <!-- Cột phải: Thông tin -->

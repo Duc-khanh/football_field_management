@@ -10,9 +10,9 @@
     <div class="right user-info">
         <i class="fa-regular fa-bell icon-btn"></i>
         <div class="d-flex flex-column align-items-start">
-            <span>Nguyễn Văn A</span>
-            <small>a@mail.com</small>
+            <span th:text="${fullName}">Tên người dùng</span>
+            <small th:text="${emailOrPhone}">Email/Phone</small>
         </div>
-        <img src="https://i.pravatar.cc/40" alt="avatar">
+        <img th:src="@{/uploads/avatars/{avatar}(avatar=${avatar})}" alt="avatar">
     </div>
 </div>
