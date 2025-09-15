@@ -47,8 +47,9 @@
                     <input type="text" name="keyword" th:value="${keyword}"
                            class="form-control search-input"
                            placeholder="Tìm kiếm..." id="searchInput">
+
                     <select id="roleFilter" name="role" class="form-select">
-                        <option value="" th:selected="${role == null or role == ''}">--Tất cả vai trò--</option>
+                        <option value="" th:selected="${role == null or role == ''}">-- Vai trò --</option>
                         <th:block th:each="r : ${roles}">
                             <option th:value="${r.role_name}"
                                     th:text="${#strings.replace(r.role_name, 'ROLE_', '')}"
