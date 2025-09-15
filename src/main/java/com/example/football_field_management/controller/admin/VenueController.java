@@ -82,55 +82,63 @@ public class VenueController {
                             @RequestParam(value = "mainImageFile", required = false) MultipartFile mainImageFile,
                             @RequestParam(value = "subImagesFiles", required = false) MultipartFile[] subImageFiles,
                             @RequestParam(value = "existingMainImageId", required = false) Long existingMainImageId,
-                            @RequestParam(value = "existingImageIds", required = false) List<Long> existingImageIds) throws IOException {
+                            @RequestParam(value = "existingImageIds", required = false) List<Long> existingImageIds,
+                            RedirectAttributes redirectAttributes) {
 
-        List<VenueImageDTO> images = new ArrayList<>();
+        try {
+            List<VenueImageDTO> images = new ArrayList<>();
 
-        // 1. Ảnh chính
-        if (mainImageFile != null && !mainImageFile.isEmpty()) {
-            // Có ảnh chính mới
-            String path = saveFile(mainImageFile);
-            VenueImageDTO mainImage = new VenueImageDTO();
-            mainImage.setPhotoPath(path);
-            mainImage.setPrimary(true);
-            images.add(mainImage);
+            // 1. Ảnh chính
+            if (mainImageFile != null && !mainImageFile.isEmpty()) {
+                String path = saveFile(mainImageFile);
+                VenueImageDTO mainImage = new VenueImageDTO();
+                mainImage.setPhotoPath(path);
+                mainImage.setPrimary(true);
+                images.add(mainImage);
 
-            // Xoá ảnh cũ
-            if (existingMainImageId != null) {
-                venueService.deleteImageById(existingMainImageId);
+                // Xoá ảnh cũ nếu có
+                if (existingMainImageId != null) {
+                    venueService.deleteImageById(existingMainImageId);
+                }
+
+            } else if (existingMainImageId != null) {
+                VenueImageDTO mainImage = venueService.getImageById(existingMainImageId);
+                if (mainImage != null) images.add(mainImage);
             }
 
-        } else if (existingMainImageId != null) {
-            // Giữ nguyên ảnh chính cũ
-            VenueImageDTO mainImage = venueService.getImageById(existingMainImageId);
-            if (mainImage != null) images.add(mainImage);
-        }
+            // 2. Ảnh phụ
+            List<Long> keepIds = existingImageIds != null ? existingImageIds : new ArrayList<>();
+            venueService.deleteSubImagesNotInList(venueDTO.getVenueId(), keepIds);
 
-        // 2. Ảnh phụ
-        List<Long> keepIds = existingImageIds != null ? existingImageIds : new ArrayList<>();
-        // Xoá ảnh phụ bị remove
-        venueService.deleteSubImagesNotInList(venueDTO.getVenueId(), keepIds);
-
-        // Thêm ảnh phụ mới
-        if (subImageFiles != null) {
-            for (MultipartFile f : subImageFiles) {
-                if (!f.isEmpty()) {
-                    VenueImageDTO dto = new VenueImageDTO();
-                    dto.setPhotoPath(saveFile(f));
-                    dto.setPrimary(false);
-                    images.add(dto);
+            if (subImageFiles != null) {
+                for (MultipartFile f : subImageFiles) {
+                    if (!f.isEmpty()) {
+                        VenueImageDTO dto = new VenueImageDTO();
+                        dto.setPhotoPath(saveFile(f));
+                        dto.setPrimary(false);
+                        images.add(dto);
+                    }
                 }
             }
+
+            venueDTO.setImages(images);
+
+            // 3. Lưu venue
+            venueService.save(venueDTO);
+
+            // 4. Thêm flash message thành công
+            String action = venueDTO.getVenueId() != null ? "Cập nhật" : "Thêm mới";
+            redirectAttributes.addFlashAttribute("successMessage", action + " địa điểm thành công!");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            redirectAttributes.addFlashAttribute("errorMessage", "Lưu địa điểm thất bại: " + e.getMessage());
         }
 
-        // Gán images vào venue
-        venueDTO.setImages(images);
-
-        // 3. Lưu venue
-        venueService.save(venueDTO);
-
+        // Redirect về form hoặc list
         return "redirect:/admin/venue/list";
     }
+
 
     private String saveFile(MultipartFile file) throws IOException {
         if (file == null || file.isEmpty()) return null;
