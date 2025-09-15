@@ -3,6 +3,7 @@ package com.example.football_field_management.config;
 
 
 import com.example.football_field_management.security.JwtAuthenticationFilter;
+import com.example.football_field_management.service.CustomOAuth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -36,19 +37,17 @@ public class SecurityConfig {
     private final CustomSuccessHandler customSuccessHandler;
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, CustomOAuth2UserService customOAuth2UserService) throws Exception {
         return http
                 .cors(withDefaults())
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/","/auth/login", "/auth/login/**",
+                        .requestMatchers("/", "/auth/login", "/auth/login/**",
                                 "/auth/register", "/auth/register/**").permitAll()
-
                         .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
-                                .requestMatchers("/users/**").permitAll()
-                                .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/users/**").permitAll()
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/owner/**").hasRole("OWNER")
-//                        .requestMatchers("/user/**").hasRole("USER")
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
@@ -59,6 +58,11 @@ public class SecurityConfig {
                         .successHandler(customSuccessHandler)
                         .failureUrl("/auth/login?error=true")
                         .permitAll()
+                )
+                .oauth2Login(oauth2 -> oauth2
+                        .loginPage("/auth/login")
+                        .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
+                        .successHandler(customSuccessHandler) // xử lý redirect sau khi login GG
                 )
                 .logout(logout -> logout
                         .logoutUrl("/auth/logout")
@@ -71,6 +75,7 @@ public class SecurityConfig {
                 .authenticationProvider(authenticationProvider())
                 .build();
     }
+
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
