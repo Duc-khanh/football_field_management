@@ -1,4 +1,4 @@
-// alert.js
+// alert-notification.js
 
 // Lấy dữ liệu success/error từ thẻ <body> (Thymeleaf)
 const body = document.querySelector('body');
