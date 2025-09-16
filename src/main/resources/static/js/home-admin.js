@@ -38,3 +38,32 @@ function previewImage(event) {
         preview.src = URL.createObjectURL(file);
     }
 }
+    document.addEventListener("DOMContentLoaded", function () {
+    const searchInput = document.querySelector("#searchForm input[name='keyword']");
+    const statusFilter = document.querySelector("#statusFilter");
+    const searchForm = document.querySelector("#searchForm");
+
+    let typingTimer;
+    const doneTypingInterval = 900; // 2 giây
+
+    if (searchInput) {
+        searchInput.addEventListener("keyup", function () {
+            clearTimeout(typingTimer);
+            typingTimer = setTimeout(() => {
+                searchForm.submit();
+            }, doneTypingInterval);
+        });
+
+        searchInput.addEventListener("keydown", function () {
+            clearTimeout(typingTimer);
+        });
+    }
+
+    // Khi chọn trạng thái thì submit luôn
+    if (statusFilter) {
+        statusFilter.addEventListener("change", function () {
+            searchForm.submit();
+        });
+    }
+});
+
