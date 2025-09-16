@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.File;
 import java.io.IOException;
@@ -100,14 +101,14 @@ public String listAccounts(Model model,
     @PostMapping("/add")
     public String addAccount(@ModelAttribute Account account,
                              @RequestParam("avatarFile") MultipartFile avatarFile,
-                             Model model) throws IOException {
+                             RedirectAttributes redirectAttributes) throws IOException {
         account.setStatus(true);
 
         // Kiểm tra email trùng
         if (accountService.existsByEmail(account.getEmail())) {
-            model.addAttribute("errorMessage", "Email này đã tồn tại!");
-            model.addAttribute("account", account);
-            return "admin/account/account-add";
+            redirectAttributes.addFlashAttribute("errorMessage", "Email này đã tồn tại!");
+            redirectAttributes.addFlashAttribute("account", account);
+            return "redirect:/admin/account/add"; // redirect về form thêm
         }
 
         if (!avatarFile.isEmpty()) {
@@ -124,23 +125,23 @@ public String listAccounts(Model model,
         account.setRoles(new HashSet<>(List.of(userRole)));
 
         accountService.save(account);
+        redirectAttributes.addFlashAttribute("successMessage", "Thêm tài khoản thành công!");
         return "redirect:/accounts";
     }
-
     @PostMapping("/edit/{id}")
     public String editAccount(@PathVariable Long id,
                               @ModelAttribute Account account,
                               @RequestParam("avatarFile") MultipartFile avatarFile,
-                              Model model) throws IOException {
+                              RedirectAttributes redirectAttributes) throws IOException {
         Account existing = accountService.getAccountById(id)
                 .orElseThrow(() -> new RuntimeException("Account not found"));
 
         // Check nếu đổi email sang cái đã tồn tại
         if (!existing.getEmail().equals(account.getEmail())
                 && accountService.existsByEmail(account.getEmail())) {
-            model.addAttribute("errorMessage", "Email này đã tồn tại!");
-            model.addAttribute("account", existing);
-            return "admin/account/account-edit";
+            redirectAttributes.addFlashAttribute("errorMessage", "Email này đã tồn tại!");
+            redirectAttributes.addFlashAttribute("account", existing);
+            return "redirect:/admin/account/edit/" + id;
         }
 
         account.setRoles(existing.getRoles());
@@ -154,9 +155,7 @@ public String listAccounts(Model model,
                 Path oldPath = Paths.get(uploadDir,
                         existing.getAvt_path().replace("/uploads/avatars/", ""));
                 File oldFile = oldPath.toFile();
-                if (oldFile.exists()) {
-                    oldFile.delete();
-                }
+                if (oldFile.exists()) oldFile.delete();
             }
 
             String fileName = System.currentTimeMillis() + "_" + avatarFile.getOriginalFilename();
@@ -169,8 +168,10 @@ public String listAccounts(Model model,
         }
 
         accountService.save(account);
+        redirectAttributes.addFlashAttribute("successMessage", "Cập nhật tài khoản thành công!");
         return "redirect:/accounts";
     }
+
 
 
 
@@ -191,13 +192,19 @@ public String searchAccounts(@RequestParam("keyword") String keyword,
 }
 
     @GetMapping("/toggle/{id}")
-    public String toggleAccountStatus(@PathVariable Long id) {
+    public String toggleAccountStatus(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         Account account = accountService.getAccountById(id)
                 .orElseThrow(() -> new RuntimeException("Account not found"));
 
-        account.setStatus(!Boolean.TRUE.equals(account.getStatus()));
-
+        boolean newStatus = !Boolean.TRUE.equals(account.getStatus());
+        account.setStatus(newStatus);
         accountService.save(account);
+
+        String statusText = newStatus ? "mở" : "khoá";
+        redirectAttributes.addFlashAttribute("successMessage",
+                "Tài khoản '" + account.getFullName() + "' đã được " + statusText + " thành công!");
+
         return "redirect:/accounts";
     }
+
 }

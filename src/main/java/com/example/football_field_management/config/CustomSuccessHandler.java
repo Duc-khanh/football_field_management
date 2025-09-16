@@ -17,17 +17,17 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler {
                                         Authentication authentication) throws IOException {
         String redirectUrl = "/";
 
-        var authorities = authentication.getAuthorities();
-        for (GrantedAuthority authority : authorities) {
+        for (GrantedAuthority authority : authentication.getAuthorities()) {
             String role = authority.getAuthority();
-            if (role.equals("ROLE_ADMIN")) {
+            if ("ROLE_ADMIN".equals(role)) {
+                request.getSession().setAttribute("successMessage", "Đăng nhập quản trị thành công!");
                 redirectUrl = "/dashboard";
                 break;
-            } else if (role.equals("ROLE_OWNER")) {
+            } else if ("ROLE_OWNER".equals(role)) {
                 redirectUrl = "/owner/homeOwner";
                 break;
-            } else if (role.equals("ROLE_USER")) {
-                redirectUrl = "/";   // luôn vào trang chủ user
+            } else if ("ROLE_USER".equals(role)) {
+                redirectUrl = "/";
                 break;
             }
         }
