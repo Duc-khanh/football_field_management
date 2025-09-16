@@ -192,13 +192,19 @@ public String searchAccounts(@RequestParam("keyword") String keyword,
 }
 
     @GetMapping("/toggle/{id}")
-    public String toggleAccountStatus(@PathVariable Long id) {
+    public String toggleAccountStatus(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         Account account = accountService.getAccountById(id)
                 .orElseThrow(() -> new RuntimeException("Account not found"));
 
-        account.setStatus(!Boolean.TRUE.equals(account.getStatus()));
-
+        boolean newStatus = !Boolean.TRUE.equals(account.getStatus());
+        account.setStatus(newStatus);
         accountService.save(account);
+
+        String statusText = newStatus ? "mở" : "khoá";
+        redirectAttributes.addFlashAttribute("successMessage",
+                "Tài khoản '" + account.getFullName() + "' đã được " + statusText + " thành công!");
+
         return "redirect:/accounts";
     }
+
 }

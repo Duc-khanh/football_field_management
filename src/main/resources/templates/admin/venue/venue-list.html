@@ -17,7 +17,8 @@
 <!-- Alert container -->
 <div class="d-flex flex-grow-1">
     <!-- Sidebar -->
-    <div th:replace="fragments/admin-sidebar :: menuAdmin"></div>
+    <div th:replace="~{fragments/admin-sidebar :: menuAdmin}"></div>
+    <script th:src="@{/js/alert-logout.js}"></script>
 
     <!-- Main Content -->
     <div class="d-flex flex-column flex-grow-1">
