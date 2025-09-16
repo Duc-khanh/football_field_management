@@ -13,7 +13,8 @@
 
 <div class="d-flex flex-grow-1">
 
-    <div th:replace="fragments/admin-sidebar :: menuAdmin"></div>
+    <div th:replace="~{fragments/admin-sidebar :: menuAdmin}"></div>
+    <script th:src="@{/js/alert-logout.js}"></script>
 
     <div class="d-flex flex-column flex-grow-1 p-4">
 

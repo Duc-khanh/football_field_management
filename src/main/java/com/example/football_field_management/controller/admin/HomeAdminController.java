@@ -3,6 +3,7 @@ package com.example.football_field_management.controller.admin;
 import com.example.football_field_management.model.Account;
 import com.example.football_field_management.repository.AccountRepository;
 import com.example.football_field_management.repository.VenueRepository;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,9 +21,14 @@ public class HomeAdminController {
     private final VenueRepository venueRepo;
 
     @GetMapping
-    public String home(Model model) {
+    public String home(Model model, HttpSession session) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = auth.getName();
+        String message = (String) session.getAttribute("successMessage");
+        if (message != null) {
+            model.addAttribute("successMessage", message);
+            session.removeAttribute("successMessage"); // xóa để lần sau ko hiện lại
+        }
 
         Account account = username.contains("@")
                 ? accountRepo.findByEmail(username).orElse(null)

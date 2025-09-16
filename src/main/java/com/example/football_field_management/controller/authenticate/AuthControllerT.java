@@ -14,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.HashSet;
 import java.util.List;
@@ -33,11 +34,14 @@ public class AuthControllerT {
     }
 
     @GetMapping("/logout")
-    public String logout(HttpSession session) {
+    public String logout(HttpSession session, RedirectAttributes redirectAttributes) {
         SecurityContextHolder.clearContext();
         session.invalidate();
+        redirectAttributes.addFlashAttribute("successMessage", "Bạn đã đăng xuất thành công!");
         return "redirect:/auth/login";
     }
+
+
     @GetMapping("/register")
     public String registerPage(Model model) {
         model.addAttribute("account", new Account());
