@@ -70,5 +70,4 @@ public class AuthControllerT {
         model.addAttribute("successMessage", "Đăng ký thành công, mời bạn đăng nhập!");
         return "redirect:/auth/login";
     }
-
 }

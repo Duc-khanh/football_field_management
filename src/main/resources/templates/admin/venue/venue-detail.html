@@ -6,46 +6,6 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link rel="stylesheet" th:href="@{/css/home-admin.css}">
-    <style>
-        .venue-card {
-            background: #fff;
-            border-radius: 10px;
-            padding: 25px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-        .venue-main-img {
-            width: 300px;
-            height: 200px;
-            object-fit: cover;
-            border-radius: 8px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-        }
-        .venue-gallery img {
-            width: 150px;
-            height: 100px;
-            object-fit: cover;
-            border-radius: 6px;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.1);
-            transition: transform 0.2s ease-in-out;
-        }
-        .venue-gallery img:hover {
-            transform: scale(1.05);
-        }
-        .status-badge {
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            font-weight: 500;
-        }
-        .status-badge.active {
-            background-color: #d1e7dd;
-            color: #0f5132;
-        }
-        .status-badge.inactive {
-            background-color: #f8d7da;
-            color: #842029;
-        }
-    </style>
 </head>
 <body class="d-flex flex-column min-vh-100">
 
@@ -57,56 +17,84 @@
     <div th:replace="fragments/admin-sidebar :: menuAdmin"></div>
 
     <!-- Main content -->
-    <div class="d-flex flex-column flex-grow-1 p-4">
-        <h2 class="mb-4 text-center fw-bold">Chi tiết sân bóng</h2>
-
-        <div class="venue-card mx-auto">
-            <div class="row g-4 align-items-center">
-                <!-- Main Image -->
-                <div class="col-md-4 text-center">
-                    <img th:src="@{'/uploads/avatars/' + ${venue.mainImagePath}}"
-                         class="venue-main-img"
-                         alt="Ảnh chính">
-                </div>
-
-                <!-- Info -->
-                <div class="col-md-8">
-                    <h3 th:text="${venue.venueName}" class="fw-bold mb-3"></h3>
-                    <p><strong>Chủ sở hữu:</strong> <span th:text="${venue.ownerName} ?: 'Chưa cập nhật'"></span></p>
-                    <p><strong>Số điện thoại:</strong> <span th:text="${venue.contactNumber}"></span></p>
-                    <p><strong>Địa chỉ:</strong> <span th:text="${venue.address}"></span></p>
-                    <p>
-                        <strong>Trạng thái:</strong>
-                        <span th:classappend="${venue.status} ? 'status-badge active' : 'status-badge inactive'"
-                              th:text="${venue.status} ? 'Hoạt động' : 'Không hoạt động'"></span>
-                    </p>
+    <div class="d-flex flex-column flex-grow-1">
+        <div id="content" class="content p-4">
+            <!-- Tiêu đề + nút -->
+            <div class="d-flex align-items-center justify-content-between mb-4 gap-3">
+                <h2 class="m-0">Chi tiết sân bóng</h2>
+                <div class="d-flex gap-2">
+                    <a th:href="@{/admin/venue/list}" class="btn btn-outline-secondary">
+                        <i class="fa fa-arrow-left"></i> Quay lại
+                    </a>
+                    <a th:href="@{'/admin/venue/edit/' + ${venue.venueId}}" class="btn btn-primary">
+                        <i class="fa fa-edit"></i> Chỉnh sửa
+                    </a>
                 </div>
             </div>
 
-            <!-- Description -->
-            <div class="mt-5">
-                <h5 class="border-bottom pb-2 mb-3">Mô tả</h5>
-                <p th:text="${venue.description}" class="text-muted"></p>
-            </div>
+            <!-- Box nội dung -->
+            <div class="table-responsive shadow-sm rounded-3 bg-white p-3">
+                <div class="row gx-4 gy-3 align-items-start">
+                    <!-- Ảnh chính -->
+                    <div class="col-12 col-md-4 text-center">
+                        <img th:src="@{'/uploads/avatars/' + ${venue.mainImagePath}}"
+                             alt="Ảnh chính"
+                             class="img-fluid rounded-3"
+                             style="width:250px; height:180px; object-fit:cover;">
+                    </div>
 
-            <!-- Gallery -->
-            <div class="mt-5">
-                <h5 class="border-bottom pb-2 mb-3">Hình ảnh khác</h5>
-                <div class="d-flex flex-wrap gap-3 venue-gallery">
-                    <div th:each="img : ${venue.images}">
-                        <img th:src="@{'/uploads/avatars/' + ${img.photoPath}}" alt="Ảnh phụ">
+                    <!-- Thông tin chi tiết -->
+                    <div class="col-12 col-md-8">
+                        <div class="row mb-2">
+                            <div class="col-sm-6 mb-2">
+                                <div class="fw-bold">Tên sân</div>
+                                <div th:text="${venue.venueName} ?: 'Chưa cập nhật'"></div>
+                            </div>
+                            <div class="col-sm-6 mb-2">
+                                <div class="fw-bold">Chủ sở hữu</div>
+                                <div th:text="${venue.ownerName} ?: 'Chưa cập nhật'"></div>
+                            </div>
+                            <div class="col-sm-6 mb-2">
+                                <div class="fw-bold">Số điện thoại</div>
+                                <div th:text="${venue.contactNumber}"></div>
+                            </div>
+                        </div>
+
+                        <div class="row mb-2">
+                            <div class="col-sm-6 mb-2">
+                                <div class="fw-bold">Địa chỉ</div>
+                                <div th:text="${venue.address}"></div>
+                            </div>
+                            <div class="col-sm-6 mb-2">
+                                <div class="fw-bold">Trạng thái</div>
+                                <div>
+                                    <span th:text="${venue.status} ? 'Hoạt động' : 'Không hoạt động'"
+                                          th:classappend="${venue.status} ? 'badge status-active' : 'badge status-block'">
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Actions -->
-            <div class="mt-5 d-flex gap-3">
-                <a th:href="@{/admin/venue/list}" class="btn btn-outline-secondary">
-                    <i class="fa fa-arrow-left"></i> Quay lại danh sách
-                </a>
-                <a th:href="@{'/admin/venue/edit/' + ${venue.venueId}}" class="btn btn-primary">
-                    <i class="fa fa-edit"></i> Chỉnh sửa
-                </a>
+                <!-- Gallery -->
+                <div class="mt-4">
+                    <div class="fw-bold border-bottom pb-2 mb-3">Hình ảnh khác</div>
+                    <div class="d-flex flex-wrap gap-3">
+                        <div th:each="img : ${venue.images}">
+                            <img th:src="@{'/uploads/avatars/' + ${img.photoPath}}"
+                                 alt="Ảnh phụ"
+                                 class="rounded"
+                                 style="width:120px; height:90px; object-fit:cover;">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mô tả -->
+                <div class="mt-4">
+                    <div class="fw-bold border-bottom pb-2 mb-3">Mô tả</div>
+                    <p th:text="${venue.description}" class="text-muted"></p>
+                </div>
             </div>
         </div>
     </div>
