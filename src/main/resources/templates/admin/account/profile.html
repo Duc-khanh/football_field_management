@@ -27,6 +27,7 @@
                 <h3 class="mb-4">Sửa thông tin</h3>
                 <form th:object="${account}" method="post" enctype="multipart/form-data">
                     <div class="row">
+                        <input type="hidden" th:field="*{account_id}" />
                         <!-- Avatar -->
                         <div class="col-12 col-md-4 text-center mb-4">
                             <div class="avatar-wrapper">
