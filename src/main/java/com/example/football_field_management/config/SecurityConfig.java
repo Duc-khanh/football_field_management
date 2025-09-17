@@ -37,17 +37,28 @@ public class SecurityConfig {
     private final CustomSuccessHandler customSuccessHandler;
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, CustomOAuth2UserService customOAuth2UserService) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http,
+                                                   CustomOAuth2UserService customOAuth2UserService) throws Exception {
         return http
                 .cors(withDefaults())
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
+                        // public routes
                         .requestMatchers("/", "/auth/login", "/auth/login/**",
                                 "/auth/register", "/auth/register/**").permitAll()
                         .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
                         .requestMatchers("/users/**").permitAll()
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/owner/**").hasRole("OWNER")
+
+                        // role-based routes
+                        .requestMatchers("/dashboard").hasAnyRole("ADMIN", "OWNER")
+                        .requestMatchers("/accounts/**").hasAnyRole("ADMIN", "OWNER")          // chỉ ADMIN
+                        .requestMatchers("/admin/venue/**").hasAnyRole("ADMIN", "OWNER")      // chỉ OWNER
+                        .requestMatchers("/admin/revenue/**").hasRole("ADMIN")     // chỉ ADMIN
+                        .requestMatchers("/admin/reports/**").hasRole("ADMIN")     // chỉ ADMIN
+                        .requestMatchers("/admin/bookings/**").hasAnyRole("ADMIN","OWNER")
+                        .requestMatchers("/admin/settings/**").hasRole("ADMIN")
+
+                        // mọi request khác cần login
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
@@ -88,6 +99,7 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", config);
         return source;
     }
+
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
