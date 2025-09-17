@@ -4,38 +4,26 @@
 
     <nav class="menu">
 
-        <!-- Trang chủ -->
+        <!-- Trang chủ (hiển thị cho cả ADMIN & OWNER) -->
         <a href="/dashboard" sec:authorize="hasAnyRole('ADMIN','OWNER')">
             <span class="icon"><i class="fa-solid fa-house"></i></span>
             <span class="text">Trang chủ</span>
         </a>
 
-        <!-- Quản lý tài khoản (ADMIN & OWNER nhưng route khác nhau) -->
-        <a href="/admin/accounts" sec:authorize="hasRole('ADMIN')">
-            <span class="icon"><i class="fa-solid fa-user"></i></span>
-            <span class="text">Quản lý tài khoản</span>
-        </a>
-        <a href="/owner/accounts" sec:authorize="hasRole('OWNER')">
+        <!-- Quản lý tài khoản (chỉ ADMIN) -->
+        <a href="/accounts" sec:authorize="hasAnyRole('ADMIN','OWNER')">
             <span class="icon"><i class="fa-solid fa-user"></i></span>
             <span class="text">Quản lý tài khoản</span>
         </a>
 
-        <!-- Quản lý sân bóng -->
-        <a href="/admin/venue/list" sec:authorize="hasRole('ADMIN')">
-            <span class="icon"><i class="fa-solid fa-futbol"></i></span>
-            <span class="text">Quản lý sân bóng</span>
-        </a>
-        <a href="/owner/venue/list" sec:authorize="hasRole('OWNER')">
+        <!-- Quản lý sân bóng (chỉ OWNER) -->
+        <a href="/admin/venue/list" sec:authorize="hasAnyRole('ADMIN','OWNER')">
             <span class="icon"><i class="fa-solid fa-futbol"></i></span>
             <span class="text">Quản lý sân bóng</span>
         </a>
 
-        <!-- Quản lý doanh thu -->
-        <a href="/admin/revenue" sec:authorize="hasRole('ADMIN')">
-            <span class="icon"><i class="fa-solid fa-coins"></i></span>
-            <span class="text">Quản lý doanh thu</span>
-        </a>
-        <a href="/owner/revenue" sec:authorize="hasRole('OWNER')">
+        <!-- Quản lý doanh thu (chỉ ADMIN) -->
+        <a href="/admin/revenue" sec:authorize="hasAnyRole('ADMIN','OWNER')">
             <span class="icon"><i class="fa-solid fa-coins"></i></span>
             <span class="text">Quản lý doanh thu</span>
         </a>
@@ -46,12 +34,8 @@
             <span class="text">Quản lý báo cáo</span>
         </a>
 
-        <!-- Quản lý đặt lịch -->
-        <a href="/admin/bookings" sec:authorize="hasRole('ADMIN')">
-            <span class="icon"><i class="fa-solid fa-calendar-alt"></i></span>
-            <span class="text">Quản lý đặt lịch</span>
-        </a>
-        <a href="/owner/bookings" sec:authorize="hasRole('OWNER')">
+        <!-- Quản lý đặt lịch (cả ADMIN & OWNER) -->
+        <a href="/admin/bookings" sec:authorize="hasAnyRole('ADMIN','OWNER')">
             <span class="icon"><i class="fa-solid fa-calendar-alt"></i></span>
             <span class="text">Quản lý đặt lịch</span>
         </a>
@@ -62,7 +46,7 @@
             <span class="text">Cài đặt hệ thống</span>
         </a>
 
-        <!-- Logout -->
+        <!-- Logout (hiển thị cho cả ADMIN & OWNER) -->
         <a href="/auth/logout" class="logout-link" sec:authorize="isAuthenticated()">
             <span class="icon"><i class="fa-solid fa-right-from-bracket"></i></span>
             <span class="text">Đăng xuất</span>

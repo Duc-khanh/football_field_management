@@ -44,7 +44,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         // public routes
-                        .requestMatchers("/", "/auth/login", "/auth/login/**",
+                        .requestMatchers("/","/api/**","/auth/login", "/auth/login/**",
                                 "/auth/register", "/auth/register/**").permitAll()
                         .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
                         .requestMatchers("/users/**").permitAll()
@@ -57,7 +57,6 @@ public class SecurityConfig {
                         .requestMatchers("/admin/reports/**").hasRole("ADMIN")     // chỉ ADMIN
                         .requestMatchers("/admin/bookings/**").hasAnyRole("ADMIN","OWNER")
                         .requestMatchers("/admin/settings/**").hasRole("ADMIN")
-
                         // mọi request khác cần login
                         .anyRequest().authenticated()
                 )
