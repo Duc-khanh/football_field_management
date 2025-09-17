@@ -71,13 +71,15 @@
                         <td th:text="${venue.ownerName} ?: 'Chưa cập nhật'"></td>
                         <td th:text="${venue.address}"></td>
                         <td th:text="${venue.contactNumber}"></td>
-                        <td th:text="${venue.description}"></td>
+                        <td th:text="${venue.description.length() > 20} ? ${venue.description.substring(0,20)} + '...' : ${venue.description}"
+                            style="text-align:center;">
+                        </td>
                         <td>
                             <span th:text="${venue.status} ? 'Mở' : 'Đóng'"
                                   th:classappend="${venue.status} ? 'badge status-active' : 'badge status-block'">
                             </span>
                         </td>
-                        <td class="actions">
+                        <td class="actions" style="text-align: center">
                             <!-- Edit -->
                             <a class="btn btn-warning me-1 d-inline-flex align-items-center justify-content-center btn-icon"
                                th:href="@{'/admin/venue/edit/' + ${venue.venueId}}"
