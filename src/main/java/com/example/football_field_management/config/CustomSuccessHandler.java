@@ -27,7 +27,7 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler {
                 redirectUrl = "/owner/homeOwner";
                 break;
             } else if ("ROLE_USER".equals(role)) {
-                redirectUrl = "/";
+                redirectUrl = "http://localhost:3000";
                 break;
             }
         }
