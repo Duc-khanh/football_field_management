@@ -47,18 +47,18 @@
                                 <div th:text="${account.email}"></div>
                             </div>
                             <div class="col-sm-6 mb-2">
-                                <div class="fw-bold">Phone</div>
+                                <div class="fw-bold">Số điện thoại</div>
                                 <div th:text="${account.phone}"></div>
                             </div>
                         </div>
 
                         <div class="row mb-2">
                             <div class="col-sm-6 mb-2">
-                                <div class="fw-bold">Address</div>
+                                <div class="fw-bold">Địa chỉ</div>
                                 <div th:text="${account.address}"></div>
                             </div>
                             <div class="col-sm-6 mb-2">
-                                <div class="fw-bold">Status</div>
+                                <div class="fw-bold">Trạng thái</div>
                                 <div>
                                     <span th:text="${account.status} ? 'Hoạt động' : 'Bị khóa'"
                                           th:classappend="${account.status} ? 'badge status-active' : 'badge status-block'">

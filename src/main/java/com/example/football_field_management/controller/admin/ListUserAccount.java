@@ -32,21 +32,6 @@ public class ListUserAccount {
     @Value("${file.upload-dir}")
     private String uploadDir;
 
-//@GetMapping
-//public String listAccounts(Model model,
-//                           @RequestParam(defaultValue = "0") int page,
-//                           @RequestParam(defaultValue = "10") int size,
-//                           @RequestParam(required = false) String keyword) {
-//    Page<Account> accountPage = accountService.getAccounts(page, size, keyword);
-//
-//    model.addAttribute("accounts", accountPage.getContent());
-//    model.addAttribute("currentPage", page);
-//    model.addAttribute("totalPages", accountPage.getTotalPages());
-//    model.addAttribute("pageSize", size);
-//    model.addAttribute("keyword", keyword);
-//
-//    return "admin/account/account-list";
-//}
 @GetMapping
 public String listAccounts(Model model,
                            @RequestParam(defaultValue = "0") int page,
@@ -69,7 +54,6 @@ public String listAccounts(Model model,
     model.addAttribute("keyword", keyword);
     model.addAttribute("role", role);
 
-    // Load danh sách role để hiển thị trong combobox/filter
     model.addAttribute("roles", roleRepository.findAll());
 
     return "admin/account/account-list";

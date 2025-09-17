@@ -27,7 +27,7 @@ public class HomeAdminController {
         String message = (String) session.getAttribute("successMessage");
         if (message != null) {
             model.addAttribute("successMessage", message);
-            session.removeAttribute("successMessage"); // xóa để lần sau ko hiện lại
+            session.removeAttribute("successMessage");
         }
 
         Account account = username.contains("@")
