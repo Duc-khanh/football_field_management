@@ -12,7 +12,7 @@ public interface IAccountService extends IGeneraService<Account> {
     Page<Account> getAccountsPaginated(Pageable pageable);
 
     Page<Account> searchAccounts(String keyword, Pageable pageable);
-
+    Account findByEmail(String email);
 
     boolean existsByEmail(String email);
 
