@@ -23,6 +23,17 @@ public interface OrderPaymentRepository extends JpaRepository<OrderPayment, Long
        ORDER BY FUNCTION('MONTH', o.paidAt)
        """)
     List<Object[]> getMonthlyRevenueComplete(@Param("year") int year);
+    @Query("""
+   SELECT FUNCTION('DAY', o.paidAt), SUM(o.totalAmount)
+   FROM OrderPayment o
+   WHERE FUNCTION('YEAR', o.paidAt) = :year
+     AND FUNCTION('MONTH', o.paidAt) = :month
+     AND o.status = 'COMPLETE'
+   GROUP BY FUNCTION('DAY', o.paidAt)
+   ORDER BY FUNCTION('DAY', o.paidAt)
+""")
+    List<Object[]> getDailyRevenueInMonth(@Param("year") int year,
+                                          @Param("month") int month);
 }
 
 

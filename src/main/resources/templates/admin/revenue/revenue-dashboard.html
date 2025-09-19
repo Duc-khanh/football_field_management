@@ -25,7 +25,25 @@
     <!-- Main content -->
     <div class="d-flex flex-column flex-grow-1">
         <div id="content" class="flex-grow-1 p-4">
-            <h2>Doanh thu năm <span th:text="${year}"></span></h2>
+            <div class="mb-3 d-flex align-items-center gap-3">
+                <label class="fw-bold mb-0">Năm:</label>
+                <select id="yearSelect" class="form-select w-auto">
+                    <option th:each="y : ${years}"
+                            th:value="${y}"
+                            th:text="${y}"
+                            th:selected="${y == year}">
+                    </option>
+                </select>
+
+                <label class="fw-bold mb-0">Tháng:</label>
+                <select id="monthSelect" class="form-select w-auto">
+                    <option value="">-- Tất cả --</option>
+                    <option th:each="m : ${#numbers.sequence(1,12)}"
+                            th:value="${m}"
+                            th:text="'Tháng ' + ${m}">
+                    </option>
+                </select>
+            </div>
 
             <div class="card p-4 shadow-sm rounded-3 mb-4">
                 <canvas id="multiRevenueChart" width="900" height="400"></canvas>
