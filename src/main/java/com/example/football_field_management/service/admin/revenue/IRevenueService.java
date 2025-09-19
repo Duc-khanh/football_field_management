@@ -1,6 +1,7 @@
 package com.example.football_field_management.service.admin.revenue;
 
 import com.example.football_field_management.dto.MonthlyRevenueDTO;
+import com.example.football_field_management.model.OrderPayment;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -14,4 +15,5 @@ public interface IRevenueService {
 
     /** Lấy doanh thu từng ngày trong tháng (đủ số ngày, ngày không có dữ liệu = 0) */
     List<BigDecimal> getRevenueByDay(int year, int month, int daysInMonth);
+    List<OrderPayment> getAllOrderPayments();
 }

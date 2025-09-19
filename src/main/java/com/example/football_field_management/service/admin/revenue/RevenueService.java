@@ -59,5 +59,10 @@ public class RevenueService implements IRevenueService {
         }
         return list;
     }
+
+    @Override
+    public List<OrderPayment> getAllOrderPayments() {
+        return orderPaymentRepository.findAll();
+    }
 }
 

@@ -1,5 +1,6 @@
 package com.example.football_field_management.controller.admin;
 
+import com.example.football_field_management.model.OrderPayment;
 import com.example.football_field_management.service.admin.revenue.IRevenueService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -32,16 +33,42 @@ public class RevenueController {
     public String revenuePage(Model model) throws JsonProcessingException {
         int currentYear = Year.now().getValue();
         List<Integer> years = IntStream.rangeClosed(currentYear - 5, currentYear)
-                .boxed().toList();
-
+                .boxed()
+                .toList();
         Map<String, BigDecimal[]> revenueMap = revenueService.getMonthlyRevenue(currentYear);
         String revenueMapJson = objectMapper.writeValueAsString(revenueMap);
 
+        List<OrderPayment> orders = revenueService.getAllOrderPayments();
+
+        long pendingCount = orders.stream()
+                .filter(o -> o.getStatus() == OrderPayment.Status.PAID)
+                .count();
+
+        long confirmedCount = orders.stream()
+                .filter(o -> o.getStatus() == OrderPayment.Status.COMPLETE)
+                .count();
+
+        long completedCount = orders.stream()
+                .filter(o -> o.getStatus() == OrderPayment.Status.COMPLETE)
+                .count();
+
+        long cancelledCount = orders.stream()
+                .filter(o -> o.getStatus() == OrderPayment.Status.CANCELLED)
+                .count();
+
+        model.addAttribute("pendingCount", pendingCount);
+        model.addAttribute("confirmedCount", confirmedCount);
+        model.addAttribute("completedCount", completedCount);
+        model.addAttribute("cancelledCount", cancelledCount);
+        model.addAttribute("cancelledCount", cancelledCount);
         model.addAttribute("years", years);
         model.addAttribute("year", currentYear);
         model.addAttribute("revenueMapJson", revenueMapJson);
+        model.addAttribute("cancelledCount", cancelledCount);
+
         return "admin/revenue/revenue-dashboard";
     }
+
 
     @GetMapping("/data")
     @ResponseBody

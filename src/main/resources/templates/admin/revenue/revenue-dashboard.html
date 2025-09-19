@@ -11,6 +11,12 @@
 
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .filter-row {
+            margin-left: 20px;
+            margin-right: 20px;
+        }
+    </style>
 </head>
 
 <body class="d-flex flex-column min-vh-100">
@@ -25,38 +31,91 @@
     <!-- Main content -->
     <div class="d-flex flex-column flex-grow-1">
         <div id="content" class="flex-grow-1 p-4">
-            <div class="mb-3 d-flex align-items-center gap-3">
-                <label class="fw-bold mb-0">Năm:</label>
-                <select id="yearSelect" class="form-select w-auto">
-                    <option th:each="y : ${years}"
-                            th:value="${y}"
-                            th:text="${y}"
-                            th:selected="${y == year}">
-                    </option>
-                </select>
+            <div class="row g-4 mb-4" id="statusSummary">
+                <!-- Pending -->
+                <div class="col-xl-3 col-md-6">
+                    <div class="stats-card">
+                        <div class="stats-icon bg-warning">
+                            <i class="fas fa-hourglass-half"></i>
+                        </div>
+                        <div class="stats-content">
+                            <h3 class="stats-number" th:text="${pendingCount}">0</h3>
+                            <p class="stats-label">Chờ xử lý</p>
+                        </div>
+                    </div>
+                </div>
 
-                <label class="fw-bold mb-0">Tháng:</label>
-                <select id="monthSelect" class="form-select w-auto">
-                    <option value="">-- Tất cả --</option>
-                    <option th:each="m : ${#numbers.sequence(1,12)}"
-                            th:value="${m}"
-                            th:text="'Tháng ' + ${m}">
-                    </option>
-                </select>
-            </div>
+                <!-- Confirmed -->
+                <div class="col-xl-3 col-md-6">
+                    <div class="stats-card">
+                        <div class="stats-icon bg-primary">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="stats-content">
+                            <h3 class="stats-number" th:text="${confirmedCount}">0</h3>
+                            <p class="stats-label">Đã xác nhận</p>
+                        </div>
+                    </div>
+                </div>
 
-            <div class="card p-4 shadow-sm rounded-3 mb-4">
-                <canvas id="multiRevenueChart" width="900" height="400"></canvas>
+                <!-- Completed -->
+                <div class="col-xl-3 col-md-6">
+                    <div class="stats-card">
+                        <div class="stats-icon bg-success">
+                            <i class="fas fa-flag-checkered"></i>
+                        </div>
+                        <div class="stats-content">
+                            <h3 class="stats-number" th:text="${completedCount}">0</h3>
+                            <p class="stats-label">Hoàn thành</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cancelled -->
+                <div class="col-xl-3 col-md-6">
+                    <div class="stats-card">
+                        <div class="stats-icon bg-danger">
+                            <i class="fas fa-times-circle"></i>
+                        </div>
+                        <div class="stats-content">
+                            <h3 class="stats-number" th:text="${cancelledCount}">0</h3>
+                            <p class="stats-label">Đã hủy</p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
+        <div class="mb-3 d-flex align-items-center gap-3 filter-row">
+            <label class="fw-bold mb-0">Năm:</label>
+            <select id="yearSelect" class="form-select w-auto">
+                <option th:each="y : ${years}"
+                        th:value="${y}"
+                        th:text="${y}"
+                        th:selected="${y == year}">
+                </option>
+            </select>
 
-        <!-- Render dữ liệu JSON -->
-        <script id="revenueData" type="application/json"
-                th:utext="${revenueMapJson}"></script>
+            <label class="fw-bold mb-0">Tháng:</label>
+            <select id="monthSelect" class="form-select w-auto">
+                <option value="">-- Tất cả --</option>
+                <option th:each="m : ${#numbers.sequence(1,12)}"
+                        th:value="${m}"
+                        th:text="'Tháng ' + ${m}">
+                </option>
+            </select>
+        </div>
 
-        <!-- File JS ngoài -->
-        <script th:src="@{/js/chart.js}"></script>
+        <div class="card p-4 shadow-sm rounded-3 mb-4 filter-row">
+            <canvas id="multiRevenueChart" width="900" height="400"></canvas>
+        </div>
     </div>
+
+    <!-- Render dữ liệu JSON -->
+    <script id="revenueData" type="application/json"
+            th:utext="${revenueMapJson}"></script>
+
+    <!-- File JS ngoài -->
+    <script th:src="@{/js/chart.js}"></script>
 </div>
 
 <!-- Footer -->
