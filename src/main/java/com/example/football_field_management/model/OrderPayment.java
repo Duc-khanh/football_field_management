@@ -17,13 +17,12 @@ public class OrderPayment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    private String code;                       // mã đơn/phiếu
-    private BigDecimal totalAmount;            // số tiền thanh toán
+    private String code;
+    private BigDecimal totalAmount;
     @Enumerated(EnumType.STRING)
-    private Status status;                     // PAID, REFUNDED, CANCELLED
-    private String paymentMethod;              // CASH, MOMO, VNPAY,...
-    private LocalDateTime paidAt;              // thời điểm thanh toán
+    private Status status;
+    private String paymentMethod;
+    private LocalDateTime paidAt;
 
-    public enum Status { PAID, REFUNDED, CANCELLED }
+    public enum Status { PAID, REFUNDED, CANCELLED,COMPLETE }
 }
