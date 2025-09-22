@@ -23,6 +23,9 @@ public class OrderPayment {
     private Status status;
     private String paymentMethod;
     private LocalDateTime paidAt;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "account_id")
+    private Account account;
 
     public enum Status { PAID, REFUNDED, CANCELLED,COMPLETE }
 }

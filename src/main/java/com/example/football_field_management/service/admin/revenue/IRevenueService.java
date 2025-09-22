@@ -4,6 +4,7 @@ import com.example.football_field_management.dto.MonthlyRevenueDTO;
 import com.example.football_field_management.model.OrderPayment;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -16,4 +17,13 @@ public interface IRevenueService {
     /** Lấy doanh thu từng ngày trong tháng (đủ số ngày, ngày không có dữ liệu = 0) */
     List<BigDecimal> getRevenueByDay(int year, int month, int daysInMonth);
     List<OrderPayment> getAllOrderPayments();
+    BigDecimal getTodayRevenue();
+    BigDecimal getMonthRevenue(int year, int month);
+    BigDecimal getTotalRevenue();
+    List<OrderPayment> getOrdersByMonth(int year, int month);
+    BigDecimal getRevenueByDate(LocalDate date);
+
+    BigDecimal getTodayRevenueGrowthPercent();
+    long getUniqueBuyers(int year, int month);
+
 }

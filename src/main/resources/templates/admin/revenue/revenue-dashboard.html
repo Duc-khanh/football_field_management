@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link rel="stylesheet" th:href="@{/css/home-admin.css}">
     <link rel="stylesheet" th:href="@{/css/alert.css}">
-
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
@@ -16,6 +15,43 @@
             margin-left: 20px;
             margin-right: 20px;
         }
+        .stats-card {
+            display: block;
+            background: #fff;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+
+        .stats-title {
+            display: block;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 8px;
+            white-space: normal;
+            text-align: left;
+        }
+
+        .stats-value {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #000;
+            text-align: left;
+        }
+        .stats-title { display: block !important; white-space: normal !important; }
+        .stats-value { display: block !important; }
+        .text-success {
+            color: #28a745; /* xanh lá */
+        }
+        .text-danger {
+            color: #dc3545; /* đỏ */
+        }
+        .text-secondary {
+            color: #6c757d; /* xám */
+        }
+
     </style>
 </head>
 
@@ -32,60 +68,43 @@
     <div class="d-flex flex-column flex-grow-1">
         <div id="content" class="flex-grow-1 p-4">
             <div class="row g-4 mb-4" id="statusSummary">
-                <!-- Pending -->
                 <div class="col-xl-3 col-md-6">
                     <div class="stats-card">
-                        <div class="stats-icon bg-warning">
-                            <i class="fas fa-hourglass-half"></i>
-                        </div>
-                        <div class="stats-content">
-                            <h3 class="stats-number" th:text="${pendingCount}">0</h3>
-                            <p class="stats-label">Chờ xử lý</p>
-                        </div>
+                        <p class="stats-title">Doanh thu hôm nay</p>
+                        <p class="stats-value">
+                            <span th:text="${#numbers.formatDecimal(todayRevenue,0,'COMMA',0,'POINT')} + ' VND'">0 VND</span>
+                            &nbsp;
+                            <span th:if="${growthPercent != null}"
+                                  th:class="${isUp} ? 'text-success fw-bold' : (${isDown} ? 'text-danger fw-bold' : 'text-secondary')">
+            <span th:text="${growthPercent > 0 ? '+' : ''} + ${growthPercent} + '%'"></span>
+            <i th:if="${isUp}" class="fas fa-arrow-up"></i>
+            <i th:if="${isDown}" class="fas fa-arrow-down"></i>
+        </span>
+                        </p>
                     </div>
                 </div>
-
-                <!-- Confirmed -->
                 <div class="col-xl-3 col-md-6">
                     <div class="stats-card">
-                        <div class="stats-icon bg-primary">
-                            <i class="fas fa-check-circle"></i>
-                        </div>
-                        <div class="stats-content">
-                            <h3 class="stats-number" th:text="${confirmedCount}">0</h3>
-                            <p class="stats-label">Đã xác nhận</p>
-                        </div>
+                        <span class="stats-title">Tổng doanh thu</span>
+                        <span class="stats-value"
+                              th:text="${#numbers.formatDecimal(totalRevenue,0,'COMMA',0,'POINT')} + ' VND'">0 VND</span>
                     </div>
                 </div>
-
-                <!-- Completed -->
                 <div class="col-xl-3 col-md-6">
                     <div class="stats-card">
-                        <div class="stats-icon bg-success">
-                            <i class="fas fa-flag-checkered"></i>
-                        </div>
-                        <div class="stats-content">
-                            <h3 class="stats-number" th:text="${completedCount}">0</h3>
-                            <p class="stats-label">Hoàn thành</p>
-                        </div>
+                        <p class="stats-title">Tổng đơn hàng</p>
+                        <span class="stats-value" th:text="${ordersThisMonth.size()}">0</span>
                     </div>
                 </div>
-
-                <!-- Cancelled -->
                 <div class="col-xl-3 col-md-6">
                     <div class="stats-card">
-                        <div class="stats-icon bg-danger">
-                            <i class="fas fa-times-circle"></i>
-                        </div>
-                        <div class="stats-content">
-                            <h3 class="stats-number" th:text="${cancelledCount}">0</h3>
-                            <p class="stats-label">Đã hủy</p>
-                        </div>
+                        <p class="stats-title">Tổng người mua</p>
+                        <span class="stats-value" th:text="${buyersThisMonth}">0</span>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="mb-3 d-flex align-items-center gap-3 filter-row">
+            <div class="mb-3 d-flex align-items-center gap-3 filter-row">
             <label class="fw-bold mb-0">Năm:</label>
             <select id="yearSelect" class="form-select w-auto">
                 <option th:each="y : ${years}"

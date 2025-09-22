@@ -8,6 +8,8 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -34,6 +36,31 @@ public interface OrderPaymentRepository extends JpaRepository<OrderPayment, Long
 """)
     List<Object[]> getDailyRevenueInMonth(@Param("year") int year,
                                           @Param("month") int month);
+    @Query("""
+        SELECT COALESCE(SUM(o.totalAmount), 0)
+        FROM OrderPayment o
+        WHERE o.status = 'COMPLETE'
+          AND o.paidAt >= :start
+          AND o.paidAt < :end
+    """)
+    BigDecimal sumRevenueBetween(
+            @Param("start") LocalDateTime start,
+            @Param("end") LocalDateTime end
+    );
+    @Query("""
+       SELECT o
+       FROM OrderPayment o
+       WHERE FUNCTION('YEAR', o.paidAt) = :year
+         AND FUNCTION('MONTH', o.paidAt) = :month
+       """)
+    List<OrderPayment> findByYearAndMonth(@Param("year") int year,
+                                          @Param("month") int month);
+    @Query("SELECT COUNT(DISTINCT o.account.account_id) " +
+            "FROM OrderPayment o " +
+            "WHERE FUNCTION('YEAR', o.paidAt) = :year " +
+            "AND FUNCTION('MONTH', o.paidAt) = :month")
+    long countDistinctBuyersByYearAndMonth(@Param("year") int year,
+                                           @Param("month") int month);
 }
 
 

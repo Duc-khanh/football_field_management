@@ -8,6 +8,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -63,6 +66,64 @@ public class RevenueService implements IRevenueService {
     @Override
     public List<OrderPayment> getAllOrderPayments() {
         return orderPaymentRepository.findAll();
+    }
+    @Override
+    public BigDecimal getTodayRevenue() {
+        LocalDate today = LocalDate.now();
+        LocalDateTime start = today.atStartOfDay();
+        LocalDateTime end = start.plusDays(1);
+        return orderPaymentRepository.sumRevenueBetween(start, end);
+    }
+
+    @Override
+    public BigDecimal getMonthRevenue(int year, int month) {
+        LocalDate startDate = LocalDate.of(year, month, 1);
+        LocalDateTime start = startDate.atStartOfDay();
+        LocalDateTime end = start.plusMonths(1);
+        return orderPaymentRepository.sumRevenueBetween(start, end);
+    }
+
+    @Override
+    public BigDecimal getTotalRevenue() {
+        return orderPaymentRepository.findAll().stream()
+                .map(OrderPayment::getTotalAmount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+    @Override
+    public List<OrderPayment> getOrdersByMonth(int year, int month) {
+        return orderPaymentRepository.findByYearAndMonth(year, month);
+    }
+    @Override
+    public BigDecimal getRevenueByDate(LocalDate date) {
+        LocalDateTime start = date.atStartOfDay();
+        LocalDateTime end = start.plusDays(1).minusSeconds(1);
+
+        return orderPaymentRepository.findAll().stream()
+                .filter(o -> o.getPaidAt() != null
+                        && !o.getPaidAt().isBefore(start)
+                        && !o.getPaidAt().isAfter(end))
+                .map(OrderPayment::getTotalAmount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    @Override
+    public BigDecimal getTodayRevenueGrowthPercent() {
+        BigDecimal today = getRevenueByDate(LocalDate.now());
+        BigDecimal yesterday = getRevenueByDate(LocalDate.now().minusDays(1));
+
+        if (yesterday.compareTo(BigDecimal.ZERO) == 0) {
+            return today.compareTo(BigDecimal.ZERO) == 0
+                    ? BigDecimal.ZERO
+                    : BigDecimal.valueOf(100); // nếu hôm qua =0, hôm nay >0 thì +100%
+        }
+
+        return today.subtract(yesterday)
+                .divide(yesterday, 2, RoundingMode.HALF_UP)
+                .multiply(BigDecimal.valueOf(100));
+    }
+    @Override
+    public long getUniqueBuyers(int year, int month) {
+        return orderPaymentRepository.countDistinctBuyersByYearAndMonth(year, month);
     }
 }
 
