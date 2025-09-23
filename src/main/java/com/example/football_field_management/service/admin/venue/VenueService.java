@@ -199,6 +199,11 @@ public class VenueService implements IVenueService {
     }
 
     @Override
+    public List<Venue> getList() {
+        return venueRepository.findAll();
+    }
+
+    @Override
     public void changeStatus(Long id, boolean isOpen) {
         Venue venue = venueRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Địa điểm không tồn tại"));

@@ -141,10 +141,5 @@ public class AccountService implements IAccountService {
     }
 
     public Page<Account> getAccounts(int page, int size, String keyword) {
-        Pageable pageable = PageRequest.of(page, size);
-        if (keyword != null && !keyword.isEmpty()) {
-            return accountRepository.findByFullNameContainingIgnoreCaseOrEmailContainingIgnoreCase(keyword, keyword, pageable);
-        }
-        return accountRepository.findAll(pageable);
     }
 }
