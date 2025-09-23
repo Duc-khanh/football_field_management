@@ -1,6 +1,4 @@
-
 package com.example.football_field_management.config;
-
 
 import com.example.football_field_management.security.JwtAuthenticationFilter;
 import com.example.football_field_management.service.CustomOAuth2UserService;
@@ -37,19 +35,34 @@ public class SecurityConfig {
     private final CustomSuccessHandler customSuccessHandler;
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, CustomOAuth2UserService customOAuth2UserService) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http,
+                                                   CustomOAuth2UserService customOAuth2UserService) throws Exception {
         return http
                 .cors(withDefaults())
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/","/api/**", "/auth/login", "/auth/login/**",
-                                "/auth/register", "/auth/register/**").permitAll()
-                        .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
-                        .requestMatchers("/user/**").hasRole("USER")
+                        // Public routes
+                        .requestMatchers("/","/api/**",
+                                "/auth/login", "/auth/login/**",
+                                "/auth/register", "/auth/register/**",
+                                "/css/**", "/js/**", "/images/**",
+                                "/users/**").permitAll()
+
+                        // Shared route
+                        .requestMatchers("/dashboard").hasAnyRole("ADMIN", "OWNER")
+
+                        // ADMIN routes
+                        .requestMatchers("/accounts/**").hasRole("ADMIN")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
+
+                        // OWNER routes
                         .requestMatchers("/owner/**").hasRole("OWNER")
+
+                        // Other requests require authentication
                         .anyRequest().authenticated()
                 )
+
+                // Form login
                 .formLogin(form -> form
                         .loginPage("/auth/login")
                         .loginProcessingUrl("/auth/login")
@@ -59,19 +72,27 @@ public class SecurityConfig {
                         .failureUrl("/auth/login?error=true")
                         .permitAll()
                 )
+
+                // OAuth2 login (Google)
                 .oauth2Login(oauth2 -> oauth2
                         .loginPage("/auth/login")
                         .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
-                        .successHandler(customSuccessHandler) // xử lý redirect sau khi login GG
+                        .successHandler(customSuccessHandler)
                 )
+
+                // Logout
                 .logout(logout -> logout
                         .logoutUrl("/auth/logout")
                         .logoutSuccessUrl("/auth/login")
                         .permitAll()
                 )
+
+                // Session management
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                 )
+
+                // Authentication provider
                 .authenticationProvider(authenticationProvider())
                 .build();
     }
@@ -88,6 +109,7 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", config);
         return source;
     }
+
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
@@ -106,4 +128,3 @@ public class SecurityConfig {
         return authConfig.getAuthenticationManager();
     }
 }
-

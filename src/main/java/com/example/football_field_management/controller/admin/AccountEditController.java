@@ -42,11 +42,11 @@ public class AccountEditController {
         }
 
         if (account == null) {
-            return "redirect:/login"; // hoặc xử lý lỗi phù hợp
+            return "redirect:/login";
         }
 
         model.addAttribute("account", account);
-        return "admin/account/profile"; // tên file HTML của bạn
+        return "admin/account/profile";
     }
     @PostMapping
     public String saveProfile(Account account, MultipartFile avatarFile, RedirectAttributes redirectAttributes) {

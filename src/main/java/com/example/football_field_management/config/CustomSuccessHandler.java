@@ -20,11 +20,11 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler {
         for (GrantedAuthority authority : authentication.getAuthorities()) {
             String role = authority.getAuthority();
             if ("ROLE_ADMIN".equals(role)) {
-                request.getSession().setAttribute("successMessage", "Đăng nhập quản trị thành công!");
+                request.getSession().setAttribute("successMessage", "Đăng nhập trang quản trị thành công!");
                 redirectUrl = "/dashboard";
                 break;
             } else if ("ROLE_OWNER".equals(role)) {
-                redirectUrl = "/owner/homeOwner";
+                redirectUrl = "owner/dashboard";
                 break;
             } else if ("ROLE_USER".equals(role)) {
                 redirectUrl = "http://localhost:3000";

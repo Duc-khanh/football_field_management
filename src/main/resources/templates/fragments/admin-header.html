@@ -2,11 +2,12 @@
 <div th:fragment="header" class="header">
     <!-- Bên trái: Toggle + Logo + Tên web -->
     <div class="left">
-            <img src="/images/logo.png" alt="Logo" class="logo">
-        <h5 class="mb-0 fw-bold text-dark">Sân Bóng 247</h5>
+        <img src="/images/logo.png" alt="Logo" class="logo">
+        <a href="/dashboard" style="text-decoration: none;">
+            <h5 class="mb-0 fw-bold text-dark">Sân Bóng 247</h5>
+        </a>
     </div>
 
-    <!-- Bên phải: Thông tin người dùng -->
     <div class="right user-info">
         <i class="fa-regular fa-bell icon-btn"></i>
         <div class="d-flex flex-column align-items-start">

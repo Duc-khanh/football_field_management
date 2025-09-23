@@ -3,34 +3,38 @@ package com.example.football_field_management.model;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.List;
-
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "cour")
+@Table(name = "Cour")
 public class Cour {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long cour_id;
+    @Column(name = "cour_id")
+    private Long courId;
 
-    private String cour_name;
+    @Column(name = "cour_name")
+    private String courName;
 
-    private Double price_per_hour;
+    @Column(name = "price_per_hour")
+    private Double pricePerHour;
 
-    private String field_size;
+    @Column(name = "field_size")
+    private String fieldSize;
 
-    private Boolean lights_available;
+    @Column(name = "lights_available")
+    private Boolean lightsAvailable;
 
-    private String surface_type;
+    @Column(name = "surface_type")
+    private String surfaceType;
 
+    @Column(name = "status")
     private Boolean status;
 
     @ManyToOne
     @JoinColumn(name = "venue_id", nullable = false)
     private Venue venue;
 }
-
