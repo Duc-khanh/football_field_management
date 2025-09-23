@@ -86,6 +86,6 @@ public class ProfileAccount {
             e.printStackTrace();
             redirectAttributes.addFlashAttribute("errorMessage", "Lưu hồ sơ thất bại: ");
         }
-        return "redirect:/dashboard";
+        return "redirect:/owner/dashboard";
     }
 }
