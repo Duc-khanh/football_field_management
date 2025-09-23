@@ -4,7 +4,7 @@ package com.example.football_field_management.controller.owner;
 import com.example.football_field_management.model.Account;
 import com.example.football_field_management.repository.AccountRepository;
 
-import com.example.football_field_management.repository.VenueRepository;
+import com.example.football_field_management.repository.CourRepository;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,16 +12,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 @Controller
 @RequestMapping("/owner/dashboard")
@@ -29,6 +22,7 @@ import java.nio.file.Paths;
 public class HomeOwnerController {
 
     private final AccountRepository accountRepo;
+    private final CourRepository courRepo;
     @Value("${file.upload-dir}")
     private String uploadDir;
 
@@ -56,6 +50,9 @@ public class HomeOwnerController {
                     account.getAvt_path() != null ? account.getAvt_path() : "/images/avatar.png");
             model.addAttribute("role", "OWNER");
         }
+        model.addAttribute("totalUsers", accountRepo.count());
+        model.addAttribute("totalCour", courRepo.count());
+
 
         return "owner/home";
     }
