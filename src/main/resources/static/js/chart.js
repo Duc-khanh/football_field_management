@@ -55,20 +55,30 @@ document.addEventListener("DOMContentLoaded", () => {
             const resSummary = await fetch(urlSummary);
             const summary = await resSummary.json();
 
+            // Update giá trị
             document.getElementById("todayRevenueCard").textContent =
                 summary.todayRevenue.toLocaleString("vi-VN") + " VND";
-
             document.getElementById("totalRevenueCard").textContent =
                 summary.totalRevenue.toLocaleString("vi-VN") + " VND";
-
             document.getElementById("ordersCard").textContent = summary.orders;
             document.getElementById("buyersCard").textContent = summary.buyers;
 
-            document.getElementById("growthPercentCard").textContent =
-                summary.growthPercent + "%";
+            // Update growth cho từng card
+            updateGrowth("growthTodayCard", summary.growthToday);
+            updateGrowth("growthTotalRevenueCard", summary.growthTotalRevenue);
+            updateGrowth("growthOrdersCard", summary.growthOrders);
+            updateGrowth("growthBuyersCard", summary.growthBuyers);
+
         } catch (e) {
             console.error(e);
         }
+    }
+
+    function updateGrowth(id, value){
+        const el = document.getElementById(id);
+        if(!el) return;
+        el.textContent = value + "%";
+        el.className = value > 0 ? "text-success fw-bold" : (value < 0 ? "text-danger fw-bold" : "text-secondary");
     }
 
     yearSelect.addEventListener("change", loadData);

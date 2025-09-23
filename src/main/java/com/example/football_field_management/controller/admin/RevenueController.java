@@ -193,47 +193,58 @@ public class RevenueController {
 
         Map<String, Object> result = new HashMap<>();
 
-        int y = year;
         int m = (month != null ? month : LocalDate.now().getMonthValue());
 
+        // --- Hôm nay vs hôm qua ---
         BigDecimal todayRevenue = revenueService.getTodayRevenue();
         BigDecimal yesterdayRevenue = revenueService.getRevenueByDate(LocalDate.now().minusDays(1));
-        if (todayRevenue == null) todayRevenue = BigDecimal.ZERO;
-        if (yesterdayRevenue == null) yesterdayRevenue = BigDecimal.ZERO;
 
-        BigDecimal growthPercent;
-        if (yesterdayRevenue.compareTo(BigDecimal.ZERO) == 0) {
-            growthPercent = todayRevenue.compareTo(BigDecimal.ZERO) == 0
-                    ? BigDecimal.ZERO
-                    : BigDecimal.valueOf(100);
-        } else {
-            growthPercent = todayRevenue.subtract(yesterdayRevenue)
-                    .divide(yesterdayRevenue, 4, RoundingMode.HALF_UP)
-                    .multiply(BigDecimal.valueOf(100))
-                    .setScale(2, RoundingMode.HALF_UP);
-        }
+        BigDecimal growthToday = calcGrowth(todayRevenue, yesterdayRevenue);
 
-        boolean isUp = growthPercent.compareTo(BigDecimal.ZERO) > 0;
-        boolean isDown = growthPercent.compareTo(BigDecimal.ZERO) < 0;
+        // --- Tổng doanh thu so với kỳ trước ---
+        BigDecimal totalRevenue = month != null
+                ? revenueService.getMonthRevenue(year, m)
+                : revenueService.getRevenueByYear(year);
 
-        BigDecimal totalRevenue;
-        if(month != null) {
-            totalRevenue = revenueService.getMonthRevenue(year, month);
-        } else {
-            totalRevenue = revenueService.getRevenueByYear(year);
-        }
-        List<OrderPayment> ordersThisMonth = revenueService.getOrdersByMonth(y, m);
-        long buyersThisMonth = revenueService.getUniqueBuyers(y, m);
+        BigDecimal previousRevenue = month != null
+                ? revenueService.getMonthRevenue(year, m - 1 > 0 ? m - 1 : 12)
+                : revenueService.getRevenueByYear(year - 1);
 
+        BigDecimal growthTotalRevenue = calcGrowth(totalRevenue, previousRevenue);
+
+        // --- Tổng đơn hàng ---
+        int orders = revenueService.getOrdersByMonth(year, m).size();
+        int previousOrders = revenueService.getOrdersByMonth(month != null && m > 1 ? year : year-1, month != null && m > 1 ? m-1 : 12).size();
+        BigDecimal growthOrders = calcGrowth(BigDecimal.valueOf(orders), BigDecimal.valueOf(previousOrders));
+
+        // --- Tổng người mua ---
+        long buyers = revenueService.getUniqueBuyers(year, m);
+        long previousBuyers = revenueService.getUniqueBuyers(month != null && m > 1 ? year : year-1, month != null && m > 1 ? m-1 : 12);
+        BigDecimal growthBuyers = calcGrowth(BigDecimal.valueOf(buyers), BigDecimal.valueOf(previousBuyers));
+
+        // Push data
         result.put("todayRevenue", todayRevenue);
-        result.put("growthPercent", growthPercent);
-        result.put("isUp", isUp);
-        result.put("isDown", isDown);
+        result.put("growthToday", growthToday);
+
         result.put("totalRevenue", totalRevenue);
-        result.put("orders", ordersThisMonth.size());
-        result.put("buyers", buyersThisMonth);
+        result.put("growthTotalRevenue", growthTotalRevenue);
+
+        result.put("orders", orders);
+        result.put("growthOrders", growthOrders);
+
+        result.put("buyers", buyers);
+        result.put("growthBuyers", growthBuyers);
 
         return result;
     }
 
+    private BigDecimal calcGrowth(BigDecimal current, BigDecimal previous) {
+        if(previous == null || previous.compareTo(BigDecimal.ZERO) == 0){
+            return current.compareTo(BigDecimal.ZERO) == 0 ? BigDecimal.ZERO : BigDecimal.valueOf(100);
+        }
+        return current.subtract(previous)
+                .divide(previous, 4, RoundingMode.HALF_UP)
+                .multiply(BigDecimal.valueOf(100))
+                .setScale(2, RoundingMode.HALF_UP);
+    }
 }

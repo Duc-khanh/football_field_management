@@ -18,29 +18,23 @@
         }
         .stats-card {
             display: block;
+            flex-direction: column;
+            justify-content: space-between;
             background: #fff;
-            padding: 20px;
             border-radius: 12px;
             box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-            text-align: center;
+            height: 120px;
         }
 
         .stats-title {
-            display: block;
             font-size: 1rem;
             font-weight: 600;
             color: #555;
-            margin-bottom: 8px;
-            white-space: normal;
+            margin-bottom: 10px;
             text-align: left;
+            padding-bottom: 20px;
         }
 
-        .stats-value {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: #000;
-            text-align: left;
-        }
         .stats-title { display: block !important; white-space: normal !important; }
         .stats-value { display: block !important; }
         .text-success {
@@ -73,19 +67,10 @@
                 <div class="col-xl-3 col-md-6">
                     <div class="stats-card">
                         <p class="stats-title">Doanh thu hôm nay</p>
-                        <p class="stats-value">
-                <span id="todayRevenueCard"
-                      th:text="${#numbers.formatDecimal(todayRevenue,0,'COMMA',0,'POINT')} + ' VND'">
-                    0 VND
-                </span>
-                            <span id="growthPercentCard"
-                                  th:if="${growthPercent != null}"
-                                  th:class="${isUp} ? 'text-success fw-bold' : (${isDown} ? 'text-danger fw-bold' : 'text-secondary')">
-                    <span th:text="${growthPercent}">0</span>%
-                    <i th:if="${isUp}" class="fas fa-arrow-up"></i>
-                    <i th:if="${isDown}" class="fas fa-arrow-down"></i>
-                </span>
-                        </p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span id="todayRevenueCard" class="fw-bold">0 VND</span>
+                            <span id="growthTodayCard" class="text-secondary"></span>
+                        </div>
                     </div>
                 </div>
 
@@ -93,12 +78,10 @@
                 <div class="col-xl-3 col-md-6">
                     <div class="stats-card">
                         <p class="stats-title">Tổng doanh thu</p>
-                        <p class="stats-value">
-                <span id="totalRevenueCard"
-                      th:text="${#numbers.formatDecimal(totalRevenue,0,'COMMA',0,'POINT')} + ' VND'">
-                    0 VND
-                </span>
-                        </p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span id="totalRevenueCard" class="fw-bold">0 VND</span>
+                            <span id="growthTotalRevenueCard" class="text-secondary"></span>
+                        </div>
                     </div>
                 </div>
 
@@ -106,10 +89,10 @@
                 <div class="col-xl-3 col-md-6">
                     <div class="stats-card">
                         <p class="stats-title">Tổng đơn hàng</p>
-                        <p class="stats-value">
-                <span id="ordersCard"
-                      th:text="${ordersThisMonth.size()}">0</span>
-                        </p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span id="ordersCard" class="fw-bold">0</span>
+                            <span id="growthOrdersCard" class="text-secondary"></span>
+                        </div>
                     </div>
                 </div>
 
@@ -117,13 +100,14 @@
                 <div class="col-xl-3 col-md-6">
                     <div class="stats-card">
                         <p class="stats-title">Tổng người mua</p>
-                        <p class="stats-value">
-                <span id="buyersCard"
-                      th:text="${buyersThisMonth}">0</span>
-                        </p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span id="buyersCard" class="fw-bold">0</span>
+                            <span id="growthBuyersCard" class="text-secondary"></span>
+                        </div>
                     </div>
                 </div>
             </div>
+
         </div>
             <div class="mb-3 d-flex align-items-center gap-3 filter-row">
             <label class="fw-bold mb-0">Năm:</label>
