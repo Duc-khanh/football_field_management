@@ -19,16 +19,15 @@
 
 <!-- Thanh filter -->
 <div class="mb-3">
-    <form th:action="@{/cour/status/{status}(status=${0})}" method="get"
-          class="d-flex align-items-center"
-          onsubmit="this.action=this.action.replace('{status}', document.getElementById('statusSelect').value)">
-        <select id="statusSelect" class="form-select form-select-sm w-auto me-2">
+    <form th:action="@{/cour}" method="get" class="d-flex align-items-center">
+        <select id="statusSelect" name="status" class="form-select form-select-sm w-auto me-2">
             <option value="">-- Chọn trạng thái --</option>
             <option value="true" th:selected="${statusFilter == true}">Hoạt động</option>
             <option value="false" th:selected="${statusFilter == false}">Ngừng hoạt động</option>
         </select>
         <button type="submit" class="btn btn-sm btn-outline-primary">Lọc</button>
     </form>
+
 </div>
 
 <!-- Bảng danh sách -->
@@ -48,7 +47,7 @@
     </thead>
     <tbody>
     <tr th:each="c, st : ${cours}">
-        <td th:text="${st.index + 1 + currentPage * pageSize}"></td>
+        <td th:text="${st.index + 1 + (currentPage ?: 0) * (pageSize ?: 1)}"></td>
         <td th:text="${c.courName}"></td>
         <td th:text="${c.pricePerHour}"></td>
         <td th:text="${c.fieldSize}"></td>
@@ -64,6 +63,7 @@
                onclick="return confirm('Bạn có chắc muốn xóa?')">Xóa</a>
         </td>
     </tr>
+
     </tbody>
 </table>
 

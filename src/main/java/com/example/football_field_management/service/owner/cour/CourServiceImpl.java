@@ -98,6 +98,16 @@ public class CourServiceImpl implements ICourService {
         return courRepository.findByCourNameContainingIgnoreCase(keyword, pageable);
     }
 
+    @Override
+    public Page<Cour> findByStatus(Boolean status, Pageable pageable) {
+        return courRepository.findByStatus(status, pageable);
+    }
+
+    @Override
+    public Page<Cour> findByNameAndStatus(String keyword, Boolean status, Pageable pageable) {
+        return courRepository.findByCourNameContainingIgnoreCaseAndStatus(keyword, status, pageable);
+    }
+
 
     @Override
     public List<Cour> findByVenueId(Long venueId) {

@@ -27,5 +27,9 @@ public interface ICourService extends IGeneraService<Cour> {
     Page<Cour> findAll(Pageable pageable);
 
     Page<Cour> searchByName(String keyword, Pageable pageable);
+
+    Page<Cour> findByStatus(Boolean status, Pageable pageable);
+    Page<Cour> findByNameAndStatus(String keyword, Boolean status, Pageable pageable);
+
 }
 
