@@ -29,7 +29,8 @@ public class CourController {
             @RequestParam(defaultValue = "") String keyword,
             @RequestParam(required = false) Boolean status,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "5") int size,
+            @RequestParam(defaultValue = "10") int size,
+
             Model model) {
 
         Pageable pageable = PageRequest.of(page, size, Sort.by("courId").descending());
