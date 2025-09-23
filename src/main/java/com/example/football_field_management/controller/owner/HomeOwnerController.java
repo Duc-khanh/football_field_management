@@ -1,5 +1,12 @@
 package com.example.football_field_management.controller.owner;
 
+
+import com.example.football_field_management.model.Account;
+import com.example.football_field_management.repository.AccountRepository;
+
+import com.example.football_field_management.repository.VenueRepository;
+import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -8,13 +15,38 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("/owner")
+@RequestMapping("/owner/dashboard")
+@RequiredArgsConstructor
 public class HomeOwnerController {
-    @GetMapping("/homeOwner")
-    public String home(Model model) {
+
+    private final AccountRepository accountRepo;
+
+
+    @GetMapping
+    public String homeOwner(Model model, HttpSession session) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        System.out.println("Authorities on /users/homeOwner: " + auth.getAuthorities());
-        model.addAttribute("username", auth.getName());
+        String username = auth.getName();
+
+        String message = (String) session.getAttribute("successMessage");
+        if (message != null) {
+            model.addAttribute("successMessage", message);
+            session.removeAttribute("successMessage");
+        }
+
+        Account account = username.contains("@")
+                ? accountRepo.findByEmail(username).orElse(null)
+                : accountRepo.findByPhone(username).orElse(null);
+
+        if (account != null) {
+            model.addAttribute("fullName", account.getFullName());
+            model.addAttribute("emailOrPhone",
+                    account.getEmail() != null ? account.getEmail() : account.getPhone());
+            model.addAttribute("avatar",
+                    account.getAvt_path() != null ? account.getAvt_path() : "/images/avatar.png");
+            model.addAttribute("role", "OWNER");
+        }
+
         return "owner/home";
     }
 }
+

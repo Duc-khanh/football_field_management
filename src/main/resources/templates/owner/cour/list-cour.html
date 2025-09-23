@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Danh sách sân bóng</title>
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+</head>
+<body class="container mt-4">
+
+<h2 class="mb-3">Danh sách sân bóng</h2>
+<form id="searchForm" th:action="@{/cour}" method="get" class="mb-3 d-flex">
+    <input type="text" id="searchInput" name="keyword" placeholder="Nhập tên sân"
+           th:value="${keyword}" class="form-control w-auto me-2"/>
+    <button type="submit" class="btn btn-primary">🔍 Tìm kiếm</button>
+</form>
+
+<a th:href="@{/cour/create}" class="btn btn-success mb-3">➕ Thêm sân bóng</a>
+
+<!-- Thanh filter -->
+<div class="mb-3">
+    <form th:action="@{/cour/status/{status}(status=${0})}" method="get"
+          class="d-flex align-items-center"
+          onsubmit="this.action=this.action.replace('{status}', document.getElementById('statusSelect').value)">
+        <select id="statusSelect" class="form-select form-select-sm w-auto me-2">
+            <option value="">-- Chọn trạng thái --</option>
+            <option value="true" th:selected="${statusFilter == true}">Hoạt động</option>
+            <option value="false" th:selected="${statusFilter == false}">Ngừng hoạt động</option>
+        </select>
+        <button type="submit" class="btn btn-sm btn-outline-primary">Lọc</button>
+    </form>
+</div>
+
+<!-- Bảng danh sách -->
+<table class="table table-bordered table-striped align-middle text-center">
+    <thead class="table-dark">
+    <tr>
+        <th>STT</th>
+        <th>Tên sân</th>
+        <th>Giá/giờ</th>
+        <th>Kích thước</th>
+        <th>Mặt sân</th>
+        <th>Đèn</th>
+        <th>Trạng thái</th>
+        <th>Địa điểm</th>
+        <th>Hành động</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="c, st : ${cours}">
+        <td th:text="${st.index + 1 + currentPage * pageSize}"></td>
+        <td th:text="${c.courName}"></td>
+        <td th:text="${c.pricePerHour}"></td>
+        <td th:text="${c.fieldSize}"></td>
+        <td th:text="${c.surfaceType}"></td>
+        <td th:text="${c.lightsAvailable ? 'Có' : 'Không'}"></td>
+        <td th:text="${c.status ? 'Hoạt động' : 'Ngừng'}"></td>
+        <td th:text="${c.venue != null ? c.venue.venueName : 'Chưa có'}"></td>
+        <td>
+            <a th:href="@{/cour/detail/{id}(id=${c.courId})}" class="btn btn-info btn-sm">Chi tiết</a>
+            <a th:href="@{/cour/edit/{id}(id=${c.courId})}" class="btn btn-warning btn-sm">Sửa</a>
+            <a th:href="@{/cour/delete/{id}(id=${c.courId})}"
+               class="btn btn-danger btn-sm"
+               onclick="return confirm('Bạn có chắc muốn xóa?')">Xóa</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<!-- Phân trang đẹp -->
+<nav aria-label="Page navigation">
+    <ul class="pagination justify-content-center">
+        <!-- Nút Trước -->
+        <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+            <a class="page-link"
+               th:href="@{/cour(page=${currentPage - 1}, keyword=${keyword})}"> Trước</a>
+        </li>
+
+        <!-- Các số trang -->
+        <li class="page-item"
+            th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+            th:classappend="${i == currentPage} ? 'active'">
+            <a class="page-link"
+               th:text="${i + 1}"
+               th:href="@{/cour(page=${i}, keyword=${keyword})}"></a>
+        </li>
+
+        <!-- Nút Sau -->
+        <li class="page-item" th:classappend="${currentPage + 1 >= totalPages} ? 'disabled'">
+            <a class="page-link"
+               th:href="@{/cour(page=${currentPage + 1}, keyword=${keyword})}">Sau </a>
+        </li>
+    </ul>
+</nav>
+
+</body>
+<script>
+    let typingTimer;
+    const typingDelay = 900; // 1s
+    const searchInput = document.getElementById('searchInput');
+    const searchForm = document.getElementById('searchForm');
+
+    searchInput.addEventListener('keyup', function () {
+        clearTimeout(typingTimer); // reset timer nếu vẫn đang gõ
+        typingTimer = setTimeout(() => {
+            searchForm.submit(); // tự submit sau 1s không gõ nữa
+        }, typingDelay);
+    });
+
+    searchInput.addEventListener('keydown', function () {
+        clearTimeout(typingTimer); // dừng lại khi tiếp tục gõ
+    });
+</script>
+</html>

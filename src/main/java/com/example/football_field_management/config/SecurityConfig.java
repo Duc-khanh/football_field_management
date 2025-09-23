@@ -1,6 +1,4 @@
-
 package com.example.football_field_management.config;
-
 
 import com.example.football_field_management.security.JwtAuthenticationFilter;
 import com.example.football_field_management.service.CustomOAuth2UserService;
@@ -43,23 +41,28 @@ public class SecurityConfig {
                 .cors(withDefaults())
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        // public routes
-                        .requestMatchers("/","/api/**","/auth/login", "/auth/login/**",
-                                "/auth/register", "/auth/register/**").permitAll()
-                        .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
-                        .requestMatchers("/users/**").permitAll()
+                        // Public routes
+                        .requestMatchers("/","/api/**",
+                                "/auth/login", "/auth/login/**",
+                                "/auth/register", "/auth/register/**",
+                                "/css/**", "/js/**", "/images/**",
+                                "/users/**").permitAll()
 
-                        // role-based routes
+                        // Shared route
                         .requestMatchers("/dashboard").hasAnyRole("ADMIN", "OWNER")
-                        .requestMatchers("/accounts/**").hasAnyRole("ADMIN", "OWNER")          // chỉ ADMIN
-                        .requestMatchers("/admin/venue/**").hasAnyRole("ADMIN", "OWNER")      // chỉ OWNER
-                        .requestMatchers("/admin/revenue/**").hasRole("ADMIN")     // chỉ ADMIN
-                        .requestMatchers("/admin/reports/**").hasRole("ADMIN")     // chỉ ADMIN
-                        .requestMatchers("/admin/bookings/**").hasAnyRole("ADMIN","OWNER")
-                        .requestMatchers("/admin/settings/**").hasRole("ADMIN")
-                        // mọi request khác cần login
+
+                        // ADMIN routes
+                        .requestMatchers("/accounts/**").hasRole("ADMIN")
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
+
+                        // OWNER routes
+                        .requestMatchers("/owner/**").hasRole("OWNER")
+
+                        // Other requests require authentication
                         .anyRequest().authenticated()
                 )
+
+                // Form login
                 .formLogin(form -> form
                         .loginPage("/auth/login")
                         .loginProcessingUrl("/auth/login")
@@ -69,19 +72,27 @@ public class SecurityConfig {
                         .failureUrl("/auth/login?error=true")
                         .permitAll()
                 )
+
+                // OAuth2 login (Google)
                 .oauth2Login(oauth2 -> oauth2
                         .loginPage("/auth/login")
                         .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
-                        .successHandler(customSuccessHandler) // xử lý redirect sau khi login GG
+                        .successHandler(customSuccessHandler)
                 )
+
+                // Logout
                 .logout(logout -> logout
                         .logoutUrl("/auth/logout")
                         .logoutSuccessUrl("/auth/login")
                         .permitAll()
                 )
+
+                // Session management
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                 )
+
+                // Authentication provider
                 .authenticationProvider(authenticationProvider())
                 .build();
     }
@@ -117,4 +128,3 @@ public class SecurityConfig {
         return authConfig.getAuthenticationManager();
     }
 }
-
