@@ -1,70 +1,98 @@
 package com.example.football_field_management.repository;
 
-import com.example.football_field_management.dto.RevenuePoint;
+import com.example.football_field_management.dto.MonthlyRevenueDTO;
 import com.example.football_field_management.model.OrderPayment;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
-// com.example.football_field_management.repository.OrderPaymentRepository
+@Repository
 public interface OrderPaymentRepository extends JpaRepository<OrderPayment, Long> {
 
-    // Theo NGÀY
     @Query("""
-                select DATE(p.paidAt) as label,
-                       COALESCE(sum(p.totalAmount),0) as amount,
-                       count(p.id) as orders
-                from OrderPayment p
-                where p.status = 'PAID' and p.paidAt between :from and :to
-                group by DATE(p.paidAt)
-                order by DATE(p.paidAt)
-            """)
-    List<RevenuePoint> revenueByDay(@Param("from") LocalDateTime from,
-                                    @Param("to") LocalDateTime to);
-
-    // Theo THÁNG (MySQL format YYYY-MM)
-    @Query(value = """
-                select DATE_FORMAT(paid_at, '%Y-%m') as label,
-                       COALESCE(sum(total_amount),0)  as amount,
-                       count(id) as orders
-                from order_payment
-                where status = 'PAID' and paid_at between :from and :to
-                group by DATE_FORMAT(paid_at, '%Y-%m')
-                order by DATE_FORMAT(paid_at, '%Y-%m')
-            """, nativeQuery = true)
-    List<RevenuePoint> revenueByMonth(@Param("from") LocalDateTime from,
-                                      @Param("to") LocalDateTime to);
-
-    // Theo NĂM
-    @Query(value = """
-                select DATE_FORMAT(paid_at, '%Y') as label,
-                       COALESCE(sum(total_amount),0)  as amount,
-                       count(id) as orders
-                from order_payment
-                where status = 'PAID' and paid_at between :from and :to
-                group by DATE_FORMAT(paid_at, '%Y')
-                order by DATE_FORMAT(paid_at, '%Y')
-            """, nativeQuery = true)
-    List<RevenuePoint> revenueByYear(@Param("from") LocalDateTime from,
-                                     @Param("to") LocalDateTime to);
-
-    // KPI tổng
+       SELECT FUNCTION('MONTH', o.paidAt),
+              SUM(o.totalAmount)
+       FROM OrderPayment o
+       WHERE FUNCTION('YEAR', o.paidAt) = :year
+         AND o.status = com.example.football_field_management.model.OrderPayment.Status.COMPLETE
+       GROUP BY FUNCTION('MONTH', o.paidAt)
+       ORDER BY FUNCTION('MONTH', o.paidAt)
+       """)
+    List<Object[]> getMonthlyRevenueComplete(@Param("year") int year);
     @Query("""
-                select COALESCE(sum(p.totalAmount),0) from OrderPayment p
-                where p.status='PAID' and p.paidAt between :from and :to
-            """)
-    BigDecimal totalRevenue(@Param("from") LocalDateTime from,
-                            @Param("to") LocalDateTime to);
-
+   SELECT FUNCTION('DAY', o.paidAt), SUM(o.totalAmount)
+   FROM OrderPayment o
+   WHERE FUNCTION('YEAR', o.paidAt) = :year
+     AND FUNCTION('MONTH', o.paidAt) = :month
+     AND o.status = 'COMPLETE'
+   GROUP BY FUNCTION('DAY', o.paidAt)
+   ORDER BY FUNCTION('DAY', o.paidAt)
+""")
+    List<Object[]> getDailyRevenueInMonth(@Param("year") int year,
+                                          @Param("month") int month);
     @Query("""
-                select count(p.id) from OrderPayment p
-                where p.status='PAID' and p.paidAt between :from and :to
-            """)
-    long totalOrders(@Param("from") LocalDateTime from,
-                     @Param("to") LocalDateTime to);
+        SELECT COALESCE(SUM(o.totalAmount), 0)
+        FROM OrderPayment o
+        WHERE o.status = 'COMPLETE'
+          AND o.paidAt >= :start
+          AND o.paidAt < :end
+    """)
+    BigDecimal sumRevenueBetween(
+            @Param("start") LocalDateTime start,
+            @Param("end") LocalDateTime end
+    );
+    @Query("""
+       SELECT o
+       FROM OrderPayment o
+       WHERE FUNCTION('YEAR', o.paidAt) = :year
+         AND FUNCTION('MONTH', o.paidAt) = :month
+       """)
+    List<OrderPayment> findByYearAndMonth(@Param("year") int year,
+                                          @Param("month") int month);
+    @Query("SELECT COUNT(DISTINCT o.account.account_id) " +
+            "FROM OrderPayment o " +
+            "WHERE FUNCTION('YEAR', o.paidAt) = :year " +
+            "AND FUNCTION('MONTH', o.paidAt) = :month")
+    long countDistinctBuyersByYearAndMonth(@Param("year") int year,
+                                           @Param("month") int month);
+    @Query("""
+        SELECT COALESCE(SUM(o.totalAmount), 0)
+        FROM OrderPayment o
+        WHERE o.status = 'COMPLETE'
+          AND FUNCTION('YEAR', o.paidAt) = :year
+    """)
+    BigDecimal sumRevenueByYear(@Param("year") int year);
+
+    /** Lấy tất cả order trong 1 năm */
+    @Query("""
+        SELECT o
+        FROM OrderPayment o
+        WHERE FUNCTION('YEAR', o.paidAt) = :year
+    """)
+    List<OrderPayment> findByYear(@Param("year") int year);
+
+    /** Đếm số người mua duy nhất trong năm */
+    @Query("""
+        SELECT COUNT(DISTINCT o.account.account_id)
+        FROM OrderPayment o
+        WHERE FUNCTION('YEAR', o.paidAt) = :year
+    """)
+    long countDistinctBuyersByYear(@Param("year") int year);
+    @Query("""
+    SELECT COALESCE(SUM(o.totalAmount), 0)
+    FROM OrderPayment o
+    WHERE DATE(o.paidAt) = :day
+      AND o.status = 'PAID'
+""")
+    BigDecimal getRevenueByDay(@Param("day") LocalDate day);
 }
+
+
 

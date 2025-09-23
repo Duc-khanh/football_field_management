@@ -27,17 +27,25 @@ public class CourController {
     @GetMapping
     public String listCour(
             @RequestParam(defaultValue = "") String keyword,
+            @RequestParam(required = false) Boolean status,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "2") int size,
+            @RequestParam(defaultValue = "10") int size,
+
             Model model) {
 
         Pageable pageable = PageRequest.of(page, size, Sort.by("courId").descending());
         Page<Cour> courPage;
 
-        if (keyword != null && !keyword.trim().isEmpty()) {
+        if (keyword != null && !keyword.trim().isEmpty() && status != null) {
+            courPage = courService.findByNameAndStatus(keyword, status, pageable);
+        }
+        else if (keyword != null && !keyword.trim().isEmpty()) {
             courPage = courService.searchByName(keyword, pageable);
-            model.addAttribute("keyword", keyword);
-        } else {
+        }
+        else if (status != null) {
+            courPage = courService.findByStatus(status, pageable);
+        }
+        else {
             courPage = courService.findAll(pageable);
         }
 
@@ -46,6 +54,10 @@ public class CourController {
         model.addAttribute("pageSize", size);
         model.addAttribute("totalPages", courPage.getTotalPages());
         model.addAttribute("totalItems", courPage.getTotalElements());
+
+        // giữ lại keyword & status để hiển thị đúng form
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("statusFilter", status);
 
         return "owner/cour/list-cour";
     }
@@ -110,8 +122,5 @@ public class CourController {
         }
         return "redirect:/cour";
     }
-
-
-
 
 }

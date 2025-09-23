@@ -5,7 +5,7 @@
     <nav class="menu">
 
         <!-- Trang chủ (ADMIN) -->
-        <a href="/dashboard" sec:authorize="hasAnyRole('ADMIN','OWNER')">
+        <a href="/dashboard" sec:authorize="hasRole('ADMIN')">
             <span class="icon"><i class="fa-solid fa-house"></i></span>
             <span class="text">Trang chủ</span>
         </a>
@@ -38,6 +38,11 @@
 
 
         <!-- Chỉ OWNER -->
+        <a href="/owner/dashboard" sec:authorize="hasRole('OWNER')">
+            <span class="icon"><i class="fa-solid fa-house"></i></span>
+            <span class="text">Trang chủ</span>
+        </a>
+
         <a href="/owner/accounts" sec:authorize="hasRole('OWNER')">
             <span class="icon"><i class="fa-solid fa-user"></i></span>
             <span class="text">Quản lý tài khoản</span>

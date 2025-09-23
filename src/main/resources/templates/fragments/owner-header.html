@@ -1,23 +1,17 @@
 <link rel="stylesheet" th:href="@{/static/css/css-admin-fragments/admin-header.css}">
 <div th:fragment="header" class="header">
-    <!-- Bên trái: Toggle + Logo + Tên web -->
     <div class="left">
         <img src="/images/logo.png" alt="Logo" class="logo">
-        <a href="/dashboard" style="text-decoration: none;">
+        <a href="dashboard" style="text-decoration: none;">
             <h5 class="mb-0 fw-bold text-dark">Sân Bóng 247</h5>
         </a>
     </div>
 
     <div class="right user-info">
-        <i class="fa-regular fa-bell icon-btn"></i>
-        <div class="d-flex flex-column align-items-start">
-            <span th:text="${fullName}">Tên người dùng</span>
-            <small th:text="${emailOrPhone}">Email/Phone</small>
-        </div>
         <div class="right user-info"><i class="fa-regular fa-bell icon-btn"></i>
             <div class="d-flex flex-column align-items-start"><span th:text="${fullName}">Tên người dùng</span> <small
                     th:text="${emailOrPhone}">Email/Phone</small></div>
             <img th:src="@{/uploads/avatars/{avatar}(avatar=${avatar})}" alt="avatar" class="avatar-img"
-                 style="cursor:pointer" onclick="window.location.href='/admin/account'"></div>
+                 style="cursor:pointer" onclick="window.location.href='/owner/account'"></div>
     </div>
 </div>

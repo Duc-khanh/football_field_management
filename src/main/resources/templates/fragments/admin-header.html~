@@ -14,10 +14,11 @@
             <span th:text="${fullName}">Tên người dùng</span>
             <small th:text="${emailOrPhone}">Email/Phone</small>
         </div>
-        <div class="right user-info"><i class="fa-regular fa-bell icon-btn"></i>
-            <div class="d-flex flex-column align-items-start"><span th:text="${fullName}">Tên người dùng</span> <small
-                    th:text="${emailOrPhone}">Email/Phone</small></div>
-            <img th:src="@{/uploads/avatars/{avatar}(avatar=${avatar})}" alt="avatar" class="avatar-img"
-                 style="cursor:pointer" onclick="window.location.href='/admin/account'"></div>
+        <img th:src="@{/uploads/avatars/{avatar}(avatar=${avatar})}"
+             alt="avatar"
+             class="avatar-img"
+             style="cursor:pointer"
+             th:onclick="|window.location.href='${role == 'ADMIN' ? '/admin/account' : '/owner/account'}'|">
+
     </div>
 </div>

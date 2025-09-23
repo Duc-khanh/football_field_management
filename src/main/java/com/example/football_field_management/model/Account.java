@@ -42,4 +42,7 @@ public class Account {
     )
     @JsonBackReference
     private Set<Role> roles = new HashSet<>();
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OrderPayment> orders = new ArrayList<>();
+
 }
