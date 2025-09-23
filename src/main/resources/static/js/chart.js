@@ -5,25 +5,29 @@ document.addEventListener("DOMContentLoaded", () => {
     const monthSelect = document.getElementById("monthSelect");
     const ctx = document.getElementById("multiRevenueChart").getContext("2d");
 
-    async function loadChart() {
+    async function loadData() {
         const year = yearSelect.value;
         const month = monthSelect.value;
-        let url = `/admin/revenue/data?year=${year}`;
-        if (month) url += `&month=${month}`;
+        let urlData = `/admin/revenue/data?year=${year}`;
+        let urlSummary = `/admin/revenue/summary?year=${year}`;
+        if (month) {
+            urlData += `&month=${month}`;
+            urlSummary += `&month=${month}`;
+        }
 
         try {
-            const res = await fetch(url);
-            const data = await res.json();
+            // 1️⃣ Lấy dữ liệu chart
+            const resData = await fetch(urlData);
+            const data = await resData.json();
 
             if (chart) chart.destroy();
-
             chart = new Chart(ctx, {
                 type: "line",
                 data: {
-                    labels: data.labels, // ["Ngày 1", "Ngày 2", ... "Ngày 30"]
+                    labels: data.labels,
                     datasets: [{
                         label: "Doanh thu",
-                        data: data.values, // [1000000, 0, 0, 2500000, ...]
+                        data: data.values,
                         borderColor: "#28a745",
                         backgroundColor: "rgba(40,167,69,0.15)",
                         fill: true,
@@ -46,15 +50,29 @@ document.addEventListener("DOMContentLoaded", () => {
                     }
                 }
             });
+
+            // 2️⃣ Lấy dữ liệu card
+            const resSummary = await fetch(urlSummary);
+            const summary = await resSummary.json();
+
+            document.getElementById("todayRevenueCard").textContent =
+                summary.todayRevenue.toLocaleString("vi-VN") + " VND";
+
+            document.getElementById("totalRevenueCard").textContent =
+                summary.totalRevenue.toLocaleString("vi-VN") + " VND";
+
+            document.getElementById("ordersCard").textContent = summary.orders;
+            document.getElementById("buyersCard").textContent = summary.buyers;
+
+            document.getElementById("growthPercentCard").textContent =
+                summary.growthPercent + "%";
         } catch (e) {
             console.error(e);
         }
     }
 
-    // Gọi khi load trang & khi đổi filter
-    yearSelect.addEventListener("change", loadChart);
-    monthSelect.addEventListener("change", loadChart);
+    yearSelect.addEventListener("change", loadData);
+    monthSelect.addEventListener("change", loadData);
 
-    loadChart();
+    loadData();
 });
-

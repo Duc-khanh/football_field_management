@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link rel="stylesheet" th:href="@{/css/home-admin.css}">
     <link rel="stylesheet" th:href="@{/css/alert.css}">
+    <script th:src="@{js/summary.js}"></script>
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
@@ -68,38 +69,58 @@
     <div class="d-flex flex-column flex-grow-1">
         <div id="content" class="flex-grow-1 p-4">
             <div class="row g-4 mb-4" id="statusSummary">
+                <!-- Doanh thu hôm nay -->
                 <div class="col-xl-3 col-md-6">
                     <div class="stats-card">
                         <p class="stats-title">Doanh thu hôm nay</p>
                         <p class="stats-value">
-                            <span th:text="${#numbers.formatDecimal(todayRevenue,0,'COMMA',0,'POINT')} + ' VND'">0 VND</span>
-                            &nbsp;
-                            <span th:if="${growthPercent != null}"
+                <span id="todayRevenueCard"
+                      th:text="${#numbers.formatDecimal(todayRevenue,0,'COMMA',0,'POINT')} + ' VND'">
+                    0 VND
+                </span>
+                            <span id="growthPercentCard"
+                                  th:if="${growthPercent != null}"
                                   th:class="${isUp} ? 'text-success fw-bold' : (${isDown} ? 'text-danger fw-bold' : 'text-secondary')">
-            <span th:text="${growthPercent > 0 ? '+' : ''} + ${growthPercent} + '%'"></span>
-            <i th:if="${isUp}" class="fas fa-arrow-up"></i>
-            <i th:if="${isDown}" class="fas fa-arrow-down"></i>
-        </span>
+                    <span th:text="${growthPercent}">0</span>%
+                    <i th:if="${isUp}" class="fas fa-arrow-up"></i>
+                    <i th:if="${isDown}" class="fas fa-arrow-down"></i>
+                </span>
                         </p>
                     </div>
                 </div>
+
+                <!-- Tổng doanh thu -->
                 <div class="col-xl-3 col-md-6">
                     <div class="stats-card">
-                        <span class="stats-title">Tổng doanh thu</span>
-                        <span class="stats-value"
-                              th:text="${#numbers.formatDecimal(totalRevenue,0,'COMMA',0,'POINT')} + ' VND'">0 VND</span>
+                        <p class="stats-title">Tổng doanh thu</p>
+                        <p class="stats-value">
+                <span id="totalRevenueCard"
+                      th:text="${#numbers.formatDecimal(totalRevenue,0,'COMMA',0,'POINT')} + ' VND'">
+                    0 VND
+                </span>
+                        </p>
                     </div>
                 </div>
+
+                <!-- Tổng đơn hàng -->
                 <div class="col-xl-3 col-md-6">
                     <div class="stats-card">
                         <p class="stats-title">Tổng đơn hàng</p>
-                        <span class="stats-value" th:text="${ordersThisMonth.size()}">0</span>
+                        <p class="stats-value">
+                <span id="ordersCard"
+                      th:text="${ordersThisMonth.size()}">0</span>
+                        </p>
                     </div>
                 </div>
+
+                <!-- Tổng người mua -->
                 <div class="col-xl-3 col-md-6">
                     <div class="stats-card">
                         <p class="stats-title">Tổng người mua</p>
-                        <span class="stats-value" th:text="${buyersThisMonth}">0</span>
+                        <p class="stats-value">
+                <span id="buyersCard"
+                      th:text="${buyersThisMonth}">0</span>
+                        </p>
                     </div>
                 </div>
             </div>

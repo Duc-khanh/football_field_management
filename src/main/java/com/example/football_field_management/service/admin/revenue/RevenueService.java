@@ -1,9 +1,7 @@
 package com.example.football_field_management.service.admin.revenue;
 
-import com.example.football_field_management.dto.MonthlyRevenueDTO;
 import com.example.football_field_management.model.OrderPayment;
 import com.example.football_field_management.repository.OrderPaymentRepository;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +17,7 @@ public class RevenueService implements IRevenueService {
 
     private final OrderPaymentRepository orderPaymentRepository;
 
+    // ========== Biểu đồ doanh thu ==========
     @Override
     public Map<String, BigDecimal[]> getMonthlyRevenue(int year) {
         BigDecimal[] revenue = new BigDecimal[12];
@@ -37,7 +36,6 @@ public class RevenueService implements IRevenueService {
 
     @Override
     public List<BigDecimal> getRevenueByMonth(int year) {
-        // Tạo list mặc định 12 phần tử = 0
         List<BigDecimal> list = new ArrayList<>(Collections.nCopies(12, BigDecimal.ZERO));
         List<Object[]> raw = orderPaymentRepository.getMonthlyRevenueComplete(year);
         for (Object[] row : raw) {
@@ -50,7 +48,6 @@ public class RevenueService implements IRevenueService {
 
     @Override
     public List<BigDecimal> getRevenueByDay(int year, int month, int daysInMonth) {
-        // Tạo list mặc định đủ số ngày trong tháng
         List<BigDecimal> list = new ArrayList<>(Collections.nCopies(daysInMonth, BigDecimal.ZERO));
         List<Object[]> raw = orderPaymentRepository.getDailyRevenueInMonth(year, month);
         for (Object[] row : raw) {
@@ -63,10 +60,7 @@ public class RevenueService implements IRevenueService {
         return list;
     }
 
-    @Override
-    public List<OrderPayment> getAllOrderPayments() {
-        return orderPaymentRepository.findAll();
-    }
+    // ========== Tổng doanh thu / đơn / khách ==========
     @Override
     public BigDecimal getTodayRevenue() {
         LocalDate today = LocalDate.now();
@@ -89,10 +83,35 @@ public class RevenueService implements IRevenueService {
                 .map(OrderPayment::getTotalAmount)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
+
+    // ======= Doanh thu/Đơn/Khách theo NĂM =======
+    @Override
+    public BigDecimal getRevenueByYear(int year) {
+        return orderPaymentRepository.sumRevenueByYear(year);
+    }
+
+    @Override
+    public List<OrderPayment> getOrdersByYear(int year) {
+        return orderPaymentRepository.findByYear(year);
+    }
+
+    @Override
+    public long getUniqueBuyersByYear(int year) {
+        return orderPaymentRepository.countDistinctBuyersByYear(year);
+    }
+
+    // ========== Đơn hàng ==========
     @Override
     public List<OrderPayment> getOrdersByMonth(int year, int month) {
         return orderPaymentRepository.findByYearAndMonth(year, month);
     }
+
+    @Override
+    public List<OrderPayment> getAllOrderPayments() {
+        return orderPaymentRepository.findAll();
+    }
+
+    // ========== Doanh thu ngày ==========
     @Override
     public BigDecimal getRevenueByDate(LocalDate date) {
         LocalDateTime start = date.atStartOfDay();
@@ -107,23 +126,12 @@ public class RevenueService implements IRevenueService {
     }
 
     @Override
-    public BigDecimal getTodayRevenueGrowthPercent() {
-        BigDecimal today = getRevenueByDate(LocalDate.now());
-        BigDecimal yesterday = getRevenueByDate(LocalDate.now().minusDays(1));
-
-        if (yesterday.compareTo(BigDecimal.ZERO) == 0) {
-            return today.compareTo(BigDecimal.ZERO) == 0
-                    ? BigDecimal.ZERO
-                    : BigDecimal.valueOf(100); // nếu hôm qua =0, hôm nay >0 thì +100%
-        }
-
-        return today.subtract(yesterday)
-                .divide(yesterday, 2, RoundingMode.HALF_UP)
-                .multiply(BigDecimal.valueOf(100));
-    }
-    @Override
     public long getUniqueBuyers(int year, int month) {
         return orderPaymentRepository.countDistinctBuyersByYearAndMonth(year, month);
     }
+    @Override
+    public BigDecimal getYesterdayRevenue() {
+        LocalDate yesterday = LocalDate.now().minusDays(1);
+        return orderPaymentRepository.getRevenueByDay(yesterday);
+    }
 }
-

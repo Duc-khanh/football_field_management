@@ -23,7 +23,11 @@ public interface IRevenueService {
     List<OrderPayment> getOrdersByMonth(int year, int month);
     BigDecimal getRevenueByDate(LocalDate date);
 
-    BigDecimal getTodayRevenueGrowthPercent();
+
     long getUniqueBuyers(int year, int month);
+    BigDecimal getRevenueByYear(int year);
+    List<OrderPayment> getOrdersByYear(int year);
+    long getUniqueBuyersByYear(int year);
+    BigDecimal getYesterdayRevenue();
 
 }

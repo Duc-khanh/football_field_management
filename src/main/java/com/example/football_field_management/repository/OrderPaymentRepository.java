@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -61,6 +62,36 @@ public interface OrderPaymentRepository extends JpaRepository<OrderPayment, Long
             "AND FUNCTION('MONTH', o.paidAt) = :month")
     long countDistinctBuyersByYearAndMonth(@Param("year") int year,
                                            @Param("month") int month);
+    @Query("""
+        SELECT COALESCE(SUM(o.totalAmount), 0)
+        FROM OrderPayment o
+        WHERE o.status = 'COMPLETE'
+          AND FUNCTION('YEAR', o.paidAt) = :year
+    """)
+    BigDecimal sumRevenueByYear(@Param("year") int year);
+
+    /** Lấy tất cả order trong 1 năm */
+    @Query("""
+        SELECT o
+        FROM OrderPayment o
+        WHERE FUNCTION('YEAR', o.paidAt) = :year
+    """)
+    List<OrderPayment> findByYear(@Param("year") int year);
+
+    /** Đếm số người mua duy nhất trong năm */
+    @Query("""
+        SELECT COUNT(DISTINCT o.account.account_id)
+        FROM OrderPayment o
+        WHERE FUNCTION('YEAR', o.paidAt) = :year
+    """)
+    long countDistinctBuyersByYear(@Param("year") int year);
+    @Query("""
+    SELECT COALESCE(SUM(o.totalAmount), 0)
+    FROM OrderPayment o
+    WHERE DATE(o.paidAt) = :day
+      AND o.status = 'PAID'
+""")
+    BigDecimal getRevenueByDay(@Param("day") LocalDate day);
 }
 
 
