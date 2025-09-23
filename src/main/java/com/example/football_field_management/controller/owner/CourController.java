@@ -27,7 +27,7 @@ public class CourController {
     @GetMapping
     public String listCour(
             @RequestParam(defaultValue = "") String keyword,
-            @RequestParam(required = false) Boolean status,   // nhận thêm status
+            @RequestParam(required = false) Boolean status,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size,
             Model model) {
@@ -35,19 +35,15 @@ public class CourController {
         Pageable pageable = PageRequest.of(page, size, Sort.by("courId").descending());
         Page<Cour> courPage;
 
-        // Trường hợp có keyword + status
         if (keyword != null && !keyword.trim().isEmpty() && status != null) {
             courPage = courService.findByNameAndStatus(keyword, status, pageable);
         }
-        // Chỉ có keyword
         else if (keyword != null && !keyword.trim().isEmpty()) {
             courPage = courService.searchByName(keyword, pageable);
         }
-        // Chỉ có status
         else if (status != null) {
             courPage = courService.findByStatus(status, pageable);
         }
-        // Không có gì => lấy hết
         else {
             courPage = courService.findAll(pageable);
         }

@@ -7,12 +7,21 @@ import com.example.football_field_management.repository.AccountRepository;
 import com.example.football_field_management.repository.VenueRepository;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 @Controller
 @RequestMapping("/owner/dashboard")
@@ -20,6 +29,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class HomeOwnerController {
 
     private final AccountRepository accountRepo;
+    @Value("${file.upload-dir}")
+    private String uploadDir;
 
 
     @GetMapping
@@ -48,5 +59,6 @@ public class HomeOwnerController {
 
         return "owner/home";
     }
+
 }
 
