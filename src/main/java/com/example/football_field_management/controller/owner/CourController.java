@@ -28,7 +28,7 @@ public class CourController {
     public String listCour(
             @RequestParam(defaultValue = "") String keyword,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "2") int size,
+            @RequestParam(defaultValue = "10") int size,
             Model model) {
 
         Pageable pageable = PageRequest.of(page, size, Sort.by("courId").descending());
