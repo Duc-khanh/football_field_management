@@ -100,7 +100,9 @@
                         <td class="text-start" th:text="${account.fullName}"></td>
                         <td class="text-start" th:text="${account.email}"></td>
                         <td th:text="${account.phone}"></td>
-                        <td class="text-start" th:text="${account.address}"></td>
+                        <td class="text-start"
+                            th:text="${account.address != null && account.address.length() > 20 ? account.address.substring(0,20) + '...' : account.address}">
+                        </td>
                         <td>
                 <span th:text="${account.status} ? 'Hoạt động' : 'Bị khóa'"
                       th:classappend="${account.status} ? 'badge status-active' : 'badge status-block'">

@@ -41,16 +41,13 @@ public class SecurityConfig {
                 .cors(withDefaults())
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        // Public routes
                         .requestMatchers("/","/api/**",
                                 "/auth/login", "/auth/login/**",
                                 "/auth/register", "/auth/register/**",
                                 "/css/**", "/js/**", "/images/**",
                                 "/users/**").permitAll()
-
                         // Shared route
                         .requestMatchers("/dashboard").hasAnyRole("ADMIN", "OWNER")
-
                         // ADMIN routes
                         .requestMatchers("/accounts/**").hasRole("ADMIN")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
