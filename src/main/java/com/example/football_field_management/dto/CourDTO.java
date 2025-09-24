@@ -3,8 +3,6 @@ package com.example.football_field_management.dto;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.List;
-
 @Getter @Setter
 public class CourDTO {
     private Long courId;
@@ -13,9 +11,20 @@ public class CourDTO {
     private String fieldSize;
     private boolean lightsAvailable;
     private String surfaceType;
-    private String status;
+    private Boolean status;
+    private String image;
 
-    public CourDTO(Long courId, String courName, Double pricePerHour, Boolean status) {
+
+
+    public CourDTO(Long courId, String courName, double pricePerHour, String fieldSize, boolean lightsAvailable, String surfaceType, Boolean status, String image) {
+        this.courId = courId;
+        this.courName = courName;
+        this.pricePerHour = pricePerHour;
+        this.fieldSize = fieldSize;
+        this.lightsAvailable = lightsAvailable;
+        this.surfaceType = surfaceType;
+        this.status = status;
+        this.image = image;
     }
 }
 

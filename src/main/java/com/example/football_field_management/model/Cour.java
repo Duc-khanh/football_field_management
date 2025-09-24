@@ -38,4 +38,6 @@ public class Cour {
     @ManyToOne
     @JoinColumn(name = "venue_id", nullable = false)
     private Venue venue;
+
+
 }

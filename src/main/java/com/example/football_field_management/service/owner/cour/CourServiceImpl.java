@@ -119,7 +119,11 @@ public class CourServiceImpl implements ICourService {
                         c.getCourId(),
                         c.getCourName(),
                         c.getPricePerHour(),
-                        c.getStatus()
+                        c.getFieldSize(),
+                        c.getLightsAvailable(),
+                        c.getSurfaceType(),
+                        c.getStatus(),
+                        c.getImage()
                 ))
                 .collect(Collectors.toList());
     }

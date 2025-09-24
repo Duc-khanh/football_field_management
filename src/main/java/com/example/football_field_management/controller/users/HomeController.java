@@ -22,6 +22,7 @@ public class HomeController {
             @RequestParam(required = false) Boolean status
     ) {
         return venueService.findAll(page, size, keyword, status);
+
     }
 }
 
