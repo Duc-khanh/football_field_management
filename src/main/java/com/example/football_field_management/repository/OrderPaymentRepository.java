@@ -125,5 +125,15 @@ public interface OrderPaymentRepository extends JpaRepository<OrderPayment, Long
             @Param("month") Integer month,
             Pageable pageable
     );
+    // Đếm đơn hôm nay
+    @Query("SELECT COUNT(o) FROM OrderPayment o WHERE DATE(o.paidAt) = CURRENT_DATE AND o.status = 'COMPLETE'")
+    long countTodayOrders();
+
+    // Tổng doanh thu tháng hiện tại
+    @Query("SELECT COALESCE(SUM(o.totalAmount),0) FROM OrderPayment o " +
+            "WHERE MONTH(o.paidAt) = MONTH(CURRENT_DATE) " +
+            "AND YEAR(o.paidAt) = YEAR(CURRENT_DATE) " +
+            "AND o.status = 'COMPLETE'")
+    BigDecimal getRevenueThisMonth();
 }
 

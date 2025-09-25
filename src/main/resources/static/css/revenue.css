@@ -57,3 +57,6 @@
     background-color: #6c757d !important; /* xám */
     color: #fff !important;
 }
+table th {
+    text-align: center;
+}

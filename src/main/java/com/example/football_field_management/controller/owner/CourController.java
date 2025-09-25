@@ -21,6 +21,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -87,7 +89,8 @@ public class CourController {
 
     @PostMapping("/create")
     public String createCour(@ModelAttribute Cour cour,
-                             @RequestParam("file") MultipartFile file) {
+                             @RequestParam("file") MultipartFile file,
+                             RedirectAttributes redirectAttributes) {
         if (!file.isEmpty()) {
             try {
                 String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
@@ -99,12 +102,14 @@ public class CourController {
             }
         }
         courService.save(cour);
+        redirectAttributes.addFlashAttribute("successMessage", "Thêm sân bóng thành công!");
         return "redirect:/cour";
     }
 
     @PostMapping("/edit/{id}")
     public String updateCour(@PathVariable Long id,
                              @ModelAttribute Cour cour,
+                             RedirectAttributes redirectAttributes,
                              @RequestParam(value = "file", required = false) MultipartFile file) throws IOException {
         // Lấy bản ghi cũ để giữ thông tin không bị mất
         Cour oldCour = courService.findById(id).orElseThrow();
@@ -129,6 +134,7 @@ public class CourController {
         cour.setVenue(oldCour.getVenue()); // nếu bạn không cho sửa venue trong form
 
         courService.update(id, cour);
+        redirectAttributes.addFlashAttribute("successMessage", "Cập nhật sân bóng thành công!");
         return "redirect:/cour";
     }
 

@@ -55,7 +55,7 @@
                             <i class="fas fa-calendar-check"></i>
                         </div>
                         <div class="stats-content">
-                            <h3 class="stats-number">45</h3>
+                            <h3 class="stats-number mb-0" th:text="${todayOrders}"></h3>
                             <p class="stats-label">Đặt lịch hôm nay</p>
                         </div>
                     </div>
@@ -66,7 +66,8 @@
                             <i class="fas fa-money-bill-wave"></i>
                         </div>
                         <div class="stats-content">
-                            <h3 class="stats-number">2.5M</h3>
+                            <h3 class="stats-number mb-0" id="revenueCard"
+                                th:text="${revenueThisMonth}">0</h3>
                             <p class="stats-label">Doanh thu tháng</p>
                         </div>
                     </div>
@@ -171,5 +172,27 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script th:src="@{/js/home-admin.js}"></script>
+<script>
+    function formatCurrency(value) {
+        if (!value) return '0 đ';
+        let amount = parseFloat(value);
+
+        if (amount >= 1_000_000_000_000) return (amount / 1_000_000_000_000) + 'T';
+        if (amount >= 1_000_000_000) return (amount / 1_000_000_000) + 'B';
+        if (amount >= 1_000_000) return (amount / 1_000_000) + 'M';
+        if (amount >= 1_000) return (amount / 1_000) + 'K';
+        return amount + '';
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const revenueEl = document.getElementById('revenueCard');
+        if (revenueEl) {
+            const value = revenueEl.textContent.trim();
+            revenueEl.textContent = formatCurrency(value);
+        }
+    });
+</script>
+
+
 </body>
 </html>

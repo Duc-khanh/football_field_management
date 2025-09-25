@@ -4,6 +4,8 @@ import com.example.football_field_management.model.Account;
 import com.example.football_field_management.repository.AccountRepository;
 import com.example.football_field_management.repository.RoleRepository;
 import com.example.football_field_management.repository.VenueRepository;
+import com.example.football_field_management.service.admin.revenue.IRevenueService;
+import com.example.football_field_management.service.admin.revenue.RevenueService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -20,6 +22,7 @@ public class HomeAdminController {
 
     private final AccountRepository accountRepo;
     private final VenueRepository venueRepo;
+    private final IRevenueService revenueService;
 
     @GetMapping
     public String home(Model model, HttpSession session) {
@@ -52,6 +55,8 @@ public class HomeAdminController {
         }
 
         // 👉 Dữ liệu thống kê
+        model.addAttribute("todayOrders", revenueService.getTodayOrders());
+        model.addAttribute("revenueThisMonth", revenueService.getRevenueThisMonth());
         model.addAttribute("totalUsers", accountRepo.count());
         model.addAttribute("totalVenues", venueRepo.count());
 

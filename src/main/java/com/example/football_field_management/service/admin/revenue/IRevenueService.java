@@ -30,4 +30,6 @@ public interface IRevenueService {
     BigDecimal getYesterdayRevenue();
     Page<OrderPayment> getOrders(int page, int size, Integer year, Integer month);
     List<CustomerSpentDTO> getCustomerSpent(int limit, Integer year, Integer month);
+    long getTodayOrders();
+    BigDecimal getRevenueThisMonth();
 }

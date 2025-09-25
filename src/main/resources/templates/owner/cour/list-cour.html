@@ -27,6 +27,11 @@
             width: 250px;   /* ngắn gọn vừa phải */
             flex: none;     /* không kéo dãn full */
         }
+        .table td,
+        .table th {
+            text-align: center;
+            vertical-align: middle; /* căn giữa theo chiều dọc */
+        }
     </style>
 </head>
 <body class="d-flex flex-column min-vh-100"
@@ -83,8 +88,8 @@
                         <th>Kích thước</th>
                         <th>Mặt sân</th>
                         <th>Đèn</th>
-                        <th>Trạng thái</th>
                         <th>Địa điểm</th>
+                        <th>Trạng thái</th>
                         <th style="width:150px">Hành động</th>
                     </tr>
                     </thead>
@@ -105,12 +110,12 @@
                         <td th:text="${c.fieldSize}"></td>
                         <td th:text="${c.surfaceType}"></td>
                         <td th:text="${c.lightsAvailable ? 'Có' : 'Không'}"></td>
+                        <td th:text="${c.venue != null ? c.venue.venueName : 'Chưa có'}"></td>
                         <td>
                             <span th:text="${c.status ? 'Hoạt động' : 'Ngừng'}"
                                   th:classappend="${c.status} ? 'badge status-active' : 'badge status-block'">
                             </span>
                         </td>
-                        <td th:text="${c.venue != null ? c.venue.venueName : 'Chưa có'}"></td>
                         <td class="actions">
                             <a th:href="@{/cour/edit/{id}(id=${c.courId})}"
                                class="btn btn-sm btn-warning me-1 d-inline-flex align-items-center justify-content-center btn-icon"
@@ -169,8 +174,6 @@
     <div th:replace="~{fragments/admin-footer :: adminFooter}"></div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script th:src="@{/js/alert-notification.js}"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script th:src="@{/js/home-admin.js}"></script>
 <script>
@@ -182,5 +185,7 @@
         }
     });
 </script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script th:src="@{/js/alert-notification.js}"></script>
 </body>
 </html>

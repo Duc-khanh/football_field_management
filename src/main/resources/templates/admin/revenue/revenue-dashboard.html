@@ -115,7 +115,15 @@
                         <!-- Lặp qua danh sách orders -->
                         <tr th:each="order : ${orders.content}">
                             <td>
-                                <span th:text="${order.status}"></span>
+                                <div class="d-flex justify-content-center align-items-left">
+        <span th:text="${order.status}"
+              th:classappend="${order.status.name() == 'COMPLETE'} ? ' badge bg-success-subtle text-success' :
+                              (${order.status.name() == 'PAID'} ? ' badge bg-warning-subtle text-warning' :
+                              (${order.status.name() == 'CANCELLED'} ? ' badge bg-danger-subtle text-danger' :
+                              (${order.status.name() == 'REFUNDED'} ? ' badge bg-secondary-subtle text-secondary' :
+                              ' badge bg-light text-dark')))">
+        </span>
+                                </div>
                             </td>
                             <td th:text="${order.paymentMethod}"></td>
                             <td th:text="${#numbers.formatDecimal(order.totalAmount, 0, 'COMMA', 0, 'POINT')} + ' đ'"></td>

@@ -139,14 +139,23 @@ public class RevenueService implements IRevenueService {
         LocalDate yesterday = LocalDate.now().minusDays(1);
         return orderPaymentRepository.getRevenueByDay(yesterday);
     }
+    @Override
     public Page<OrderPayment> getOrders(int page, int size, Integer year, Integer month) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
         return orderPaymentRepository.findOrdersByYearAndMonth(year, month, pageable);
     }
-
+    @Override
     public List<CustomerSpentDTO> getCustomerSpent(int limit, Integer year, Integer month) {
         Pageable pageable = PageRequest.of(0, limit);
         return orderPaymentRepository.findCustomerSpentByYearMonth(year, month, pageable);
+    }
+    @Override
+    public long getTodayOrders() {
+        return orderPaymentRepository.countTodayOrders();
+    }
+    @Override
+    public BigDecimal getRevenueThisMonth() {
+        return orderPaymentRepository.getRevenueThisMonth();
     }
 
 }

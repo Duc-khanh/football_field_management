@@ -2,93 +2,129 @@
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Thêm sân bóng</title>
-    <link rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <title th:text="${cour.courId != null ? 'Chỉnh sửa sân bóng' : 'Thêm sân bóng'}"></title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/home-admin.css}">
+    <style>
+        .form-select:focus, .form-control:focus {
+            border-color: #0d6efd;
+            box-shadow: 0 0 4px rgba(13,110,253,0.4);
+        }
+    </style>
 </head>
-<body class="container mt-4">
+<body class="d-flex flex-column min-vh-100">
 
-<h2 th:text="${cour.courId != null ? 'Chỉnh sửa sân bóng' : 'Thêm sân bóng mới'}"></h2>
+<!-- Header -->
+<div th:replace="fragments/owner-header :: header"></div>
 
-<form th:action="${cour.courId != null} ? @{/cour/edit/{id}(id=${cour.courId})} : @{/cour/create}"
-      method="post" th:object="${cour}" enctype="multipart/form-data">
+<div class="d-flex flex-grow-1">
+    <!-- Sidebar -->
+    <div th:replace="~{fragments/admin-sidebar :: menuAdmin}"></div>
 
-    <!-- Tên sân -->
-    <div class="mb-3">
-        <label class="form-label">Tên sân</label>
-        <input type="text" th:field="*{courName}" class="form-control"/>
-    </div>
+    <!-- Nội dung -->
+    <div class="d-flex flex-column flex-grow-1">
+        <div id="content" class="content p-4">
+            <div class="card shadow-sm p-4">
+                <h3 class="mb-4" th:text="${cour.courId != null ? 'Chỉnh sửa sân bóng' : 'Thêm sân bóng mới'}"></h3>
 
-    <!-- Giá thuê -->
-    <div class="mb-3">
-        <label class="form-label">Giá thuê (VND/giờ)</label>
-        <input type="number" th:field="*{pricePerHour}" class="form-control"/>
-    </div>
+                <form th:action="${cour.courId != null} ? @{/cour/edit/{id}(id=${cour.courId})} : @{/cour/create}"
+                      method="post" th:object="${cour}" enctype="multipart/form-data"
+                      class="needs-validation" novalidate>
 
-    <!-- Kích thước -->
-    <div class="mb-3">
-        <label class="form-label">Kích thước</label>
-        <input type="text" th:field="*{fieldSize}" class="form-control"/>
-    </div>
+                    <!-- Tên sân -->
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Tên sân</label>
+                        <input type="text" th:field="*{courName}" class="form-control" required/>
+                        <div class="invalid-feedback">Vui lòng nhập tên sân bóng</div>
+                    </div>
 
-    <!-- Loại mặt sân -->
-    <div class="mb-3">
-        <label class="form-label">Loại mặt sân</label>
-        <input type="text" th:field="*{surfaceType}" class="form-control"/>
-    </div>
+                    <!-- Giá thuê -->
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Giá thuê (VND/giờ)</label>
+                        <input type="number" th:field="*{pricePerHour}" class="form-control" min="10000" required/>
+                        <div class="invalid-feedback">Giá thuê phải lớn hơn 10.000 VNĐ</div>
+                    </div>
 
-    <!-- Đèn -->
-    <div class="mb-3">
-        <label class="form-label">Đèn</label>
-        <select th:field="*{lightsAvailable}" class="form-control">
-            <option th:value="true">Có</option>
-            <option th:value="false">Không</option>
-        </select>
-    </div>
+                    <!-- Kích thước -->
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Kích thước</label>
+                        <input type="text" th:field="*{fieldSize}" class="form-control" required/>
+                        <div class="invalid-feedback">Vui lòng nhập kích thước sân</div>
+                    </div>
 
-    <!-- Trạng thái -->
-    <div class="mb-3">
-        <label class="form-label">Trạng thái</label>
-        <select th:field="*{status}" class="form-control">
-            <option th:value="true">Hoạt động</option>
-            <option th:value="false">Ngừng hoạt động</option>
-        </select>
-    </div>
+                    <!-- Loại mặt sân -->
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Loại mặt sân</label>
+                        <input type="text" th:field="*{surfaceType}" class="form-control" required/>
+                        <div class="invalid-feedback">Vui lòng nhập loại mặt sân</div>
+                    </div>
 
-    <!-- Địa điểm -->
-    <div class="mb-3">
-        <label class="form-label">Địa điểm</label>
-        <select th:field="*{venue}" class="form-control">
-            <option value="">-- Chọn địa điểm --</option>
-            <option th:each="venue : ${venues}"
-                    th:value="${venue.venueId}"
-                    th:selected="${cour.venue != null and venue.venueId == cour.venue.venueId}"
-                    th:text="${venue.venueName}">
-            </option>
-        </select>
-    </div>
+                    <!-- Đèn -->
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Đèn</label>
+                        <select th:field="*{lightsAvailable}" class="form-select" required>
+                            <option value="">-- Chọn --</option>
+                            <option th:value="true">Có</option>
+                            <option th:value="false">Không</option>
+                        </select>
+                        <div class="invalid-feedback">Vui lòng chọn thông tin đèn</div>
+                    </div>
 
-    <!-- Upload ảnh -->
-    <div class="mb-3">
-        <label class="form-label">Ảnh sân bóng</label>
-        <input type="file" name="file" class="form-control" onchange="previewImage(event)"/>
+                    <!-- Trạng thái -->
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Trạng thái</label>
+                        <select th:field="*{status}" class="form-select" required>
+                            <option value="">-- Chọn --</option>
+                            <option th:value="true">Hoạt động</option>
+                            <option th:value="false">Ngừng hoạt động</option>
+                        </select>
+                        <div class="invalid-feedback">Vui lòng chọn trạng thái</div>
+                    </div>
 
-        <!-- Hiển thị ảnh cũ hoặc ảnh mới chọn -->
-        <div class="mt-2">
-            <p>Ảnh hiện tại </p>
-            <img id="preview"
-                 th:src="${cour.image != null} ? @{'/uploads/avatars/' + ${cour.image}} : @{/img/no-image.png}"
-                 alt="Ảnh sân"
-                 width="200"
-                 class="img-thumbnail"/>
+                    <!-- Địa điểm -->
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Địa điểm</label>
+                        <select th:field="*{venue}" class="form-select" required>
+                            <option value="">-- Chọn địa điểm --</option>
+                            <option th:each="venue : ${venues}"
+                                    th:value="${venue.venueId}"
+                                    th:selected="${cour.venue != null and venue.venueId == cour.venue.venueId}"
+                                    th:text="${venue.venueName}">
+                            </option>
+                        </select>
+                        <div class="invalid-feedback">Vui lòng chọn địa điểm</div>
+                    </div>
+
+                    <!-- Upload ảnh -->
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Ảnh sân bóng</label>
+                        <input type="file" name="file" class="form-control" onchange="previewImage(event)"/>
+                        <div class="mt-2">
+                            <img id="preview"
+                                 th:src="${cour.image != null} ? @{'/uploads/avatars/' + ${cour.image}} : @{/img/no-image.png}"
+                                 width="200"
+                                 class="img-thumbnail"/>
+                        </div>
+                    </div>
+
+                    <!-- Buttons -->
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">💾 Lưu</button>
+                        <a th:href="@{/cour}" class="btn btn-secondary">Hủy</a>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
+</div>
 
-    <button type="submit" class="btn btn-primary">Lưu</button>
-    <a th:href="@{/cour}" class="btn btn-secondary">Hủy</a>
-</form>
+<!-- Footer -->
+<div id="footer">
+    <div th:replace="~{fragments/admin-footer :: adminFooter}"></div>
+</div>
 
-<!-- JS preview ảnh mới chọn -->
+<!-- JS preview ảnh & validate -->
 <script>
     function previewImage(event) {
         const file = event.target.files[0];
@@ -97,7 +133,22 @@
             preview.src = URL.createObjectURL(file);
         }
     }
+
+    (() => {
+        'use strict'
+        const forms = document.querySelectorAll('.needs-validation')
+        Array.from(forms).forEach(form => {
+            form.addEventListener('submit', event => {
+                if (!form.checkValidity()) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                }
+                form.classList.add('was-validated')
+            }, false)
+        })
+    })()
 </script>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
