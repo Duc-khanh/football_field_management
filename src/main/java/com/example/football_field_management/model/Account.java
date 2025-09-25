@@ -31,6 +31,7 @@ public class Account {
     private String phone;
     private String email;
     private String address;
+    @Column(name = "avt_path")
     private String avt_path;
     @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT TRUE")
     private Boolean status = true;

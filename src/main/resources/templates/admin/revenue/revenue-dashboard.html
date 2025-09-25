@@ -8,46 +8,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link rel="stylesheet" th:href="@{/css/home-admin.css}">
     <link rel="stylesheet" th:href="@{/css/alert.css}">
-    <script th:src="@{js/summary.js}"></script>
+    <link rel="stylesheet" th:href="@{/css/revenue.css}">
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        .filter-row {
-            margin-left: 20px;
-            margin-right: 20px;
-        }
-        .stats-card {
-            display: block;
-            flex-direction: column;
-            justify-content: space-between;
-            background: #fff;
-            border-radius: 12px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-            height: 120px;
-        }
-
-        .stats-title {
-            font-size: 1rem;
-            font-weight: 600;
-            color: #555;
-            margin-bottom: 10px;
-            text-align: left;
-            padding-bottom: 20px;
-        }
-
-        .stats-title { display: block !important; white-space: normal !important; }
-        .stats-value { display: block !important; }
-        .text-success {
-            color: #28a745; /* xanh lá */
-        }
-        .text-danger {
-            color: #dc3545; /* đỏ */
-        }
-        .text-secondary {
-            color: #6c757d; /* xám */
-        }
-
-    </style>
 </head>
 
 <body class="d-flex flex-column min-vh-100">
@@ -107,40 +70,117 @@
                     </div>
                 </div>
             </div>
-
         </div>
-            <div class="mb-3 d-flex align-items-center gap-3 filter-row">
+
+        <!-- Filter -->
+        <div class="mb-3 d-flex align-items-center gap-3 filter-row px-4">
             <label class="fw-bold mb-0">Năm:</label>
             <select id="yearSelect" class="form-select w-auto">
-                <option th:each="y : ${years}"
-                        th:value="${y}"
-                        th:text="${y}"
-                        th:selected="${y == year}">
-                </option>
+                <option th:each="y : ${years}" th:value="${y}" th:text="${y}" th:selected="${y == year}"></option>
             </select>
 
             <label class="fw-bold mb-0">Tháng:</label>
             <select id="monthSelect" class="form-select w-auto">
                 <option value="">-- Tất cả --</option>
                 <option th:each="m : ${#numbers.sequence(1,12)}"
-                        th:value="${m}"
-                        th:text="'Tháng ' + ${m}">
-                </option>
+                        th:value="${m}" th:text="'Tháng ' + ${m}"></option>
             </select>
         </div>
 
-        <div class="card p-4 shadow-sm rounded-3 mb-4 filter-row">
-            <canvas id="multiRevenueChart" width="900" height="400"></canvas>
+        <!-- Biểu đồ -->
+        <div class="card p-4 shadow-sm rounded-3 mb-4 mx-4">
+            <h5 class="mb-3">Biểu đồ doanh thu</h5>
+            <canvas id="multiRevenueChart" height="350" width="800"></canvas>
+        </div>
+
+        <!-- Transactions & Customers -->
+        <div class="row mx-4 mb-4">
+            <!-- Transactions -->
+            <div class="col-lg-8 mb-4">
+                <div class="card p-3 shadow-sm h-100">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="mb-0">Giao dịch</h5>
+                    </div>
+                    <table class="table align-middle" id="ordersTable">
+                        <thead>
+                        <tr>
+                            <th>Trạng thái</th>
+                            <th>Phương thức</th>
+                            <th>Số tiền</th>
+                            <th>Ngày</th>
+                            <th>Khách hàng</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <!-- Lặp qua danh sách orders -->
+                        <tr th:each="order : ${orders.content}">
+                            <td>
+                                <span th:text="${order.status}"></span>
+                            </td>
+                            <td th:text="${order.paymentMethod}"></td>
+                            <td th:text="${#numbers.formatDecimal(order.totalAmount, 0, 'COMMA', 0, 'POINT')} + ' đ'"></td>
+                            <td th:text="${#temporals.format(order.paidAt, 'dd/MM/yyyy HH:mm')}"></td>
+                            <td th:text="${order.account.fullName}"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <nav>
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item" th:classappend="${orders.first}? 'disabled'">
+                                <a class="page-link" th:href="@{|/admin/orders?page=${orders.number - 1}&size=${orders.size}|}">Trước</a>
+                            </li>
+                            <li class="page-item"
+                                th:each="i : ${#numbers.sequence(0, orders.totalPages - 1)}"
+                                th:classappend="${i == orders.number} ? 'active'">
+                                <a class="page-link" th:href="@{|/admin/orders?page=${i}&size=${orders.size}|}"
+                                   th:text="${i + 1}"></a>
+                            </li>
+                            <li class="page-item" th:classappend="${orders.last}? 'disabled'">
+                                <a class="page-link" th:href="@{|/admin/orders?page=${orders.number + 1}&size=${orders.size}|}">Tiếp</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+
+            <div class="col-lg-4 mb-4">
+                <div class="card p-3 shadow-sm h-100">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="mb-0">Top mua hàng</h5>
+                    </div>
+                    <ul class="list-group list-group-flush" id="customerList">
+                        <li class="list-group-item d-flex align-items-center"
+                            th:each="c : ${customers}">
+
+                            <!-- Avatar -->
+                            <img th:src="${c.avatar != null ? '/uploads/avatars/' + c.avatar : '/images/default-avatar.png'}"
+                                 class="rounded-circle me-3" width="48" height="48" alt="avatar">
+                            <!-- Thông tin khách hàng -->
+                            <div class="flex-grow-1">
+                                <div class="fw-bold" th:text="${c.fullName}"></div>
+                                <small class="text-muted" th:text="${c.email}"></small>
+                            </div>
+
+                            <!-- Tổng chi tiêu + địa chỉ -->
+                            <div class="text-end">
+                                <div class="fw-bold text-primary"
+                                     th:text="${#numbers.formatDecimal(c.totalSpent,0,'COMMA',0,'POINT')}"></div>
+                                <small class="text-muted" th:text="${c.address}"></small>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
         </div>
     </div>
-
-    <!-- Render dữ liệu JSON -->
-    <script id="revenueData" type="application/json"
-            th:utext="${revenueMapJson}"></script>
-
-    <!-- File JS ngoài -->
-    <script th:src="@{/js/chart.js}"></script>
 </div>
+
+<!-- Render dữ liệu JSON -->
+<script id="revenueData" type="application/json"
+        th:utext="${revenueMapJson}"></script>
+
+<!-- File JS ngoài -->
+<script th:src="@{/js/chart.js}"></script>
 
 <!-- Footer -->
 <div th:replace="~{fragments/admin-footer :: adminFooter}"></div>
@@ -148,5 +188,6 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script th:src="@{/js/alert-notification.js}"></script>
 <script th:src="@{/js/home-admin.js}"></script>
+<script th:src="@{js/summary.js}"></script>
 </body>
 </html>

@@ -1,0 +1,59 @@
+
+.filter-row {
+    margin-left: 20px;
+    margin-right: 20px;
+}
+.stats-card {
+    display: block;
+    flex-direction: column;
+    justify-content: space-between;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    height: 120px;
+}
+
+.stats-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #555;
+    margin-bottom: 10px;
+    text-align: left;
+    padding-bottom: 20px;
+}
+
+.stats-title { display: block !important; white-space: normal !important; }
+.stats-value { display: block !important; }
+.text-success {
+    color: #28a745; /* xanh lá */
+}
+.text-danger {
+    color: #dc3545; /* đỏ */
+}
+.text-secondary {
+    color: #6c757d; /* xám */
+}
+.badge-success {
+    background-color: #28a745 !important; /* xanh lá */
+    color: #fff !important;
+}
+
+.badge-primary {
+    background-color: #0d6efd !important; /* xanh dương */
+    color: #fff !important;
+}
+
+.badge-danger {
+    background-color: #dc3545 !important; /* đỏ */
+    color: #fff !important;
+}
+
+.badge-warning {
+    background-color: #ffc107 !important; /* vàng */
+    color: #212529 !important;           /* chữ đậm dễ nhìn */
+}
+
+.badge-secondary {
+    background-color: #6c757d !important; /* xám */
+    color: #fff !important;
+}
