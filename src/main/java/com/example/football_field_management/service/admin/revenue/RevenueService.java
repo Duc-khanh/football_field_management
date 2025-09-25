@@ -1,8 +1,13 @@
 package com.example.football_field_management.service.admin.revenue;
 
+import com.example.football_field_management.dto.CustomerSpentDTO;
 import com.example.football_field_management.model.OrderPayment;
 import com.example.football_field_management.repository.OrderPaymentRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -134,4 +139,23 @@ public class RevenueService implements IRevenueService {
         LocalDate yesterday = LocalDate.now().minusDays(1);
         return orderPaymentRepository.getRevenueByDay(yesterday);
     }
+    @Override
+    public Page<OrderPayment> getOrders(int page, int size, Integer year, Integer month) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
+        return orderPaymentRepository.findOrdersByYearAndMonth(year, month, pageable);
+    }
+    @Override
+    public List<CustomerSpentDTO> getCustomerSpent(int limit, Integer year, Integer month) {
+        Pageable pageable = PageRequest.of(0, limit);
+        return orderPaymentRepository.findCustomerSpentByYearMonth(year, month, pageable);
+    }
+    @Override
+    public long getTodayOrders() {
+        return orderPaymentRepository.countTodayOrders();
+    }
+    @Override
+    public BigDecimal getRevenueThisMonth() {
+        return orderPaymentRepository.getRevenueThisMonth();
+    }
+
 }

@@ -14,5 +14,8 @@ public class CourDTO {
     private boolean lightsAvailable;
     private String surfaceType;
     private String status;
+
+    public CourDTO(Long courId, String courName, Double pricePerHour, Boolean status) {
+    }
 }
 

@@ -1,5 +1,6 @@
 package com.example.football_field_management.service.owner.cour;
 
+import com.example.football_field_management.dto.CourDTO;
 import com.example.football_field_management.model.Cour;
 import com.example.football_field_management.repository.CourRepository;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -71,6 +73,7 @@ public class CourServiceImpl implements ICourService {
             updateCour.setLightsAvailable(cour.getLightsAvailable());
             updateCour.setStatus(cour.getStatus());
             updateCour.setVenue(cour.getVenue());
+            updateCour.setImage(cour.getImage());
             return courRepository.save(updateCour);
         }
         return null;
@@ -106,6 +109,19 @@ public class CourServiceImpl implements ICourService {
     @Override
     public Page<Cour> findByNameAndStatus(String keyword, Boolean status, Pageable pageable) {
         return courRepository.findByCourNameContainingIgnoreCaseAndStatus(keyword, status, pageable);
+    }
+
+    @Override
+    public List<CourDTO> findByVenueIdC(Long venueId) {
+        List<Cour> cours = courRepository.findByVenue_VenueId(venueId);
+        return cours.stream()
+                .map(c -> new CourDTO(
+                        c.getCourId(),
+                        c.getCourName(),
+                        c.getPricePerHour(),
+                        c.getStatus()
+                ))
+                .collect(Collectors.toList());
     }
 
 
