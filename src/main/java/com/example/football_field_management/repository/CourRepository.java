@@ -16,7 +16,12 @@ public interface CourRepository extends JpaRepository<Cour, Long> {
     List<Cour> findByVenue_VenueId(Long venueId);
 
     List<Cour> findBySurfaceType(String surfaceType);
+
     Page<Cour> findByCourNameContainingIgnoreCase(String keyword, Pageable pageable);
+
+    Page<Cour> findByStatus(Boolean status, Pageable pageable);
+
+    Page<Cour> findByCourNameContainingIgnoreCaseAndStatus(String keyword, Boolean status, Pageable pageable);
 
 
 

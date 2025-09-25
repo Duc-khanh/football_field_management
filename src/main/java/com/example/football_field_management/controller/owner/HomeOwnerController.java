@@ -4,9 +4,10 @@ package com.example.football_field_management.controller.owner;
 import com.example.football_field_management.model.Account;
 import com.example.football_field_management.repository.AccountRepository;
 
-import com.example.football_field_management.repository.VenueRepository;
+import com.example.football_field_management.repository.CourRepository;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -14,12 +15,16 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+
 @Controller
 @RequestMapping("/owner/dashboard")
 @RequiredArgsConstructor
 public class HomeOwnerController {
 
     private final AccountRepository accountRepo;
+    private final CourRepository courRepo;
+    @Value("${file.upload-dir}")
+    private String uploadDir;
 
 
     @GetMapping
@@ -45,8 +50,12 @@ public class HomeOwnerController {
                     account.getAvt_path() != null ? account.getAvt_path() : "/images/avatar.png");
             model.addAttribute("role", "OWNER");
         }
+        model.addAttribute("totalUsers", accountRepo.count());
+        model.addAttribute("totalCour", courRepo.count());
+
 
         return "owner/home";
     }
+
 }
 
