@@ -85,7 +85,11 @@
                                 <label class="form-label fw-bold">
                                     <i class="fa-solid fa-layer-group"></i>Loại mặt sân
                                 </label>
-                                <input type="text" th:field="*{surfaceType}" class="form-control" required/>
+                                <input type="text" th:field="*{surfaceType}"
+                                       class="form-control"
+                                       required
+                                       pattern="[A-Za-z\s]+"
+                                       title="Loại mặt sân chỉ được nhập chữ">
                                 <div class="invalid-feedback">Vui lòng nhập loại mặt sân</div>
                             </div>
                         </div>

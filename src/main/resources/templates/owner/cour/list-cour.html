@@ -106,7 +106,7 @@
                         </td>
 
                         <td th:text="${c.courName}"></td>
-                        <td th:text="${c.pricePerHour}"></td>
+                        <td th:text="${#numbers.formatDecimal(c.pricePerHour, 0, 'COMMA', 0, 'POINT')}"></td>
                         <td th:text="${c.fieldSize}"></td>
                         <td th:text="${c.surfaceType}"></td>
                         <td th:text="${c.lightsAvailable ? 'Có' : 'Không'}"></td>
