@@ -33,6 +33,7 @@ public class Cour {
 
     @Column(name = "status")
     private Boolean status;
+    private String image;
 
     @ManyToOne
     @JoinColumn(name = "venue_id", nullable = false)

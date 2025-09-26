@@ -1,6 +1,7 @@
 package com.example.football_field_management.service.owner.cour;
 
 
+import com.example.football_field_management.dto.CourDTO;
 import com.example.football_field_management.model.Cour;
 import com.example.football_field_management.service.IGeneraService;
 
@@ -30,6 +31,8 @@ public interface ICourService extends IGeneraService<Cour> {
 
     Page<Cour> findByStatus(Boolean status, Pageable pageable);
     Page<Cour> findByNameAndStatus(String keyword, Boolean status, Pageable pageable);
+    List<CourDTO> findByVenueIdC(Long venueId);
+
 
 }
 

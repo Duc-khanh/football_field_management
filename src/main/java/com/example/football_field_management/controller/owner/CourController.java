@@ -4,6 +4,7 @@ import com.example.football_field_management.model.Cour;
 import com.example.football_field_management.service.admin.venue.IVenueService;
 import com.example.football_field_management.service.owner.cour.ICourService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -12,9 +13,19 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.io.File;
+import java.io.IOException;
+
 
 @Controller
 @RequestMapping("/cour")
@@ -23,11 +34,14 @@ public class CourController {
 
     private final ICourService courService;
     private final IVenueService venueService;
+    @Value("${file.upload-dir}")
+    private String uploadDir;
+
 
     @GetMapping
     public String listCour(
             @RequestParam(defaultValue = "") String keyword,
-            @RequestParam(required = false) Boolean status,   // nhận thêm status
+            @RequestParam(required = false) Boolean status,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
 
@@ -36,19 +50,15 @@ public class CourController {
         Pageable pageable = PageRequest.of(page, size, Sort.by("courId").descending());
         Page<Cour> courPage;
 
-        // Trường hợp có keyword + status
         if (keyword != null && !keyword.trim().isEmpty() && status != null) {
             courPage = courService.findByNameAndStatus(keyword, status, pageable);
         }
-        // Chỉ có keyword
         else if (keyword != null && !keyword.trim().isEmpty()) {
             courPage = courService.searchByName(keyword, pageable);
         }
-        // Chỉ có status
         else if (status != null) {
             courPage = courService.findByStatus(status, pageable);
         }
-        // Không có gì => lấy hết
         else {
             courPage = courService.findAll(pageable);
         }
@@ -78,8 +88,53 @@ public class CourController {
 
 
     @PostMapping("/create")
-    public String createCour(@ModelAttribute Cour cour) {
+    public String createCour(@ModelAttribute Cour cour,
+                             @RequestParam("file") MultipartFile file,
+                             RedirectAttributes redirectAttributes) {
+        if (!file.isEmpty()) {
+            try {
+                String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
+                File dest = new File(uploadDir + File.separator + fileName);
+                file.transferTo(dest);
+                cour.setImage(fileName); // lưu tên file vào DB
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
         courService.save(cour);
+        redirectAttributes.addFlashAttribute("successMessage", "Thêm sân bóng thành công!");
+        return "redirect:/cour";
+    }
+
+    @PostMapping("/edit/{id}")
+    public String updateCour(@PathVariable Long id,
+                             @ModelAttribute Cour cour,
+                             RedirectAttributes redirectAttributes,
+                             @RequestParam(value = "file", required = false) MultipartFile file) throws IOException {
+        // Lấy bản ghi cũ để giữ thông tin không bị mất
+        Cour oldCour = courService.findById(id).orElseThrow();
+
+        if (file != null && !file.isEmpty()) {
+            // Tạo tên file duy nhất
+            String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
+            Path path = Paths.get(uploadDir, fileName);
+
+            // Lưu file vào thư mục upload
+            Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+
+            // Set ảnh mới
+            cour.setImage(fileName);
+        } else {
+            // Không upload ảnh mới → giữ ảnh cũ
+            cour.setImage(oldCour.getImage());
+        }
+
+        // Giữ lại các trường không sửa (nếu form không có)
+        cour.setCourId(oldCour.getCourId());
+        cour.setVenue(oldCour.getVenue()); // nếu bạn không cho sửa venue trong form
+
+        courService.update(id, cour);
+        redirectAttributes.addFlashAttribute("successMessage", "Cập nhật sân bóng thành công!");
         return "redirect:/cour";
     }
 
@@ -96,11 +151,6 @@ public class CourController {
     }
 
 
-    @PostMapping("/edit/{id}")
-    public String updateCour(@PathVariable Long id, @ModelAttribute Cour cour) {
-        courService.update(id, cour);
-        return "redirect:/cour";
-    }
 
     @GetMapping("/delete/{id}")
     public String deleteCour(@PathVariable Long id) {
@@ -119,12 +169,10 @@ public class CourController {
 
     @GetMapping("/detail/{id}")
     public String viewDetail(@PathVariable Long id, Model model) {
-        Optional<Cour> cour = courService.findById(id);
-        if (cour.isPresent()) {
-            model.addAttribute("cour", cour.get());
-            return "owner/cour/detail-cour";
-        }
-        return "redirect:/cour";
+        Cour cour = courService.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy sân với id: " + id));
+        model.addAttribute("cour", cour);
+        return "owner/cour/detail-cour";
     }
 
 }
