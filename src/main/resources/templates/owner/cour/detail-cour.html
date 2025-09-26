@@ -33,21 +33,15 @@
 </head>
 <body class="d-flex flex-column min-vh-100">
 
-<!-- Header -->
 <div th:replace="fragments/owner-header :: header"></div>
 
 <div class="d-flex flex-grow-1">
-    <!-- Sidebar -->
     <div th:replace="~{fragments/admin-sidebar :: menuAdmin}"></div>
 
-    <!-- Nội dung -->
     <div class="d-flex flex-column flex-grow-1">
         <div id="content" class="content p-4">
             <div class="card detail-card shadow-sm p-4">
-                <h3 class="mb-4">
-                    Chi tiết sân bóng
-                </h3>
-
+                <h3 class="mb-4"></h3>
                 <table class="table table-bordered table-hover align-middle">
                     <tr>
                         <th><i class="fa-solid fa-image me-2"></i>Ảnh sân</th>
@@ -108,7 +102,6 @@
     </div>
 </div>
 
-<!-- Footer -->
 <div id="footer">
     <div th:replace="~{fragments/admin-footer :: adminFooter}"></div>
 </div>
