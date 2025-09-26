@@ -3,56 +3,116 @@
 <head>
     <meta charset="UTF-8">
     <title>Chi tiết sân bóng</title>
-    <link rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/home-admin.css}">
+    <style>
+        .detail-card {
+            border-radius: 12px;
+            border: none;
+        }
+        .table th {
+            width: 220px;
+            background: #f1f3f5;
+            font-weight: 600;
+        }
+        .table td {
+            background: #fff;
+        }
+        .table-hover tbody tr:hover td {
+            background-color: #f8f9fa;
+        }
+        .img-preview {
+            width: 220px;
+            height: 140px;
+            object-fit: cover;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+        }
+    </style>
 </head>
-<body class="container mt-4">
+<body class="d-flex flex-column min-vh-100">
 
-<h2>Chi tiết sân bóng</h2>
+<!-- Header -->
+<div th:replace="fragments/owner-header :: header"></div>
 
-<table class="table table-bordered">
-    <tr>
-        <th>Ảnh sân</th>
-        <td>
-            <img th:src="${cour.image != null and !#strings.isEmpty(cour.image)
-                  ? '/uploads/avatars/' + cour.image
-                  : '/images/broken-image.png'}"
-                 alt="Ảnh sân"
-                 class="img-thumbnail"
-                 style="width: 80px; height: 60px; object-fit: cover;">
-        </td>
-    </tr>
-    <tr>
-        <th>Tên sân</th>
-        <td th:text="${cour.courName}"></td>
-    </tr>
-    <tr>
-        <th>Giá thuê (VND/giờ)</th>
-        <td th:text="${cour.pricePerHour}"></td>
-    </tr>
-    <tr>
-        <th>Kích thước</th>
-        <td th:text="${cour.fieldSize}"></td>
-    </tr>
-    <tr>
-        <th>Loại mặt sân</th>
-        <td th:text="${cour.surfaceType}"></td>
-    </tr>
-    <tr>
-        <th>Đèn</th>
-        <td th:text="${cour.lightsAvailable ? 'Có' : 'Không'}"></td>
-    </tr>
-    <tr>
-        <th>Trạng thái</th>
-        <td th:text="${cour.status ? 'Hoạt động' : 'Ngừng hoạt động'}"></td>
-    </tr>
-    <tr>
-        <th>Địa điểm</th>
-        <td th:text="${cour.venue != null ? cour.venue.venueName : 'Chưa có'}"></td>
-    </tr>
-</table>
+<div class="d-flex flex-grow-1">
+    <!-- Sidebar -->
+    <div th:replace="~{fragments/admin-sidebar :: menuAdmin}"></div>
 
-<a th:href="@{/cour}" class="btn btn-secondary">Quay lại</a>
+    <!-- Nội dung -->
+    <div class="d-flex flex-column flex-grow-1">
+        <div id="content" class="content p-4">
+            <div class="card detail-card shadow-sm p-4">
+                <h3 class="mb-4">
+                    Chi tiết sân bóng
+                </h3>
 
+                <table class="table table-bordered table-hover align-middle">
+                    <tr>
+                        <th><i class="fa-solid fa-image me-2"></i>Ảnh sân</th>
+                        <td>
+                            <img th:src="${cour.image != null and !#strings.isEmpty(cour.image)
+                                  ? '/uploads/avatars/' + cour.image
+                                  : '/img/no-image.png'}"
+                                 alt="Ảnh sân"
+                                 class="img-preview">
+                        </td>
+                    </tr>
+                    <tr>
+                        <th><i class="fa-solid fa-signature me-2"></i>Tên sân</th>
+                        <td th:text="${cour.courName}"></td>
+                    </tr>
+                    <tr>
+                        <th><i class="fa-solid fa-money-bill-wave me-2"></i>Giá thuê (VND/giờ)</th>
+                        <td class="fw-bold text-success"
+                            th:text="${#numbers.formatDecimal(cour.pricePerHour, 0, 'POINT', 0, 'COMMA')}"></td>
+                    </tr>
+                    <tr>
+                        <th><i class="fa-solid fa-ruler-combined me-2"></i>Kích thước</th>
+                        <td th:text="${cour.fieldSize}"></td>
+                    </tr>
+                    <tr>
+                        <th><i class="fa-solid fa-layer-group me-2"></i>Loại mặt sân</th>
+                        <td>
+                            <span class="badge bg-info text-dark" th:text="${cour.surfaceType}"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th><i class="fa-solid fa-lightbulb me-2"></i>Đèn</th>
+                        <td>
+                            <span th:classappend="${cour.lightsAvailable} ? 'badge bg-success' : 'badge bg-secondary'"
+                                  th:text="${cour.lightsAvailable ? 'Có' : 'Không'}"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th><i class="fa-solid fa-toggle-on me-2"></i>Trạng thái</th>
+                        <td>
+                            <span th:classappend="${cour.status} ? 'badge bg-success' : 'badge bg-danger'"
+                                  th:text="${cour.status ? 'Hoạt động' : 'Ngừng hoạt động'}"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th><i class="fa-solid fa-location-dot me-2"></i>Địa điểm</th>
+                        <td th:text="${cour.venue != null ? cour.venue.venueName : 'Chưa có'}"></td>
+                    </tr>
+                </table>
+
+                <div class="mt-4">
+                    <a th:href="@{/cour}" class="btn btn-outline-secondary">
+                        <i class="fa-solid fa-arrow-left"></i> Quay lại
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+<div id="footer">
+    <div th:replace="~{fragments/admin-footer :: adminFooter}"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

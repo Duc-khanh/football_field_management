@@ -7,9 +7,24 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link rel="stylesheet" th:href="@{/css/home-admin.css}">
     <style>
-        .form-select:focus, .form-control:focus {
+        .form-control:focus, .form-select:focus {
             border-color: #0d6efd;
-            box-shadow: 0 0 4px rgba(13,110,253,0.4);
+            box-shadow: 0 0 6px rgba(13,110,253,0.3);
+        }
+        .card-form {
+            border-radius: 12px;
+            border: none;
+        }
+        .form-label i {
+            color: #0d6efd;
+            margin-right: 6px;
+        }
+        #preview {
+            width: 220px;
+            height: 140px;
+            object-fit: cover;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
         }
     </style>
 </head>
@@ -25,93 +40,127 @@
     <!-- Nội dung -->
     <div class="d-flex flex-column flex-grow-1">
         <div id="content" class="content p-4">
-            <div class="card shadow-sm p-4">
-                <h3 class="mb-4" th:text="${cour.courId != null ? 'Chỉnh sửa sân bóng' : 'Thêm sân bóng mới'}"></h3>
+            <div class="card card-form shadow-sm p-4">
+                <h3 class="mb-4">
+                    <span th:text="${cour.courId != null ? 'Chỉnh sửa sân bóng' : 'Thêm sân bóng mới'}"></span>
+                </h3>
 
                 <form th:action="${cour.courId != null} ? @{/cour/edit/{id}(id=${cour.courId})} : @{/cour/create}"
                       method="post" th:object="${cour}" enctype="multipart/form-data"
                       class="needs-validation" novalidate>
 
-                    <!-- Tên sân -->
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Tên sân</label>
-                        <input type="text" th:field="*{courName}" class="form-control" required/>
-                        <div class="invalid-feedback">Vui lòng nhập tên sân bóng</div>
-                    </div>
+                    <div class="row">
+                        <!-- Cột trái -->
+                        <div class="col-md-6">
+                            <!-- Tên sân -->
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">
+                                    <i class="fa-solid fa-signature"></i>Tên sân
+                                </label>
+                                <input type="text" th:field="*{courName}" class="form-control" required/>
+                                <div class="invalid-feedback">Vui lòng nhập tên sân bóng</div>
+                            </div>
 
-                    <!-- Giá thuê -->
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Giá thuê (VND/giờ)</label>
-                        <input type="number" th:field="*{pricePerHour}" class="form-control" min="10000" required/>
-                        <div class="invalid-feedback">Giá thuê phải lớn hơn 10.000 VNĐ</div>
-                    </div>
+                            <!-- Giá thuê -->
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">
+                                    <i class="fa-solid fa-money-bill-wave"></i>Giá thuê (VND/giờ)
+                                </label>
+                                <input type="number" th:field="*{pricePerHour}" class="form-control" min="10000"
+                                       required/>
+                                <div class="invalid-feedback">Giá thuê phải lớn hơn 10.000 VNĐ</div>
+                            </div>
 
-                    <!-- Kích thước -->
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Kích thước</label>
-                        <input type="text" th:field="*{fieldSize}" class="form-control" required/>
-                        <div class="invalid-feedback">Vui lòng nhập kích thước sân</div>
-                    </div>
+                            <!-- Kích thước -->
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">
+                                    <i class="fa-solid fa-ruler-combined"></i>Kích thước
+                                </label>
+                                <input type="text" th:field="*{fieldSize}" class="form-control" required/>
+                                <div class="invalid-feedback">Vui lòng nhập kích thước sân</div>
+                            </div>
 
-                    <!-- Loại mặt sân -->
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Loại mặt sân</label>
-                        <input type="text" th:field="*{surfaceType}" class="form-control" required/>
-                        <div class="invalid-feedback">Vui lòng nhập loại mặt sân</div>
-                    </div>
+                            <!-- Loại mặt sân -->
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">
+                                    <i class="fa-solid fa-layer-group"></i>Loại mặt sân
+                                </label>
+                                <input type="text" th:field="*{surfaceType}"
+                                       class="form-control"
+                                       required
+                                       pattern="[A-Za-z\s]+"
+                                       title="Loại mặt sân chỉ được nhập chữ">
+                                <div class="invalid-feedback">Vui lòng nhập loại mặt sân</div>
+                            </div>
+                        </div>
 
-                    <!-- Đèn -->
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Đèn</label>
-                        <select th:field="*{lightsAvailable}" class="form-select" required>
-                            <option value="">-- Chọn --</option>
-                            <option th:value="true">Có</option>
-                            <option th:value="false">Không</option>
-                        </select>
-                        <div class="invalid-feedback">Vui lòng chọn thông tin đèn</div>
-                    </div>
+                        <!-- Cột phải -->
+                        <div class="col-md-6">
+                            <!-- Đèn -->
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">
+                                    <i class="fa-solid fa-lightbulb"></i>Đèn
+                                </label>
+                                <select th:field="*{lightsAvailable}" class="form-select" required>
+                                    <option value="">-- Chọn --</option>
+                                    <option th:value="true">Có</option>
+                                    <option th:value="false">Không</option>
+                                </select>
+                                <div class="invalid-feedback">Vui lòng chọn thông tin đèn</div>
+                            </div>
 
-                    <!-- Trạng thái -->
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Trạng thái</label>
-                        <select th:field="*{status}" class="form-select" required>
-                            <option value="">-- Chọn --</option>
-                            <option th:value="true">Hoạt động</option>
-                            <option th:value="false">Ngừng hoạt động</option>
-                        </select>
-                        <div class="invalid-feedback">Vui lòng chọn trạng thái</div>
-                    </div>
+                            <!-- Trạng thái -->
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">
+                                    <i class="fa-solid fa-toggle-on"></i>Trạng thái
+                                </label>
+                                <select th:field="*{status}" class="form-select" required>
+                                    <option value="">-- Chọn --</option>
+                                    <option th:value="true">Hoạt động</option>
+                                    <option th:value="false">Ngừng hoạt động</option>
+                                </select>
+                                <div class="invalid-feedback">Vui lòng chọn trạng thái</div>
+                            </div>
 
-                    <!-- Địa điểm -->
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Địa điểm</label>
-                        <select th:field="*{venue}" class="form-select" required>
-                            <option value="">-- Chọn địa điểm --</option>
-                            <option th:each="venue : ${venues}"
-                                    th:value="${venue.venueId}"
-                                    th:selected="${cour.venue != null and venue.venueId == cour.venue.venueId}"
-                                    th:text="${venue.venueName}">
-                            </option>
-                        </select>
-                        <div class="invalid-feedback">Vui lòng chọn địa điểm</div>
-                    </div>
+                            <!-- Địa điểm -->
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">
+                                    <i class="fa-solid fa-location-dot"></i>Địa điểm
+                                </label>
+                                <select th:field="*{venue}" class="form-select" required>
+                                    <option value="">-- Chọn địa điểm --</option>
+                                    <option th:each="venue : ${venues}"
+                                            th:value="${venue.venueId}"
+                                            th:selected="${cour.venue != null and venue.venueId == cour.venue.venueId}"
+                                            th:text="${venue.venueName}">
+                                    </option>
+                                </select>
+                                <div class="invalid-feedback">Vui lòng chọn địa điểm</div>
+                            </div>
 
-                    <!-- Upload ảnh -->
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Ảnh sân bóng</label>
-                        <input type="file" name="file" class="form-control" onchange="previewImage(event)"/>
-                        <div class="mt-2">
-                            <img id="preview"
-                                 th:src="${cour.image != null} ? @{'/uploads/avatars/' + ${cour.image}} : @{/img/no-image.png}"
-                                 width="200"
-                                 class="img-thumbnail"/>
+                            <!-- Upload ảnh -->
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">
+                                    <i class="fa-solid fa-image"></i>Ảnh sân bóng
+                                </label>
+                                <input type="file" name="file" class="form-control" onchange="previewImage(event)"/>
+                                <div class="mt-3">
+                                    <img id="preview"
+                                         th:src="${cour.image != null} ? @{'/uploads/avatars/' + ${cour.image}} : @{/img/no-image.png}"
+                                         class="img-thumbnail"/>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
                     <!-- Buttons -->
-                    <div class="d-flex gap-2">
-                        <button type="submit" class="btn btn-primary">💾 Lưu</button>
-                        <a th:href="@{/cour}" class="btn btn-secondary">Hủy</a>
+                    <div class="d-flex gap-2 mt-3">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fa-solid fa-floppy-disk"></i> Lưu
+                        </button>
+                        <a th:href="@{/cour}" class="btn btn-outline-secondary">
+                            <i class="fa-solid fa-xmark"></i> Hủy
+                        </a>
                     </div>
                 </form>
             </div>
