@@ -131,7 +131,7 @@ public class CourController {
 
         // Giữ lại các trường không sửa (nếu form không có)
         cour.setCourId(oldCour.getCourId());
-        cour.setVenue(oldCour.getVenue()); // nếu bạn không cho sửa venue trong form
+//        cour.setVenue(oldCour.getVenue()); // nếu bạn không cho sửa venue trong form
 
         courService.update(id, cour);
         redirectAttributes.addFlashAttribute("successMessage", "Cập nhật sân bóng thành công!");
