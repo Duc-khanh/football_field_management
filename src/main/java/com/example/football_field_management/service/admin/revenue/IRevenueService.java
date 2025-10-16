@@ -32,4 +32,6 @@ public interface IRevenueService {
     List<CustomerSpentDTO> getCustomerSpent(int limit, Integer year, Integer month);
     long getTodayOrders();
     BigDecimal getRevenueThisMonth();
+    List<OrderPayment> getOrdersByMonth(int year, Integer month);
+    long getUniqueBuyers(int year, Integer month);
 }

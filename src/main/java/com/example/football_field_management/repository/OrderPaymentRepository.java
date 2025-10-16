@@ -52,11 +52,11 @@ public interface OrderPaymentRepository extends JpaRepository<OrderPayment, Long
             @Param("end") LocalDateTime end
     );
     @Query("""
-       SELECT o
-       FROM OrderPayment o
-       WHERE FUNCTION('YEAR', o.paidAt) = :year
-         AND FUNCTION('MONTH', o.paidAt) = :month
-       """)
+   SELECT o
+   FROM OrderPayment o
+   WHERE FUNCTION('YEAR', o.paidAt) = :year
+     AND FUNCTION('MONTH', o.paidAt) = :month
+""")
     List<OrderPayment> findByYearAndMonth(@Param("year") int year,
                                           @Param("month") int month);
     @Query("SELECT COUNT(DISTINCT o.account.account_id) " +
@@ -75,10 +75,10 @@ public interface OrderPaymentRepository extends JpaRepository<OrderPayment, Long
 
     /** Lấy tất cả order trong 1 năm */
     @Query("""
-        SELECT o
-        FROM OrderPayment o
-        WHERE FUNCTION('YEAR', o.paidAt) = :year
-    """)
+   SELECT o
+   FROM OrderPayment o
+   WHERE FUNCTION('YEAR', o.paidAt) = :year
+""")
     List<OrderPayment> findByYear(@Param("year") int year);
 
     /** Đếm số người mua duy nhất trong năm */
@@ -92,7 +92,7 @@ public interface OrderPaymentRepository extends JpaRepository<OrderPayment, Long
     SELECT COALESCE(SUM(o.totalAmount), 0)
     FROM OrderPayment o
     WHERE DATE(o.paidAt) = :day
-      AND o.status = 'PAID'
+      AND o.status = 'COMPLETE'
 """)
     BigDecimal getRevenueByDay(@Param("day") LocalDate day);
     @Query("""
@@ -115,16 +115,9 @@ public interface OrderPaymentRepository extends JpaRepository<OrderPayment, Long
     List<CustomerSpentDTO> findCustomerSpentByYearMonth(@Param("year") Integer year,
                                                         @Param("month") Integer month,
                                                         Pageable pageable);
+    @Query("SELECT o FROM OrderPayment o")
+    Page<OrderPayment> findOrdersAll(Pageable pageable);
 
-
-    @Query("SELECT o FROM OrderPayment o " +
-            "WHERE (:year IS NULL OR YEAR(o.paidAt) = :year) " +
-            "AND (:month IS NULL OR MONTH(o.paidAt) = :month)")
-    Page<OrderPayment> findOrdersByYearAndMonth(
-            @Param("year") Integer year,
-            @Param("month") Integer month,
-            Pageable pageable
-    );
     // Đếm đơn hôm nay
     @Query("SELECT COUNT(o) FROM OrderPayment o WHERE DATE(o.paidAt) = CURRENT_DATE AND o.status = 'COMPLETE'")
     long countTodayOrders();

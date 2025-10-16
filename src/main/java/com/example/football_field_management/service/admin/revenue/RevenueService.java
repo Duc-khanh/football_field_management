@@ -29,15 +29,23 @@ public class RevenueService implements IRevenueService {
         Arrays.fill(revenue, BigDecimal.ZERO);
 
         List<Object[]> raw = orderPaymentRepository.getMonthlyRevenueComplete(year);
-        for (Object[] row : raw) {
-            int month = ((Number) row[0]).intValue();
-            BigDecimal total = (BigDecimal) row[1];
-            revenue[month - 1] = total;
+        if (raw != null) {
+            for (Object[] row : raw) {
+                if (row[0] != null) {
+                    int month = ((Number) row[0]).intValue();
+                    BigDecimal total = row[1] != null ? (BigDecimal) row[1] : BigDecimal.ZERO;
+                    if (month >= 1 && month <= 12) {
+                        revenue[month - 1] = total;
+                    }
+                }
+            }
         }
+
         Map<String, BigDecimal[]> map = new HashMap<>();
         map.put("COMPLETE", revenue);
         return map;
     }
+
 
     @Override
     public List<BigDecimal> getRevenueByMonth(int year) {
@@ -104,6 +112,23 @@ public class RevenueService implements IRevenueService {
     public long getUniqueBuyersByYear(int year) {
         return orderPaymentRepository.countDistinctBuyersByYear(year);
     }
+    @Override
+    public List<OrderPayment> getOrdersByMonth(int year, Integer month) {
+        if (month == null) {
+            return orderPaymentRepository.findByYear(year);
+        }
+        return orderPaymentRepository.findByYearAndMonth(year, month);
+    }
+
+    @Override
+    public long getUniqueBuyers(int year, Integer month) {
+        if (month == null) {
+            return orderPaymentRepository.countDistinctBuyersByYear(year);
+        }
+        return orderPaymentRepository.countDistinctBuyersByYearAndMonth(year, month);
+    }
+
+
 
     // ========== Đơn hàng ==========
     @Override
@@ -142,8 +167,9 @@ public class RevenueService implements IRevenueService {
     @Override
     public Page<OrderPayment> getOrders(int page, int size, Integer year, Integer month) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
-        return orderPaymentRepository.findOrdersByYearAndMonth(year, month, pageable);
+            return orderPaymentRepository.findOrdersAll(pageable);
     }
+
     @Override
     public List<CustomerSpentDTO> getCustomerSpent(int limit, Integer year, Integer month) {
         Pageable pageable = PageRequest.of(0, limit);

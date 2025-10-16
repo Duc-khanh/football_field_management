@@ -104,6 +104,7 @@
                     <table class="table align-middle" id="ordersTable">
                         <thead>
                         <tr>
+                            <th>#</th>
                             <th>Trạng thái</th>
                             <th>Phương thức</th>
                             <th>Số tiền</th>
@@ -113,7 +114,8 @@
                         </thead>
                         <tbody>
                         <!-- Lặp qua danh sách orders -->
-                        <tr th:each="order : ${orders.content}">
+                        <tr th:each="order , stat : ${orders.content}">
+                            <td th:text="${stat.index + 1 + orders.number * orders.size}"></td>
                             <td>
                                 <div class="d-flex justify-content-center align-items-left">
         <span th:text="${order.status}"
@@ -135,16 +137,16 @@
                     <nav>
                         <ul class="pagination justify-content-center">
                             <li class="page-item" th:classappend="${orders.first}? 'disabled'">
-                                <a class="page-link" th:href="@{|/admin/orders?page=${orders.number - 1}&size=${orders.size}|}">Trước</a>
+                                <a class="page-link" th:href="@{|/admin/revenue?page=${orders.number - 1}&size=${orders.size}|}">Trước</a>
                             </li>
                             <li class="page-item"
                                 th:each="i : ${#numbers.sequence(0, orders.totalPages - 1)}"
                                 th:classappend="${i == orders.number} ? 'active'">
-                                <a class="page-link" th:href="@{|/admin/orders?page=${i}&size=${orders.size}|}"
+                                <a class="page-link" th:href="@{|/admin/revenue?page=${i}&size=${orders.size}|}"
                                    th:text="${i + 1}"></a>
                             </li>
                             <li class="page-item" th:classappend="${orders.last}? 'disabled'">
-                                <a class="page-link" th:href="@{|/admin/orders?page=${orders.number + 1}&size=${orders.size}|}">Tiếp</a>
+                                <a class="page-link" th:href="@{|/admin/revenue?page=${orders.number + 1}&size=${orders.size}|}">Tiếp</a>
                             </li>
                         </ul>
                     </nav>

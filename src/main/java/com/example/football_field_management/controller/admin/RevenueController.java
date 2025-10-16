@@ -48,12 +48,10 @@ public class RevenueController {
                               @RequestParam(required = false) Integer month,
                               Model model) throws JsonProcessingException {
         int selectedYear = (year != null) ? year : Year.now().getValue();
-        int selectedMonth = (month != null) ? month : LocalDate.now().getMonthValue();
+        Integer selectedMonth = month; // giữ nguyên null nếu không chọn
 
         // --- Chart filter ---
-        List<Integer> years = IntStream.rangeClosed(selectedYear - 5, selectedYear)
-                .boxed()
-                .toList();
+        List<Integer> years = IntStream.rangeClosed(selectedYear - 5, selectedYear).boxed().toList();
         Map<String, BigDecimal[]> revenueMap = revenueService.getMonthlyRevenue(selectedYear);
         String revenueMapJson = objectMapper.writeValueAsString(revenueMap);
 
@@ -83,20 +81,24 @@ public class RevenueController {
             growthLabel = "0%";
         }
 
-        BigDecimal monthRevenue = revenueService.getMonthRevenue(selectedYear, selectedMonth);
+        // --- Doanh thu ---
+        BigDecimal monthRevenue = (selectedMonth != null)
+                ? revenueService.getMonthRevenue(selectedYear, selectedMonth)
+                : revenueService.getRevenueByYear(selectedYear);
+
         BigDecimal totalRevenue = revenueService.getTotalRevenue();
 
         // --- Orders & Customers ---
         Page<OrderPayment> orderPage = revenueService.getOrders(page, size, selectedYear, selectedMonth);
         List<CustomerSpentDTO> customers = revenueService.getCustomerSpent(limit, selectedYear, selectedMonth);
 
-        long buyersThisMonth = revenueService.getUniqueBuyers(selectedYear, selectedMonth);
-        List<OrderPayment> ordersThisMonth = revenueService.getOrdersByMonth(selectedYear, selectedMonth);
+        long buyers = revenueService.getUniqueBuyers(selectedYear, selectedMonth);
+        List<OrderPayment> orders = revenueService.getOrdersByMonth(selectedYear, selectedMonth);
 
         // --- Add to model ---
         model.addAttribute("orders", orderPage);
         model.addAttribute("customers", customers);
-        model.addAttribute("buyersThisMonth", buyersThisMonth);
+        model.addAttribute("buyersThisMonth", buyers);
         model.addAttribute("isUp", growthPercent.compareTo(BigDecimal.ZERO) > 0);
         model.addAttribute("isDown", growthPercent.compareTo(BigDecimal.ZERO) < 0);
         model.addAttribute("growthLabel", growthLabel);
@@ -104,16 +106,14 @@ public class RevenueController {
         model.addAttribute("todayRevenue", todayRevenue);
         model.addAttribute("monthRevenue", monthRevenue);
         model.addAttribute("totalRevenue", totalRevenue);
-        model.addAttribute("ordersThisMonth", ordersThisMonth);
+        model.addAttribute("ordersThisMonth", orders);
         model.addAttribute("years", years);
         model.addAttribute("year", selectedYear);
-        model.addAttribute("month", selectedMonth);
+        model.addAttribute("month", selectedMonth); // giữ null nếu không chọn
         model.addAttribute("revenueMapJson", revenueMapJson);
 
         return "admin/revenue/revenue-dashboard";
     }
-
-
 
 
     /**

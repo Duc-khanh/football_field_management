@@ -7,11 +7,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     async function loadData(page = 0) {
         const year = yearSelect.value || "";
-        const month = monthSelect.value || "";
+        const month = monthSelect.value;
 
         // API đồng bộ filter
-        const query = `year=${year}&month=${month}`;
-        const urlData = `/admin/revenue/data?${query}`;
+        let query = `year=${year}`;
+        if (month && month !== "") {
+            query += `&month=${month}`;
+        }        const urlData = `/admin/revenue/data?${query}`;
         const urlSummary = `/admin/revenue/summary?${query}`;
         const urlOrders = `/admin/revenue/orders?page=${page}&size=5&${query}`;
         const urlCustomers = `/admin/revenue/customers?${query}`;
