@@ -1,7 +1,6 @@
 package com.example.football_field_management.controller.authenticate;
 
 
-
 import com.example.football_field_management.dto.LoginRequest;
 import com.example.football_field_management.model.Account;
 import com.example.football_field_management.model.Role;
@@ -19,17 +18,17 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
-@RestController
+@RestController("restAuthController")
 @RequiredArgsConstructor
 @RequestMapping("/api/auth")
-@CrossOrigin(origins = "http://localhost:3000") // Cho phép React frontend truy cập
+@CrossOrigin(origins = "http://localhost:3000")
 public class AuthController {
 
     private final IAccountService accountService;
     private final RoleRepository roleRepository;
     private final BCryptPasswordEncoder passwordEncoder;
 
-    // 🟢 Đăng ký tài khoản
+
     @PostMapping("/register")
     public ResponseEntity<?> registerAccount(@RequestBody Account account) {
         Map<String, Object> response = new HashMap<>();
@@ -48,7 +47,6 @@ public class AuthController {
                 .orElseThrow(() -> new RuntimeException("Role USER không tồn tại"));
         account.setRoles(new HashSet<>(List.of(userRole)));
 
-        // Mã hóa mật khẩu
         account.setPassword(passwordEncoder.encode(account.getPassword()));
 
         accountService.register(account);
@@ -56,7 +54,7 @@ public class AuthController {
         return ResponseEntity.ok(response);
     }
 
-    // 🟢 Đăng nhập (ví dụ cơ bản)
+
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest, HttpSession session) {
         Map<String, Object> response = new HashMap<>();
@@ -72,14 +70,14 @@ public class AuthController {
             return ResponseEntity.badRequest().body(response);
         }
 
-        // Lưu session hoặc JWT token tùy hệ thống
+
         session.setAttribute("user", account);
         response.put("message", "Đăng nhập thành công!");
         response.put("account", account);
         return ResponseEntity.ok(response);
     }
 
-    // 🟢 Đăng xuất
+
     @PostMapping("/logout")
     public ResponseEntity<?> logout(HttpSession session) {
         SecurityContextHolder.clearContext();

@@ -20,7 +20,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.HashSet;
 import java.util.List;
 
-@Controller
+@Controller("mvcAuthController")
 @RequiredArgsConstructor
 @RequestMapping("/auth")
 public class AuthControllerT {
