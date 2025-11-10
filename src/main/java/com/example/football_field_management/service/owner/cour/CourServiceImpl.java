@@ -24,17 +24,16 @@ public class CourServiceImpl implements ICourService {
             List<Cour> cours = courRepository.findAll();
 
             if (cours == null || cours.isEmpty()) {
-                // Có thể log hoặc ném ngoại lệ tuỳ theo yêu cầu
-                System.out.println("⚠ Không tìm thấy sân bóng nào trong cơ sở dữ liệu.");
-                return new ArrayList<>(); // Trả về list rỗng thay vì null
+                System.out.println(" Không tìm thấy sân bóng nào trong cơ sở dữ liệu.");
+                return new ArrayList<>();
             }
 
             return cours;
         } catch (Exception e) {
             // Ghi log để tiện debug
-            System.err.println("❌ Lỗi khi lấy danh sách sân: " + e.getMessage());
+            System.err.println(" Lỗi khi lấy danh sách sân: " + e.getMessage());
             e.printStackTrace();
-            return new ArrayList<>(); // Tránh NullPointerException cho tầng gọi
+            return new ArrayList<>();
         }
     }
 
@@ -111,14 +110,19 @@ public class CourServiceImpl implements ICourService {
         return courRepository.findByCourNameContainingIgnoreCaseAndStatus(keyword, status, pageable);
     }
 
+
     @Override
     public List<CourDTO> findByVenueIdC(Long venueId) {
         List<Cour> cours = courRepository.findByVenue_VenueId(venueId);
+
         return cours.stream()
                 .map(c -> new CourDTO(
                         c.getCourId(),
                         c.getCourName(),
                         c.getPricePerHour(),
+                        c.getFieldSize(),
+                        c.getLightsAvailable(),
+                        c.getSurfaceType(),
                         c.getStatus()
                 ))
                 .collect(Collectors.toList());
