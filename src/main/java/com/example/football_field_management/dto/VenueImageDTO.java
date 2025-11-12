@@ -8,5 +8,5 @@ import lombok.Setter;
 public class VenueImageDTO {
     private Long photoId;
     private String photoPath;
-    private boolean primary;
+    private boolean isPrimary;
 }
