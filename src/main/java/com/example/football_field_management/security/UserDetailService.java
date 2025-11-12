@@ -14,7 +14,7 @@ import java.util.List;
 
 @Service
 @AllArgsConstructor
-public class UserDetailService implements UserDetailsService {
+public class  UserDetailService implements UserDetailsService {
 
     private final AccountRepository accountRepo;
 
