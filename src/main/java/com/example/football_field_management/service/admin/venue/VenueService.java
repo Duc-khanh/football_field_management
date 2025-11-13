@@ -1,5 +1,6 @@
 package com.example.football_field_management.service.admin.venue;
 
+import com.example.football_field_management.dto.CourDTO;
 import com.example.football_field_management.dto.DistrictDTO;
 import com.example.football_field_management.dto.VenueDTO;
 import com.example.football_field_management.dto.VenueImageDTO;
@@ -253,7 +254,30 @@ public class VenueService implements IVenueService {
             }
         }
         dto.setImages(allImages); // <-- Gán danh sách ĐẦY ĐỦ
+        // ... (Ngay sau khi bạn xử lý xong dto.setImages(allImages))
+
+        // === PHẦN QUAN TRỌNG BỊ THIẾU: ÁNH XẠ SÂN CON (COURTS) ===
+        if (venue.getCourts() != null) {
+            List<CourDTO> courtDTOs = venue.getCourts().stream()
+                    .map(cour -> new CourDTO(
+                            cour.getCourId(),
+                            cour.getCourName(),
+                            cour.getPricePerHour(),
+                            cour.getFieldSize(),
+                            cour.getLightsAvailable(),
+                            cour.getSurfaceType(),
+                            cour.getStatus() // Giả sử Cour entity có trường 'status' là Boolean
+                    ))
+                    .collect(Collectors.toList());
+
+            dto.setCourts(courtDTOs); // <-- Gán danh sách Sân con
+        } else {
+            // Luôn gán một danh sách rỗng để tránh lỗi Null ở frontend
+            dto.setCourts(new ArrayList<>());
+        }
+
         return dto;
+
     }
 
 }
