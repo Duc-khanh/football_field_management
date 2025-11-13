@@ -38,6 +38,5 @@ public class Venue {
 
     @OneToMany(mappedBy = "venue", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Cour> courts = new ArrayList<>();
-
 }
 
