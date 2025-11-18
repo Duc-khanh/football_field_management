@@ -5,7 +5,7 @@ import com.example.football_field_management.service.CustomOAuth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order; // ❗️ THÊM IMPORT NÀY
+import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -36,15 +36,15 @@ public class SecurityConfig {
     private final UserDetailsService userDetailsService;
     private final CustomSuccessHandler customSuccessHandler;
 
+    // ----------------------- API SECURITY (JWT) -------------------------
     @Bean
     @Order(1)
     public SecurityFilterChain apiSecurityFilterChain(HttpSecurity http) throws Exception {
         http
-                .securityMatcher("/api/**") //
+                .securityMatcher("/api/**")
                 .cors(withDefaults())
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        // ✅ Cho phép các API công khai
                         .requestMatchers("/api/home/**", "/api/cour/**").permitAll()
                         .anyRequest().authenticated()
                 )
@@ -57,17 +57,20 @@ public class SecurityConfig {
         return http.build();
     }
 
+    // ----------------------- WEB SECURITY (FORM + GOOGLE) -------------------------
     @Bean
-    @Order(2) //
-    public SecurityFilterChain webSecurityFilterChain(HttpSecurity http,
-                                                      CustomOAuth2UserService customOAuth2UserService) throws Exception {
+    @Order(2)
+    public SecurityFilterChain webSecurityFilterChain(
+            HttpSecurity http,
+            CustomOAuth2UserService customOAuth2UserService
+    ) throws Exception {
+
         http
                 .cors(withDefaults())
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/",
-
                                 "/uploads/**",
                                 "/auth/login", "/auth/login/**",
                                 "/auth/register", "/auth/register/**",
@@ -82,6 +85,7 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 )
 
+                // ------------------- FORM LOGIN -------------------
                 .formLogin(form -> form
                         .loginPage("/auth/login")
                         .loginProcessingUrl("/auth/login")
@@ -92,38 +96,40 @@ public class SecurityConfig {
                         .permitAll()
                 )
 
+                // ------------------- GOOGLE LOGIN -------------------
                 .oauth2Login(oauth2 -> oauth2
                         .loginPage("/auth/login")
                         .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
                         .successHandler(customSuccessHandler)
                 )
 
+                // ------------------- LOGOUT -------------------
                 .logout(logout -> logout
                         .logoutUrl("/auth/logout")
                         .logoutSuccessUrl("/auth/login")
                         .permitAll()
                 )
 
-
                 .authenticationProvider(authenticationProvider());
-
 
         return http.build();
     }
 
+    // ------------------------- CORS CONFIG -------------------------
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("http://localhost:3000")); // React frontend
+        config.setAllowedOrigins(List.of("http://localhost:3000"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", config); // Áp dụng CORS cho cả 2 chain
+        source.registerCorsConfiguration("/**", config);
         return source;
     }
 
+    // ------------------------- PROVIDERS -------------------------
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
@@ -138,7 +144,9 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
+    public AuthenticationManager authenticationManager(
+            AuthenticationConfiguration authConfig
+    ) throws Exception {
         return authConfig.getAuthenticationManager();
     }
 }

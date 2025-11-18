@@ -33,11 +33,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         final String authHeader = request.getHeader("Authorization");
         final String path = request.getRequestURI();
 
-        // Bỏ qua các endpoint public
-        if (path.startsWith("/api/auth/") || path.startsWith("/api/chat/")) {
-            filterChain.doFilter(request, response);
-            return;
-        }
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             // Không có token → tiếp tục chain (Spring Security sẽ block request nếu cần)

@@ -55,9 +55,9 @@
                     <select id="roleFilter" name="role" class="form-select">
                         <option value="" th:selected="${role == null or role == ''}">-- Vai trò --</option>
                         <th:block th:each="r : ${roles}">
-                            <option th:value="${r.role_name}"
-                                    th:text="${#strings.replace(r.role_name, 'ROLE_', '')}"
-                                    th:selected="${role == r.role_name}">
+                            <option th:value="${r.roleName}"
+                                    th:text="${#strings.replace(r.roleName, 'ROLE_', '')}"
+                                    th:selected="${role == r.roleName}">
                             </option>
                         </th:block>
                     </select>
@@ -110,7 +110,7 @@
                         </td>
                         <td>
                 <span th:each="role : ${account.roles}"
-                      th:text="${#strings.replace(role.role_name, 'ROLE_', '')}"
+                      th:text="${#strings.replace(role.roleName, 'ROLE_', '')}"
                       class="role-badge me-1">Role</span>
                         </td>
                         <td class="actions">

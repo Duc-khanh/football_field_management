@@ -97,7 +97,7 @@ public class AccountService implements IAccountService {
                 .orElseThrow(() -> new RuntimeException("Account not found"));
 
         Set<String> roles = account.getRoles().stream()
-                .map(Role::getRole_name)
+                .map(Role::getRoleName)
                 .collect(Collectors.toSet());
 
         return AuthResponse.builder()
