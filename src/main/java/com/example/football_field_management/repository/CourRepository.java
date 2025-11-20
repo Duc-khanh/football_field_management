@@ -23,8 +23,6 @@ public interface CourRepository extends JpaRepository<Cour, Long> {
 
     Page<Cour> findByCourNameContainingIgnoreCaseAndStatus(String keyword, Boolean status, Pageable pageable);
 
-
-
 }
 
 

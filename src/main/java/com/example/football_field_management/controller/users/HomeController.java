@@ -5,7 +5,7 @@ import com.example.football_field_management.dto.VenueDTO;
 import com.example.football_field_management.model.Venue;
 import com.example.football_field_management.model.VenueImage;
 import com.example.football_field_management.repository.VenueRepository;
-import com.example.football_field_management.service.admin.venue.IVenueService;
+import com.example.football_field_management.service.user.venue.IUserVenueService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/home")
 @CrossOrigin(origins = "http://localhost:3000")
 public class HomeController {
-    private final IVenueService venueService;
+    private final IUserVenueService venueService;
     private final VenueRepository venueRepository;
 
     @GetMapping
@@ -32,7 +32,7 @@ public class HomeController {
             @RequestParam(required = false) String keyword,
             @RequestParam(required = false) Boolean status
     ) {
-        return venueService.findAll(page, size, keyword, status);
+        return venueService.getAllVenues(page, size, keyword, status);
     }
     @GetMapping("/top5")
     public ResponseEntity<List<VenueDTO>> getTop5Venues() {

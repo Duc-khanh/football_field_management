@@ -37,6 +37,7 @@ public class VenueDTO {
     private List<Long> existingImageIds;
     private List<MultipartFile> subImagesFiles;
     private List<CourDTO> courts;
+    private int totalCourts;
 
     // ⭐️ SỬA 2: Constructor đầy đủ để mapping (NẾU CẦN)
     // (Hiện tại logic mapToDTO trong service đang không dùng constructor này
@@ -45,7 +46,9 @@ public class VenueDTO {
                     String contactNumber, String description, Boolean status,
                     District districtEntity,
                     Account ownerEntity, // ❗️ SỬA: Đổi UserEntity thành Account
-                    List<VenueImageDTO> imageDTOs) {
+                    List<VenueImageDTO> imageDTOs,
+                    int totalCourts) {
+
 
         this.venueId = venueId;
         this.venueName = venueName;
@@ -53,6 +56,7 @@ public class VenueDTO {
         this.contactNumber = contactNumber;
         this.description = description;
         this.status = status;
+        this.totalCourts = totalCourts;
 
         // ❗️ SỬA: Dùng getter chính xác
         if (districtEntity != null) {
