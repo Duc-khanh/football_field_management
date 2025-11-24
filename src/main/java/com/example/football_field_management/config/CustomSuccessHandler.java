@@ -56,6 +56,8 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler {
 
         // redirect theo role
         String redirectUrl = switch (roles.get(0)) {
+            case "ROLE_ADMIN" -> "/dashboard";
+            case "ROLE_OWNER" -> "/owner/dashboard";
             default ->
                     "http://localhost:3000/login-success?token=" + token + "&email=" + email;
         };

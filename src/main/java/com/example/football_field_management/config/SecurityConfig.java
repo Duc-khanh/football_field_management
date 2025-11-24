@@ -50,6 +50,8 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/api/auth/login",
                                 "/api/auth/register",
+                                "/auth/forgot-password",  // <--- Thêm dòng này
+                                "/auth/reset-password",
                                 "/api/home/**",
                                 "/api/cour/**"
                         ).permitAll()
@@ -84,7 +86,10 @@ public class SecurityConfig {
                                 "/uploads/**",
                                 "/auth/login", "/auth/login/**",
                                 "/auth/register", "/auth/register/**",
+                                "/auth/forgot-password",  // <--- Thêm dòng này
+                                "/auth/reset-password",
                                 "/login-success",
+
                                 "/css/**", "/js/**", "/images/**"
                         ).permitAll()
 
