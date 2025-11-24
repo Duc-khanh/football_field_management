@@ -30,19 +30,20 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler {
         String email;
 
         // ===== FORM LOGIN =====
-        if (principal instanceof CustomUserDetails customUser)
+        if (principal instanceof CustomUserDetails customUser) {
             email = customUser.getEmail();
-
-            // ===== GOOGLE OAUTH2 =====
-        else if (principal instanceof OAuth2User oauth2User)
-            email = oauth2User.getAttribute("email");  // luôn có vì đã ép trong service
-
-            // ===== SPRING INTERNAL =====
-        else if (principal instanceof User springUser)
+        }
+        // ===== GOOGLE OAUTH2 =====
+        else if (principal instanceof OAuth2User oauth2User) {
+            email = oauth2User.getAttribute("email");  // đảm bảo service trả về email
+        }
+        // ===== SPRING INTERNAL =====
+        else if (principal instanceof User springUser) {
             email = springUser.getUsername();
-
-        else
+        }
+        else {
             email = "unknown@example.com";
+        }
 
         // Lấy role
         List<String> roles = authentication.getAuthorities()
@@ -55,8 +56,6 @@ public class CustomSuccessHandler implements AuthenticationSuccessHandler {
 
         // redirect theo role
         String redirectUrl = switch (roles.get(0)) {
-            case "ROLE_ADMIN" -> "/dashboard";
-            case "ROLE_OWNER" -> "/owner/dashboard";
             default ->
                     "http://localhost:3000/login-success?token=" + token + "&email=" + email;
         };

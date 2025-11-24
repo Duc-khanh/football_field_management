@@ -2,6 +2,7 @@ package com.example.football_field_management.config;
 
 import com.example.football_field_management.security.JwtAuthenticationFilter;
 import com.example.football_field_management.service.CustomOAuth2UserService;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,6 +19,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -45,8 +47,16 @@ public class SecurityConfig {
                 .cors(withDefaults())
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/home/**", "/api/cour/**").permitAll()
+                        .requestMatchers(
+                                "/api/auth/login",
+                                "/api/auth/register",
+                                "/api/home/**",
+                                "/api/cour/**"
+                        ).permitAll()
                         .anyRequest().authenticated()
+                )
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint(unauthorizedEntryPoint())
                 )
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -74,6 +84,7 @@ public class SecurityConfig {
                                 "/uploads/**",
                                 "/auth/login", "/auth/login/**",
                                 "/auth/register", "/auth/register/**",
+                                "/login-success",
                                 "/css/**", "/js/**", "/images/**"
                         ).permitAll()
 
@@ -148,5 +159,15 @@ public class SecurityConfig {
             AuthenticationConfiguration authConfig
     ) throws Exception {
         return authConfig.getAuthenticationManager();
+    }
+
+    // ------------------------- ENTRY POINT JSON 401 -------------------------
+    @Bean
+    public AuthenticationEntryPoint unauthorizedEntryPoint() {
+        return (request, response, authException) -> {
+            response.setContentType("application/json");
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("{\"error\": \"Unauthorized\"}");
+        };
     }
 }

@@ -19,29 +19,11 @@ public class  UserDetailService implements UserDetailsService {
     private final AccountRepository accountRepo;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Account account;
+    public UserDetails loadUserByUsername(String email) {
+        Account acc = accountRepo.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("Email not found: " + email));
 
-        if (username.contains("@")) {
-            account = accountRepo.findByEmail(username)
-                    .orElseThrow(() -> new UsernameNotFoundException("Email not found: " + username));
-        } else {
-            account = accountRepo.findByPhone(username)
-                    .orElseThrow(() -> new UsernameNotFoundException("Phone number not found: " + username));
-        }
-
-        if (Boolean.FALSE.equals(account.getStatus())) {
-            throw new UsernameNotFoundException("Tài khoản đã bị khóa, vui lòng liên hệ admin");
-        }
-
-        List<SimpleGrantedAuthority> authorities = account.getRoles().stream()
-                .map(role -> new SimpleGrantedAuthority(role.getRoleName()))
-                .toList();
-
-        return new User(
-                account.getEmail() != null ? account.getEmail() : account.getPhone(),
-                account.getPassword(),
-                authorities
-        );
+        return new CustomUserDetails(acc);
     }
+
 }
