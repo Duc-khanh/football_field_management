@@ -38,6 +38,7 @@ public class VenueDTO {
     private List<MultipartFile> subImagesFiles;
     private List<CourDTO> courts;
     private int totalCourts;
+    private double price;
 
     // ⭐️ SỬA 2: Constructor đầy đủ để mapping (NẾU CẦN)
     // (Hiện tại logic mapToDTO trong service đang không dùng constructor này
@@ -72,4 +73,5 @@ public class VenueDTO {
 
         this.images = imageDTOs;
     }
+
 }

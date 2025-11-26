@@ -1,5 +1,6 @@
 package com.example.football_field_management.dto;
 
+import jakarta.persistence.Column;
 import lombok.Getter;
 import lombok.NoArgsConstructor; // ❗️ THÊM IMPORT NÀY
 import lombok.Setter;
@@ -15,6 +16,17 @@ public class CourDTO {
     private boolean lightsAvailable;
     private String surfaceType;
     private String status;
+
+    @Column(name = "courId")
+    private Long courtId;
+
+    public CourDTO(Long courId, String courName, String fieldSize, Double pricePerHour) {
+        this.courId = courId;
+        this.courName = courName;
+        this.fieldSize = fieldSize;
+        this.pricePerHour = pricePerHour;
+    }
+
 
 
     public CourDTO(Long courId, String courName, double pricePerHour,
