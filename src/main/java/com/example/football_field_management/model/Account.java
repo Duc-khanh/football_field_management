@@ -35,6 +35,8 @@ public class Account {
     private String avt_path;
     @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT TRUE")
     private Boolean status = true;
+    @Column(name = "provider", length = 50)
+    private String provider;
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "account_roles",

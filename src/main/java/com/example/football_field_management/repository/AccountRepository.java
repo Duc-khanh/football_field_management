@@ -22,11 +22,11 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
 
 
 
-    @Query("SELECT a FROM Account a JOIN a.roles r WHERE r.role_name = :roleName")
+    @Query("SELECT a FROM Account a JOIN a.roles r WHERE r.roleName = :roleName")
     Page<Account> findByRoleName(@Param("roleName") String roleName, Pageable pageable);
 
     @Query("SELECT a FROM Account a JOIN a.roles r " +
-            "WHERE r.role_name = :roleName " +
+            "WHERE r.roleName = :roleName " +
             "AND (LOWER(a.fullName) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
             "OR LOWER(a.email) LIKE LOWER(CONCAT('%', :keyword, '%')))")
     Page<Account> findByRoleNameAndKeyword(@Param("roleName") String roleName,

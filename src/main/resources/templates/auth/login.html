@@ -55,8 +55,10 @@
                                 Ghi nhớ mật khẩu
                             </label>
                         </div>
-                        <a href="/auth/forgot-password" class="small text-decoration-none">Quên mật khẩu?</a>
+                        <!-- Link quên mật khẩu với Thymeleaf -->
+                        <a th:href="@{/auth/forgot-password}" class="small text-decoration-none">Quên mật khẩu?</a>
                     </div>
+
 
                     <div class="d-grid mb-3">
                         <button type="submit" class="btn btn-primary btn-lg">Đăng nhập</button>

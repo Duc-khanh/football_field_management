@@ -30,6 +30,7 @@ public class AccountService implements IAccountService {
     private final AccountRepository accountRepository;
     private final BCryptPasswordEncoder passwordEncoder;
 
+
     @Override
     public Account save(Account account) {
         if (account.getAccount_id() != null) {
@@ -57,9 +58,6 @@ public class AccountService implements IAccountService {
 
     @Override
     public Account register(Account account) {
-        if (account.getPassword() != null && !account.getPassword().isEmpty()) {
-            account.setPassword(passwordEncoder.encode(account.getPassword()));
-        }
         return accountRepository.save(account);
     }
 
@@ -97,7 +95,7 @@ public class AccountService implements IAccountService {
                 .orElseThrow(() -> new RuntimeException("Account not found"));
 
         Set<String> roles = account.getRoles().stream()
-                .map(Role::getRole_name)
+                .map(Role::getRoleName)
                 .collect(Collectors.toSet());
 
         return AuthResponse.builder()

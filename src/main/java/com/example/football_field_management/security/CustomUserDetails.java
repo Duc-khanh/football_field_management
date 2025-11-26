@@ -3,9 +3,11 @@ package com.example.football_field_management.security;
 import com.example.football_field_management.model.Account;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.List;
 
 @Getter
 public class CustomUserDetails implements UserDetails {
@@ -13,11 +15,14 @@ public class CustomUserDetails implements UserDetails {
     private final Account account;
     private final Collection<? extends GrantedAuthority> authorities;
 
-    public CustomUserDetails(Account account,
-                             Collection<? extends GrantedAuthority> authorities) {
+    public CustomUserDetails(Account account) {
         this.account = account;
-        this.authorities = authorities;
+
+        this.authorities = List.of(
+                new SimpleGrantedAuthority(account.getRoles().iterator().next().getRoleName())
+        );
     }
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
