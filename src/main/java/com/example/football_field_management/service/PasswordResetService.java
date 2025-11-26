@@ -58,7 +58,7 @@ public class PasswordResetService {
 
     public void updateLastEmailSentTime(Account account) {
         PasswordResetToken token = passwordResetTokenRepository.findByAccount(account)
-                .orElseThrow(() -> new RuntimeException("Token không tồn tại"));
+                .orElseThrow(() -> new RuntimeException("Mã không tồn tại"));
 
         token.setLastPasswordResetEmailSentAt(LocalDateTime.now());
         passwordResetTokenRepository.save(token);

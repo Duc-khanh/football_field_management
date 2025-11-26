@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -20,6 +21,8 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
 
     Page<Account> findByFullNameContainingIgnoreCaseOrEmailContainingIgnoreCase(
             String fullName, String email, Pageable pageable);
+
+
 
     @Query("SELECT a FROM Account a JOIN a.roles r WHERE r.roleName = :roleName")
     Page<Account> findByRoleName(@Param("roleName") String roleName, Pageable pageable);
@@ -33,12 +36,10 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
                                            Pageable pageable);
 
     boolean existsByEmail(String email);
-
-
     @Query("SELECT a FROM Account a JOIN a.roles r " +
-            "WHERE r.roleName = :roleName AND a.approvalStatus = :status " +
-            "ORDER BY a.account_id DESC")
-    Page<Account> findOwnersByRoleAndStatus(@Param("roleName") String roleName,
-                                            @Param("status") ApprovalStatus status,
-                                            Pageable pageable);
+            "WHERE r.roleName = :roleName AND a.approvalStatus = :status")
+    List<Account> findOwnersByRoleAndStatus(@Param("roleName") String roleName,
+                                            @Param("status") ApprovalStatus status);
+
+
 }

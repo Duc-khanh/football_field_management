@@ -2,6 +2,7 @@ package com.example.football_field_management.service.admin.users;
 
 import com.example.football_field_management.dto.AuthResponse;
 import com.example.football_field_management.dto.LoginRequest;
+import com.example.football_field_management.dto.OwnerRegisterDTO;
 import com.example.football_field_management.model.Account;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -28,4 +29,6 @@ public interface IAccountService {
 
     boolean existsByEmail(String email);
     Account findByEmail(String email);
+
+    Account registerOwner(OwnerRegisterDTO registerDTO);
 }

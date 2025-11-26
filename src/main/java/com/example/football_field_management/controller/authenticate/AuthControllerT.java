@@ -55,6 +55,7 @@
             return "auth/register";
         }
 
+
         @PostMapping("/register")
         public String registerAccount(@ModelAttribute("account") Account account,
                                       BindingResult result,
