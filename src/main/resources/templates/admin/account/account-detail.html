@@ -72,7 +72,7 @@
                                 <div class="fw-bold">Roles</div>
                                 <div class="mt-1">
                                     <span th:each="role : ${account.roles}"
-                                          th:text="${role.role_name}"
+                                          th:text="${role.roleName}"
                                           class="role-badge badge rounded-pill me-1 py-1 px-2">ROLE</span>
                                     <span th:if="${#lists.isEmpty(account.roles)}"
                                           class="text-muted">Không có role</span>

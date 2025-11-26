@@ -1,5 +1,7 @@
 package com.example.football_field_management.service.admin.venue;
 
+import com.example.football_field_management.dto.CourDTO;
+import com.example.football_field_management.dto.DistrictDTO;
 import com.example.football_field_management.dto.VenueDTO;
 import com.example.football_field_management.dto.VenueImageDTO;
 import com.example.football_field_management.model.Venue;
@@ -42,19 +44,16 @@ public class VenueService implements IVenueService {
 
         Page<Venue> venues;
 
-        // Trường hợp có keyword + status
+        // (Logic tìm kiếm của bạn giữ nguyên - Đã đúng)
         if (keyword != null && !keyword.trim().isEmpty() && status != null) {
             venues = venueRepository.findByVenueNameContainingIgnoreCaseAndStatus(keyword, status, pageable);
         }
-        // Chỉ có keyword
         else if (keyword != null && !keyword.trim().isEmpty()) {
             venues = venueRepository.findByVenueNameContainingIgnoreCase(keyword, pageable);
         }
-        // Chỉ có status
         else if (status != null) {
             venues = venueRepository.findByStatus(status, pageable);
         }
-        // Không có keyword + không có status
         else {
             venues = venueRepository.findAll(pageable);
         }
@@ -65,11 +64,12 @@ public class VenueService implements IVenueService {
 
     @Override
     public Iterable<VenueDTO> findAll() {
-        return null;
+        return null; // Giữ nguyên
     }
 
     @Override
     public Optional<VenueDTO> findById(Long id) {
+        // Phương thức này RẤT QUAN TRỌNG, nó dùng cho trang chi tiết
         return venueRepository.findById(id).map(this::mapToDTO);
     }
 
@@ -86,31 +86,32 @@ public class VenueService implements IVenueService {
         venue.setDescription(venueDTO.getDescription());
         venue.setStatus(venueDTO.getStatus());
 
-        if (venueDTO.getDistrictId() != null) {
+        if (venueDTO.getDistrict() != null && venueDTO.getDistrict().getId() != null) {
+            districtRepository.findById(venueDTO.getDistrict().getId()).ifPresent(venue::setDistrict);
+        } else if (venueDTO.getDistrictId() != null) {
+            // Hỗ trợ nếu DTO cũ vẫn gửi districtId
             districtRepository.findById(venueDTO.getDistrictId()).ifPresent(venue::setDistrict);
         }
+
         if (venueDTO.getOwnerId() != null) {
             accountRepository.findById(venueDTO.getOwnerId()).ifPresent(venue::setOwner);
         }
 
         Venue savedVenue = venueRepository.save(venue);
 
-        // Xử lý ảnh
+        // (Logic xử lý ảnh của bạn giữ nguyên)
         if (venueDTO.getImages() != null && !venueDTO.getImages().isEmpty()) {
 
-            // Lấy danh sách ảnh hiện tại DB
             List<VenueImage> currentImages = savedVenue.getImages() != null
                     ? new ArrayList<>(savedVenue.getImages())
                     : new ArrayList<>();
 
-            // 1. Xóa ảnh chính cũ nếu có
             Optional<VenueImage> oldMain = currentImages.stream().filter(VenueImage::isPrimary).findFirst();
             oldMain.ifPresent(img -> {
                 venueImageRepository.delete(img);
                 deleteFile(img.getPhotoPath());
             });
 
-            // 2. Xóa các ảnh phụ bị remove
             List<Long> keepIds = venueDTO.getImages().stream()
                     .filter(img -> img.getPhotoId() != null)
                     .map(VenueImageDTO::getPhotoId)
@@ -123,7 +124,6 @@ public class VenueService implements IVenueService {
                 }
             }
 
-            // 3. Thêm ảnh mới
             List<VenueImage> toSave = venueDTO.getImages().stream()
                     .map(dto -> {
                         VenueImage img = new VenueImage();
@@ -140,7 +140,7 @@ public class VenueService implements IVenueService {
 
     @Override
     public void remote(Long id) {
-
+        // Giữ nguyên
     }
 
     @Transactional
@@ -189,7 +189,6 @@ public class VenueService implements IVenueService {
     @Override
     public void remove(Long id) {
         venueRepository.findById(id).ifPresent(venue -> {
-            // Xóa tất cả ảnh
             if (venue.getImages() != null) {
                 venue.getImages().forEach(img -> deleteFile(img.getPhotoPath()));
                 venueImageRepository.deleteAll(venue.getImages());
@@ -211,7 +210,6 @@ public class VenueService implements IVenueService {
         venueRepository.save(venue);
     }
 
-
     private VenueDTO mapToDTO(Venue venue) {
         VenueDTO dto = new VenueDTO();
         dto.setVenueId(venue.getVenueId());
@@ -222,13 +220,23 @@ public class VenueService implements IVenueService {
         dto.setStatus(venue.getStatus());
 
         if (venue.getDistrict() != null) {
-            dto.setDistrictId(venue.getDistrict().getDistrict_id());
+            // dto.setDistrictId(venue.getDistrict().getDistrict_id()); // <-- BỎ DÒNG NÀY
+
+            // Tạo một DTO mới cho district
+            DistrictDTO districtDTO = new DistrictDTO();
+            districtDTO.setId(venue.getDistrict().getDistrict_id());
+            districtDTO.setDistrictName(venue.getDistrict().getDistrict_name()); // Giả sử tên trường là district_name
+
+            dto.setDistrict(districtDTO); // <-- THAY BẰNG DÒNG NÀY
         }
+
+        // (Phần Owner đã đúng)
         if (venue.getOwner() != null) {
             dto.setOwnerId(venue.getOwner().getAccount_id());
             dto.setOwnerName(venue.getOwner().getFullName());
         }
-        List<VenueImageDTO> images = new ArrayList<>();
+
+        List<VenueImageDTO> allImages = new ArrayList<>(); // Tạo list mới
         if (venue.getImages() != null) {
             for (VenueImage img : venue.getImages()) {
                 VenueImageDTO imgDTO = new VenueImageDTO();
@@ -236,16 +244,40 @@ public class VenueService implements IVenueService {
                 imgDTO.setPhotoPath(img.getPhotoPath());
                 imgDTO.setPrimary(img.isPrimary());
 
+                allImages.add(imgDTO); // <-- Thêm TẤT CẢ ảnh (cả chính và phụ)
+
+                // Vẫn giữ logic set ảnh chính để dùng ở nơi khác nếu cần
                 if (img.isPrimary()) {
                     dto.setMainImageId(img.getPhotoId());
                     dto.setMainImagePath(img.getPhotoPath());
-                } else {
-                    images.add(imgDTO);
                 }
             }
         }
-        dto.setImages(images);
+        dto.setImages(allImages); // <-- Gán danh sách ĐẦY ĐỦ
+        // ... (Ngay sau khi bạn xử lý xong dto.setImages(allImages))
+
+        // === PHẦN QUAN TRỌNG BỊ THIẾU: ÁNH XẠ SÂN CON (COURTS) ===
+        if (venue.getCourts() != null) {
+            List<CourDTO> courtDTOs = venue.getCourts().stream()
+                    .map(cour -> new CourDTO(
+                            cour.getCourId(),
+                            cour.getCourName(),
+                            cour.getPricePerHour(),
+                            cour.getFieldSize(),
+                            cour.getLightsAvailable(),
+                            cour.getSurfaceType(),
+                            cour.getStatus() // Giả sử Cour entity có trường 'status' là Boolean
+                    ))
+                    .collect(Collectors.toList());
+
+            dto.setCourts(courtDTOs); // <-- Gán danh sách Sân con
+        } else {
+            // Luôn gán một danh sách rỗng để tránh lỗi Null ở frontend
+            dto.setCourts(new ArrayList<>());
+        }
+
         return dto;
+
     }
 
 }

@@ -1,0 +1,58 @@
+package com.example.football_field_management.controller.admin;
+
+import com.example.football_field_management.dto.AccountResponse;
+import com.example.football_field_management.dto.UpdateProfileRequest; // Import DTO mới
+import com.example.football_field_management.model.Account;
+import com.example.football_field_management.repository.AccountRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/api/account")
+@RequiredArgsConstructor
+public class AccountController {
+
+    private final AccountRepository accountRepository;
+
+    // ... (Giữ nguyên hàm get/me)
+
+    @PutMapping("/update")
+    public ResponseEntity<AccountResponse> updateProfile(
+            Authentication authentication,
+            @RequestBody UpdateProfileRequest request // <--- SỬA DÒNG NÀY (Dùng DTO thay vì Account)
+    ) {
+        String email = authentication.getName();
+
+        Account account = accountRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        // Cập nhật dữ liệu từ DTO vào Entity
+        account.setFullName(request.getFullName());
+        account.setPhone(request.getPhone());
+        account.setAddress(request.getAddress());
+
+        // QUAN TRỌNG: Map từ 'avatar' (DTO) sang 'avt_path' (Entity)
+        if (request.getAvatar() != null) {
+            account.setAvt_path(request.getAvatar());
+        }
+
+        // Lưu xuống DB
+        Account saved = accountRepository.save(account);
+
+        // Map ngược lại ra Response để trả về Frontend
+        AccountResponse res = new AccountResponse();
+        res.setId(saved.getAccount_id());
+        res.setFullName(saved.getFullName());
+        res.setEmail(saved.getEmail());
+        res.setPhone(saved.getPhone());
+        res.setAddress(saved.getAddress());
+        res.setAvatar(saved.getAvt_path()); // Trả về avt_path vào trường avatar của response
+        res.setProvider(saved.getProvider());
+        res.setStatus(saved.getStatus());
+        res.setRole(saved.getRoles().stream().findFirst().map(r -> r.getRoleName()).orElse(null));
+
+        return ResponseEntity.ok(res);
+    }
+}

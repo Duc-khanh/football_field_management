@@ -14,7 +14,9 @@ public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long role_id;
-    private String role_name,description;
+    private String description;
+    @Column(name = "role_name")
+    private String roleName;
     @ManyToMany(mappedBy = "roles")
     @JsonManagedReference
     private List<Account> accounts;

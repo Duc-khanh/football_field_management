@@ -31,32 +31,34 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
 
         final String authHeader = request.getHeader("Authorization");
-        final String path = request.getRequestURI();
-
-        // Bỏ qua các endpoint public
-        if (path.startsWith("/api/auth/") || path.startsWith("/api/chat/")) {
-            filterChain.doFilter(request, response);
-            return;
-        }
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            // Không có token → tiếp tục chain (Spring Security sẽ block request nếu cần)
             filterChain.doFilter(request, response);
             return;
         }
 
         final String token = authHeader.substring(7);
+        String username = null;
 
-        // Lấy username từ token
-        final String username = jwtUtil.getUsernameFromToken(token);
+        try {
+            username = jwtUtil.getUsernameFromToken(token);
+        } catch (Exception e) {
+            filterChain.doFilter(request, response);
+            return;
+        }
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            // Load UserDetails từ DB
-            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
-            // Kiểm tra token có hợp lệ không
+            UserDetails userDetails;
+
+            try {
+                userDetails = userDetailsService.loadUserByUsername(username);
+            } catch (Exception e) {
+                filterChain.doFilter(request, response);
+                return;
+            }
+
             if (jwtUtil.isValidToken(token)) {
-                // Set Authentication với authorities từ UserDetails (permissions)
                 UsernamePasswordAuthenticationToken authToken =
                         new UsernamePasswordAuthenticationToken(
                                 userDetails,
@@ -65,11 +67,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                         );
 
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }
         }
 
         filterChain.doFilter(request, response);
     }
+
 }

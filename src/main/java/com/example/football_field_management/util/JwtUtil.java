@@ -91,10 +91,4 @@ public class JwtUtil {
     }
 
 }
-//JwtUtil là class tiện ích (utility) để:
-//
-//Tạo JWT khi người dùng đăng nhập thành công.
-//
-//Giải mã JWT để lấy username.
-//
-//Xác minh JWT xem có hợp lệ không (chữ ký đúng, chưa hết hạn, đúng định dạng...).
+
