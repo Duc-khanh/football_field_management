@@ -43,15 +43,15 @@ public class TimeslotService implements ITimeslotService {
             List<Booking> bookings = bookingRepo.findBookings(courId, date);
             Map<Long, Boolean> bookedMap = bookings.stream()
                     .collect(Collectors.toMap(
-                            b -> b.getTimeSlot().getTimeSlotId(),  // <-- sửa ở đây
+                            b -> b.getTimeSlot().getId(),  // <-- sửa ở đây
                             b -> true
                     ));
 
             List<Map<String, Object>> slotDTOs = slots.stream().map(s -> {
                 Map<String, Object> map = new HashMap<>();
-                map.put("id", s.getTimeSlotId());
+                map.put("id", s.getId());
                 map.put("time", s.getStartTime().substring(0,5) + " - " + s.getEndTime().substring(0,5));
-                map.put("status", bookedMap.getOrDefault(s.getTimeSlotId(), false) ? "booked" : "available");
+                map.put("status", bookedMap.getOrDefault(s.getId(), false) ? "booked" : "available");
                 map.put("price", price);
                 return map;
             }).collect(Collectors.toList());

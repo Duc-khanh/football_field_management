@@ -25,6 +25,8 @@ public class Venue {
     private String description;
     private Boolean status;
 
+
+
     @ManyToOne
     @JoinColumn(name = "district_id")
     private District district;

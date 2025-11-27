@@ -34,7 +34,7 @@ public class BookingService implements IBookingService {
         LocalDate bookingDate = LocalDate.parse(dto.getBookingDate());
 
         Optional<Booking> existedBooking =
-                bookingRepository.findByCour_CourIdAndTimeSlot_TimeSlotIdAndBookingDate(
+                bookingRepository.findByCour_CourIdAndTimeSlot_IdAndBookingDate(
                         dto.getCourId(),
                         dto.getTimeSlotId(),
                         bookingDate

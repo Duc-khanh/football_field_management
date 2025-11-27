@@ -26,6 +26,9 @@ public class OrderPayment {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "account_id")
     private Account account;
+    @OneToOne(mappedBy = "payment")
+    private Booking booking;
+
 
     public enum Status { PAID, REFUNDED, CANCELLED,COMPLETE }
 }

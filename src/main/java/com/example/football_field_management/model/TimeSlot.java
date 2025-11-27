@@ -13,7 +13,7 @@ import java.time.LocalTime;
 public class TimeSlot {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long timeSlotId;
+    private Long id;
     private String startTime;
     private String endTime;
     @ManyToOne

@@ -35,6 +35,11 @@ public class Booking {
     private Double duration;
     private Double price;
     private String note;
+    @OneToOne
+    @JoinColumn(name = "payment_id")
+    private OrderPayment payment;
+
+
 }
 
 //    private Long bookingId;
