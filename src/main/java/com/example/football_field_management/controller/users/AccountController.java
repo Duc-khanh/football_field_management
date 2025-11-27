@@ -1,6 +1,7 @@
-package com.example.football_field_management.controller.admin;
+package com.example.football_field_management.controller.users;
 
 import com.example.football_field_management.dto.AccountResponse;
+import com.example.football_field_management.dto.UpdateProfileRequest;
 import com.example.football_field_management.model.Account;
 import com.example.football_field_management.repository.AccountRepository;
 import lombok.RequiredArgsConstructor;
@@ -44,19 +45,18 @@ public class AccountController {
     @PutMapping("/update")
     public ResponseEntity<AccountResponse> updateProfile(
             Authentication authentication,
-            @RequestBody Account updatedProfile
+            @RequestBody UpdateProfileRequest updatedProfile
     ) {
         String email = authentication.getName();
 
         Account account = accountRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        // Cập nhật các trường
-        account.setFullName(updatedProfile.getFullName());
-        account.setPhone(updatedProfile.getPhone());
-        account.setAddress(updatedProfile.getAddress());
-        if (updatedProfile.getAvt_path() != null) {
-            account.setAvt_path(updatedProfile.getAvt_path());
+        if (updatedProfile.getFullName() != null) account.setFullName(updatedProfile.getFullName());
+        if (updatedProfile.getPhone() != null) account.setPhone(updatedProfile.getPhone());
+        if (updatedProfile.getAddress() != null) account.setAddress(updatedProfile.getAddress());
+        if (updatedProfile.getAvatar() != null && !updatedProfile.getAvatar().isEmpty()) {
+            account.setAvt_path(updatedProfile.getAvatar());
         }
 
         Account saved = accountRepository.save(account);
@@ -74,4 +74,6 @@ public class AccountController {
 
         return ResponseEntity.ok(res);
     }
+
+
 }
