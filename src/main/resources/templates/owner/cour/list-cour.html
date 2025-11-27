@@ -86,7 +86,6 @@
                         <th>Tên sân</th>
                         <th>Giá/giờ</th>
                         <th>Kích thước</th>
-                        <th>Mặt sân</th>
                         <th>Đèn</th>
                         <th>Địa điểm</th>
                         <th>Trạng thái</th>
@@ -108,7 +107,7 @@
                         <td th:text="${c.courName}"></td>
                         <td th:text="${#numbers.formatDecimal(c.pricePerHour, 0, 'COMMA', 0, 'POINT')}"></td>
                         <td th:text="${c.fieldSize}"></td>
-                        <td th:text="${c.surfaceType}"></td>
+
                         <td th:text="${c.lightsAvailable ? 'Có' : 'Không'}"></td>
                         <td th:text="${c.venue != null ? c.venue.venueName : 'Chưa có'}"></td>
                         <td>

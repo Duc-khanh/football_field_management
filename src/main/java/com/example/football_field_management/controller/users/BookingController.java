@@ -107,4 +107,43 @@ public class BookingController {
             return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
         }
     }
+    // Lấy danh sách sân đã đặt của tôi
+    @GetMapping("/my-bookings")
+    public ResponseEntity<?> getMyBookings(Authentication authentication) {
+
+        if (authentication == null) {
+            return ResponseEntity.status(401)
+                    .body(Map.of("message", "Bạn chưa đăng nhập!"));
+        }
+
+        try {
+            String username = authentication.getName();
+
+            // Lấy accountId từ username
+            Long accountId = bookingService.getAccountIdByUsername(username);
+
+            // Lấy danh sách booking theo accountId
+            List<Booking> bookings = bookingRepository.findByAccountId(accountId);
+
+            // Trả dữ liệu gọn nhẹ cho frontend
+            List<Map<String, Object>> response = bookings.stream().map(b -> {
+                Map<String, Object> map = new HashMap<>();
+                map.put("bookingId", b.getBookingId());
+                map.put("courtName", b.getCour().getCourName());
+                map.put("date", b.getBookingDate());
+                map.put("time", b.getTimeSlot().getStartTime() + " - " + b.getTimeSlot().getEndTime());
+                map.put("price", b.getTotalPrice());
+                map.put("status", b.getStatus());
+                return map;
+            }).collect(Collectors.toList());
+
+            return ResponseEntity.ok(response);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest()
+                    .body(Map.of("message", "Không lấy được dữ liệu đặt sân!"));
+        }
+    }
+
 }

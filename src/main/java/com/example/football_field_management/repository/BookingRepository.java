@@ -1,5 +1,6 @@
 package com.example.football_field_management.repository;
 
+import com.example.football_field_management.model.Account;
 import com.example.football_field_management.model.Booking;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -54,5 +55,13 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             "AND (b.status IS NULL OR b.status != 'CANCELLED')")
     List<Booking> findBookingsByDateAndCourt(@Param("courId") Long courId,
                                              @Param("date") LocalDate date);
+    @Query("SELECT b FROM Booking b WHERE b.account.account_id = :accountId")
+    List<Booking> findByAccountId(@Param("accountId") Long accountId);
+
+//    List<Booking> findByAccount(Account account);
+//    List<Booking> findByAccount_Account_id(Long accountId);
+
+
+
 
 }
