@@ -41,4 +41,6 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
     Page<Account> findOwnersByRoleAndStatus(@Param("roleName") String roleName,
                                             @Param("status") ApprovalStatus status,
                                             Pageable pageable);
+
+
 }

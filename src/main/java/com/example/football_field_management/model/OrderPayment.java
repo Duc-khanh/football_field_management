@@ -27,5 +27,5 @@ public class OrderPayment {
     @JoinColumn(name = "account_id")
     private Account account;
 
-    public enum Status { PAID, REFUNDED, CANCELLED,COMPLETE }
+    public enum Status { PENDING, PAID, REFUNDED, CANCELLED,COMPLETE }
 }
