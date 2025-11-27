@@ -2,23 +2,21 @@ package com.example.football_field_management.service.admin.users;
 
 import com.example.football_field_management.dto.AuthResponse;
 import com.example.football_field_management.dto.LoginRequest;
+import com.example.football_field_management.dto.OwnerRegisterDTO;
 import com.example.football_field_management.model.Account;
+import com.example.football_field_management.model.ApprovalStatus;
 import com.example.football_field_management.model.Role;
 import com.example.football_field_management.repository.AccountRepository;
+import com.example.football_field_management.repository.RoleRepository;
 import com.example.football_field_management.util.JwtUtil;
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.data.domain.*;
+import org.springframework.security.authentication.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
@@ -29,7 +27,7 @@ public class AccountService implements IAccountService {
     private final JwtUtil jwtUtil;
     private final AccountRepository accountRepository;
     private final BCryptPasswordEncoder passwordEncoder;
-
+    private final RoleRepository roleRepository;
 
     @Override
     public Account save(Account account) {
@@ -48,9 +46,92 @@ public class AccountService implements IAccountService {
             }
         }
 
+        if (account.getApprovalStatus() == null) {
+            account.setApprovalStatus(ApprovalStatus.APPROVED);
+        }
+
         return accountRepository.save(account);
     }
 
+    // ================== REGISTER OWNER ==================
+    public Account registerOwner(OwnerRegisterDTO request) {
+
+        if (accountRepository.existsByEmail(request.getEmail())) {
+            throw new RuntimeException("Email đã tồn tại!");
+        }
+
+        Account newOwner = new Account();
+        newOwner.setFullName(request.getFullName());
+        newOwner.setEmail(request.getEmail());
+        newOwner.setPhone(request.getPhone());
+        newOwner.setAddress(request.getAddress());
+        newOwner.setPassword(passwordEncoder.encode(request.getPassword()));
+        newOwner.setApprovalStatus(ApprovalStatus.PENDING);
+        newOwner.setStatus(true);
+
+        Role ownerRole = roleRepository.findByRoleName("ROLE_OWNER")
+                .orElseThrow(() -> new RuntimeException("Role Owner not found"));
+
+        newOwner.setRoles(Set.of(ownerRole));
+
+        return accountRepository.save(newOwner);
+    }
+
+    // ================== OWNER APPROVAL ==================
+    // Trả về Page để phân trang
+    public Page<Account> getPendingOwners(int page, int size, String keyword) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("account_id").descending());
+        if (keyword != null && !keyword.isBlank()) {
+            return accountRepository.findByRoleNameAndKeyword("ROLE_OWNER", keyword, pageable);
+        }
+        return accountRepository.findOwnersByRoleAndStatus("ROLE_OWNER", ApprovalStatus.PENDING, pageable);
+    }
+
+    public void updateOwnerStatus(Long id, ApprovalStatus status) {
+        Account account = accountRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy tài khoản với ID: " + id));
+
+        if (status != ApprovalStatus.APPROVED && status != ApprovalStatus.REJECTED) {
+            throw new IllegalArgumentException("Trạng thái không hợp lệ");
+        }
+
+        account.setApprovalStatus(status);
+        account.setStatus(status == ApprovalStatus.APPROVED);
+
+        accountRepository.save(account);
+    }
+
+    // ================== AUTH ==================
+    @Override
+    public AuthResponse login(LoginRequest request) {
+
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        request.getEmail(), request.getPassword()
+                )
+        );
+
+        String token = jwtUtil.generateToken(authentication);
+
+        Account account = accountRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new RuntimeException("Account not found"));
+
+        Set<String> roles = account.getRoles().stream()
+                .map(Role::getRoleName)
+                .collect(Collectors.toSet());
+
+        return AuthResponse.builder()
+                .fullName(account.getFullName())
+                .email(account.getEmail())
+                .phone(account.getPhone())
+                .address(account.getAddress())
+                .status(String.valueOf(account.getStatus()))
+                .token(token)
+                .roles(roles)
+                .build();
+    }
+
+    // ================== BASIC ==================
     @Override
     public void remote(Long id) {
         accountRepository.deleteById(id);
@@ -79,34 +160,6 @@ public class AccountService implements IAccountService {
     @Override
     public Page<Account> searchAccounts(String keyword, Pageable pageable) {
         return accountRepository.findByFullNameContainingIgnoreCaseOrEmailContainingIgnoreCase(keyword, keyword, pageable);
-    }
-
-    @Override
-    public AuthResponse login(LoginRequest request) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.getEmail(), request.getPassword()
-                )
-        );
-
-        String token = jwtUtil.generateToken(authentication);
-
-        Account account = accountRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new RuntimeException("Account not found"));
-
-        Set<String> roles = account.getRoles().stream()
-                .map(Role::getRoleName)
-                .collect(Collectors.toSet());
-
-        return AuthResponse.builder()
-                .fullName(account.getFullName())
-                .email(account.getEmail())
-                .phone(account.getPhone())
-                .address(account.getAddress())
-                .status(String.valueOf(account.getStatus()))
-                .token(token)
-                .roles(roles)
-                .build();
     }
 
     @Override

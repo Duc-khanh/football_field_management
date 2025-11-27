@@ -50,6 +50,7 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/api/auth/login",
                                 "/api/auth/register",
+                                "/api/auth/register-owner",
                                 "/auth/forgot-password",  // <--- Thêm dòng này
                                 "/auth/reset-password",
                                 "/api/home/**",

@@ -48,6 +48,7 @@
                         <p class="text-danger small mt-1" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></p>
                     </div>
 
+
                     <div class="input-field mb-3">
                         <input type="password" th:field="*{password}" id="password" required minlength="6" autocomplete="off">
                         <label for="password">Mật khẩu</label>

@@ -1,7 +1,6 @@
 package com.example.football_field_management.controller.authenticate;
 
 import com.example.football_field_management.dto.LoginRequest;
-import com.example.football_field_management.dto.OwnerRegisterDTO;
 import com.example.football_field_management.dto.RegisterRequest;
 import com.example.football_field_management.model.Account;
 import com.example.football_field_management.model.Role;
@@ -28,16 +27,6 @@ public class AuthController {
     private final RoleRepository roleRepository;
     private final BCryptPasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
-
-    @PostMapping("/register-owner")
-    public ResponseEntity<?> registerOwner(@RequestBody OwnerRegisterDTO registerDTO) {
-        try {
-            accountService.registerOwner(registerDTO);
-            return ResponseEntity.ok("Đăng ký thành công! Vui lòng chờ Admin duyệt tài khoản.");
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
