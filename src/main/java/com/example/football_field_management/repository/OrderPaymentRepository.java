@@ -15,6 +15,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface OrderPaymentRepository extends JpaRepository<OrderPayment, Long> {
@@ -135,5 +136,7 @@ public interface OrderPaymentRepository extends JpaRepository<OrderPayment, Long
             "AND YEAR(o.paidAt) = YEAR(CURRENT_DATE) " +
             "AND o.status = 'COMPLETE'")
     BigDecimal getRevenueThisMonth();
+    Optional<OrderPayment> findByCode(String code);
+
 }
 

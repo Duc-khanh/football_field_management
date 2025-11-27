@@ -56,7 +56,7 @@ public class SecurityConfig {
                                 "/api/home/**",
                                 "/api/cour/**",
                                 "/api/booking/timeslots/**",   // <--- THÊM DÒNG NÀY (để lấy danh sách giờ)
-                                "/api/booking/availability/**"
+                                "/api/booking/availability/**",
 //                                "/api/booking/**"
 
                         ).permitAll()

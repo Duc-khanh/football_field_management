@@ -2,21 +2,24 @@ package com.example.football_field_management.controller.admin;
 
 import com.example.football_field_management.model.Account;
 import com.example.football_field_management.model.ApprovalStatus;
+import com.example.football_field_management.service.EmailService;
 import com.example.football_field_management.service.admin.users.AccountService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @Controller
 @RequestMapping("/admin")
+@RequiredArgsConstructor
 public class AdminWebController {
 
-    @Autowired
-    private AccountService accountService;
+    private final AccountService accountService;
+    private final EmailService emailService;
 
-    // Hiển thị danh sách OWNER chờ duyệt với phân trang + tìm kiếm
     @GetMapping("/browseAccount")
     public String showDashboard(
             Model model,
@@ -33,7 +36,6 @@ public class AdminWebController {
         return "/admin/browseAccount";
     }
 
-    // Duyệt hoặc từ chối OWNER
     @GetMapping("/approve/{id}")
     public String approveOwner(
             @PathVariable Long id,
@@ -41,10 +43,22 @@ public class AdminWebController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(required = false) String keyword
     ) {
+        Optional<Account> owner = accountService.getAccountById(id);
         accountService.updateOwnerStatus(id, status);
 
-        // redirect về trang hiện tại + keyword
+        owner.ifPresent(acc -> {
+            if (acc.getEmail() != null && !acc.getEmail().isEmpty()) {
+                String subject = "Thông báo trạng thái tài khoản";
+                String body = (status == ApprovalStatus.APPROVED)
+                        ? "Xin chúc mừng! Tài khoản của bạn đã được duyệt."
+                        : "Rất tiếc! Tài khoản của bạn không được duyệt.";
+
+                emailService.sendSimpleMail(acc.getEmail(), subject, body);
+            }
+        });
+
         if (keyword == null) keyword = "";
         return "redirect:/admin/browseAccount?page=" + page + "&keyword=" + keyword;
     }
+
 }

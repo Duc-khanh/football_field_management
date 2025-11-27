@@ -30,5 +30,5 @@ public class OrderPayment {
     private Booking booking;
 
 
-    public enum Status { PAID, REFUNDED, CANCELLED,COMPLETE }
+    public enum Status { PENDING, PAID, REFUNDED, CANCELLED,COMPLETE }
 }

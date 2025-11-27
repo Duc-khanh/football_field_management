@@ -15,4 +15,5 @@ public class BookingDTO {
     private Double duration;
     private Double price;
     private String note;
+    private Long accountId;
 }
