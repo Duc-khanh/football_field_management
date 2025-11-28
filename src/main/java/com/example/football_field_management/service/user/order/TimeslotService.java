@@ -26,6 +26,7 @@ public class TimeslotService implements ITimeslotService {
     public List<Map<String, Object>> getWeeklySlots(Long courId, LocalDate start, LocalDate end) {
         List<Map<String, Object>> result = new ArrayList<>();
 
+
         // 1. Lấy thông tin Sân (Nếu không tìm thấy sân, vẫn trả về list rỗng để tránh lỗi null)
         Optional<Cour> courOpt = courRepo.findById(courId);
         if (courOpt.isEmpty()) {
@@ -39,6 +40,7 @@ public class TimeslotService implements ITimeslotService {
             System.out.println("Bảng time_slot chưa có dữ liệu!");
             return result;
         }
+
 
         // 3. Duyệt từng ngày từ Start -> End
         LocalDate current = start;

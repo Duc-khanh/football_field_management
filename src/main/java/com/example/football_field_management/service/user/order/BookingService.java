@@ -31,9 +31,11 @@ public class BookingService {
         TimeSlot timeSlot = timeSlotRepository.findById(dto.getTimeSlotId())
                 .orElseThrow(() -> new RuntimeException("Time slot does not exist"));
 
+
         boolean isBooked = bookingRepository.existsByCourtAndSlotAndDate(dto.getCourId(), dto.getTimeSlotId(), date);
         if (isBooked) {
             throw new RuntimeException("The court is already booked at this time!");
+
         }
 
         Booking booking = new Booking();

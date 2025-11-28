@@ -14,6 +14,7 @@ import java.time.LocalTime;
 public class TimeSlot {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     private Long timeSlotId;
     @Column(name = "start_time")
     private java.time.LocalTime startTime;
@@ -22,6 +23,7 @@ public class TimeSlot {
     private java.time.LocalTime endTime;
     @Column(name = "date")
     private LocalDate date;
+
     @ManyToOne
     @JoinColumn(name = "cour_id")
     private Cour cour;

@@ -51,14 +51,15 @@
             <span class="icon"><i class="fa-solid fa-futbol"></i></span>
             <span class="text">Quản lý sân bóng</span>
         </a>
+        <a href="/order" sec:authorize="hasRole('OWNER')">
+            <span class="icon"><i class="fa-solid fa-calendar-alt"></i></span>
+            <span class="text">Quản lý đặt lịch</span>
+        </a>
         <a href="/owner/revenue" sec:authorize="hasRole('OWNER')">
             <span class="icon"><i class="fa-solid fa-coins"></i></span>
             <span class="text">Quản lý doanh thu</span>
         </a>
-        <a href="/owner/bookings" sec:authorize="hasRole('OWNER')">
-            <span class="icon"><i class="fa-solid fa-calendar-alt"></i></span>
-            <span class="text">Quản lý đặt lịch</span>
-        </a>
+
 
         <!-- Logout -->
         <a href="/auth/logout" class="logout-link" sec:authorize="isAuthenticated()">

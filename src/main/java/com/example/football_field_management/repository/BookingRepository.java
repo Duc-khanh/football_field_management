@@ -2,6 +2,8 @@ package com.example.football_field_management.repository;
 
 import com.example.football_field_management.model.Account;
 import com.example.football_field_management.model.Booking;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -57,6 +59,8 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
                                              @Param("date") LocalDate date);
     @Query("SELECT b FROM Booking b WHERE b.account.account_id = :accountId")
     List<Booking> findByAccountId(@Param("accountId") Long accountId);
+
+    Page<Booking> searchOrder(String keyword, String status, Pageable pageable);
 
 //    List<Booking> findByAccount(Account account);
 //    List<Booking> findByAccount_Account_id(Long accountId);

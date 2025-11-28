@@ -49,6 +49,13 @@ public class Booking {
     @Column(name = "status")
     private String status;
 
+    private Double duration;
+    private Double price;
+    @OneToOne
+    @JoinColumn(name = "payment_id")
+    private OrderPayment payment;
+
+
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
