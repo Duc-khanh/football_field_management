@@ -102,11 +102,12 @@
                                 <i class="fa fa-lock"></i>
                             </a>
                             <a th:href="@{'/admin/venue/status/' + ${venue.venueId} + '/true'}"
-                               th:if="${!venue.status}"
+                               th:if="${venue.status != true}"
                                class="btn btn-success d-inline-flex align-items-center justify-content-center btn-icon"
                                title="Click để mở" aria-label="Mở">
                                 <i class="fa fa-unlock"></i>
                             </a>
+
                         </td>
 
                     </tr>

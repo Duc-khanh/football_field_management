@@ -51,10 +51,12 @@ public class SecurityConfig {
                                 "/api/auth/login",
                                 "/api/auth/register",
                                 "/api/auth/register-owner",
-                                "/auth/forgot-password",  // <--- Thêm dòng này
+                                "/auth/forgot-password",
                                 "/auth/reset-password",
                                 "/api/home/**",
-                                "/api/cour/**"
+                                "/api/cour/**",
+                                "/api/booking/timeslots/**",
+                                "/api/booking/availability/**"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
@@ -87,22 +89,17 @@ public class SecurityConfig {
                                 "/uploads/**",
                                 "/auth/login", "/auth/login/**",
                                 "/auth/register", "/auth/register/**",
-                                "/auth/forgot-password",  // <--- Thêm dòng này
+                                "/auth/forgot-password",
                                 "/auth/reset-password",
                                 "/login-success",
-
                                 "/css/**", "/js/**", "/images/**"
                         ).permitAll()
-
                         .requestMatchers("/dashboard").hasAnyRole("ADMIN", "OWNER")
                         .requestMatchers("/accounts/**").hasRole("ADMIN")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/owner/**").hasRole("OWNER")
-
                         .anyRequest().authenticated()
                 )
-
-                // ------------------- FORM LOGIN -------------------
                 .formLogin(form -> form
                         .loginPage("/auth/login")
                         .loginProcessingUrl("/auth/login")
@@ -112,21 +109,16 @@ public class SecurityConfig {
                         .failureUrl("/auth/login?error=true")
                         .permitAll()
                 )
-
-                // ------------------- GOOGLE LOGIN -------------------
                 .oauth2Login(oauth2 -> oauth2
                         .loginPage("/auth/login")
                         .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
                         .successHandler(customSuccessHandler)
                 )
-
-                // ------------------- LOGOUT -------------------
                 .logout(logout -> logout
                         .logoutUrl("/auth/logout")
                         .logoutSuccessUrl("/auth/login")
                         .permitAll()
                 )
-
                 .authenticationProvider(authenticationProvider());
 
         return http.build();

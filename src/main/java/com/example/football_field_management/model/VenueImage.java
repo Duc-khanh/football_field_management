@@ -22,5 +22,7 @@ public class VenueImage {
     @ManyToOne
     @JoinColumn(name = "venue_id")
     private Venue venue;
+
+
 }
 

@@ -3,17 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <title>Admin Dashboard - Sân Bóng 247</title>
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <style>
-        /* --- 1. GLOBAL LAYOUT --- */
+        /* --- LAYOUT CHUNG --- */
         body {
             background-color: #f5f7fa;
-            overflow-x: hidden; /* Ẩn thanh cuộn ngang */
+            overflow-x: hidden;
         }
 
-        /* --- 2. HEADER (CỐ ĐỊNH) --- */
+        /* --- HEADER CỐ ĐỊNH TRÊN CÙNG --- */
         .header-fixed {
             position: fixed;
             top: 0;
@@ -23,120 +27,128 @@
             background: #fff;
             border-bottom: 1px solid #e0e0e0;
             z-index: 1000;
-            display: flex; /* Dàn hàng ngang */
-            align-items: center; /* Căn giữa dọc */
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between; /* User info bên phải */
             padding: 0 20px;
+
             box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
 
-        /* CSS đè vào Fragment Header để Logo đẹp hơn */
         .header-fixed .left {
-            display: flex;
-            align-items: center;
-            gap: 15px; /* Khoảng cách giữa Logo và Tên */
-        }
-        .header-fixed .logo {
-            height: 50px; /* Giới hạn chiều cao logo */
-            width: auto;
-        }
-        .header-fixed .right {
-            margin-left: auto; /* Đẩy User info sang phải cùng */
             display: flex;
             align-items: center;
             gap: 15px;
         }
+
+        .header-fixed .logo {
+            height: 50px;
+            width: auto;
+        }
+
+        .header-fixed .right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
         .avatar-img {
             width: 40px;
             height: 40px;
             border-radius: 50%;
             object-fit: cover;
+            cursor: pointer;
         }
 
-        /* --- 3. SIDEBAR (MENU TRÁI) --- */
+        /* --- SIDEBAR TRÁI --- */
         .sidebar {
             width: 250px;
             position: fixed;
-            top: 70px; /* Nằm dưới Header */
-            left: 0;
+            top: 70px;
             bottom: 0;
-            background: #ffffff;
+            left: 0;
+            background: #fff;
             border-right: 1px solid #e0e0e0;
-            overflow-y: auto;
-            z-index: 900;
             padding-top: 20px;
+            overflow-y: auto;
         }
 
-        /* QUAN TRỌNG: CSS cho từng Link trong Sidebar (Sửa lỗi trong ảnh) */
         .sidebar a {
-            display: flex; /* Để icon và chữ nằm ngang hàng */
+            display: flex;
             align-items: center;
-            padding: 12px 25px; /* Khoảng cách thoáng */
-            text-decoration: none; /* Bỏ gạch chân */
-            color: #555; /* Màu chữ xám đen */
+            padding: 12px 25px;
+            color: #555;
             font-weight: 500;
-            transition: all 0.3s;
-            border-left: 4px solid transparent; /* Tạo viền ẩn bên trái */
+            text-decoration: none;
+            border-left: 4px solid transparent;
+            transition: 0.3s;
         }
 
-        /* Hiệu ứng khi di chuột vào menu */
         .sidebar a:hover {
-            background-color: #f0f4ff;
-            color: #0d6efd; /* Màu xanh khi hover */
+            background: #f0f4ff;
+            color: #0d6efd;
             border-left: 4px solid #0d6efd;
         }
 
-        /* Căn chỉnh Icon trong menu */
         .sidebar .icon {
-            width: 30px; /* Cố định chiều rộng icon để chữ thẳng hàng */
+            width: 30px;
             text-align: center;
             margin-right: 10px;
             font-size: 1.1rem;
         }
 
-        /* --- 4. MAIN CONTENT (NỘI DUNG CHÍNH) --- */
+        /* --- CONTENT --- */
         .content {
-            margin-left: 250px; /* Cách trái bằng width sidebar */
-            margin-top: 70px;   /* Cách trên bằng height header */
+            margin-left: 250px; /* lệch sidebar */
+            margin-top: 70px;   /* lệch header */
             padding: 30px;
-            min-height: 100vh;
         }
 
-        /* Footer */
+        /* --- FOOTER FULL WIDTH --- */
         footer {
-            margin-top: auto;
-            padding: 20px 0;
+            width: 100%;
             background: #fff;
-            border-top: 1px solid #eee;
+            border-top: 1px solid #e0e0e0;
+            padding: 15px;
+            text-align: center;
+            margin-top: 40px;
         }
     </style>
 </head>
 
 <body>
 
+<!-- HEADER CỐ ĐỊNH -->
 <div class="header-fixed">
-    <div th:replace="~{fragments/admin-header :: header}" style="width: 100%; display: flex; justify-content: space-between;"></div>
+    <div th:replace="~{fragments/admin-header :: header}"></div>
 </div>
 
+<!-- SIDEBAR -->
 <div class="sidebar">
     <div th:replace="~{fragments/admin-sidebar :: menuAdmin}"></div>
 </div>
 
-<div class="content d-flex flex-column">
+<!-- MAIN CONTENT -->
+<div class="content">
 
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h3 class="fw-bold text-primary">Quản Lý Duyệt Chủ Sân</h3>
     </div>
 
     <div class="card shadow-sm border-0 mb-4">
+
         <div class="card-header bg-white py-3">
-            <h5 class="card-title mb-0 fw-bold"><i class="fa-solid fa-list me-2"></i>Danh sách chờ duyệt</h5>
+            <div class="d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0 fw-bold"><i class="fa-solid fa-list me-2"></i>Danh sách chờ duyệt</h5>
+
+                <form class="d-flex" th:action="@{/admin/browseAccount}" method="get">
+                    <input class="form-control form-control-sm me-2" type="search" placeholder="Tìm kiếm tên hoặc email"
+                           name="keyword" th:value="${keyword}" style="width: 250px;">
+                    <button class="btn btn-primary btn-sm" type="submit"><i class="fa-solid fa-search"></i></button>
+                </form>
+            </div>
         </div>
-        <!-- Thêm form tìm kiếm -->
-        <form class="d-flex mb-3" th:action="@{/admin/browseAccount}" method="get">
-            <input class="form-control me-2" type="search" placeholder="Tìm kiếm tên hoặc email" name="keyword"
-                   th:value="${keyword}">
-            <button class="btn btn-outline-primary" type="submit">Tìm kiếm</button>
-        </form>
 
         <div class="table-responsive" th:if="${ownersPage.content.size() > 0}">
             <table class="table table-hover align-middle">
@@ -149,30 +161,34 @@
                     <th class="text-center">Hành động</th>
                 </tr>
                 </thead>
+
                 <tbody>
-                <tr th:each="owner, iterStat : ${ownersPage.content}">
-                    <!-- STT = số thứ tự theo trang -->
+                <tr th:each="owner, iter : ${ownersPage.content}">
                     <td class="text-center fw-bold text-muted"
-                        th:text="${ownersPage.number * ownersPage.size + iterStat.index + 1}">1</td>
+                        th:text="${ownersPage.number * ownersPage.size + iter.index + 1}"></td>
 
                     <td>
-                        <div class="fw-bold" th:text="${owner.fullName}">Nguyen Van A</div>
+                        <div class="fw-bold" th:text="${owner.fullName}"></div>
                         <small class="text-muted">Chủ sân mới</small>
                     </td>
+
                     <td>
-                        <div th:text="${owner.email}">email@example.com</div>
-                        <small class="text-primary" th:text="${owner.phone}">0987654321</small>
+                        <div th:text="${owner.email}"></div>
+                        <small class="text-primary" th:text="${owner.phone}"></small>
                     </td>
-                    <td th:text="${owner.address}">Hà Nội</td>
+
+                    <td th:text="${owner.address}"></td>
+
                     <td class="text-center">
                         <a th:href="@{/admin/approve/{id}(id=${owner.account_id}, status='APPROVED', page=${currentPage}, keyword=${keyword})}"
-                           class="btn btn-success btn-sm me-2"
-                           onclick="return confirm('Xác nhận duyệt tài khoản này?')">
+                           onclick="confirmApprove(event, this.href)"
+                           class="btn btn-success btn-sm me-2">
                             <i class="fa-solid fa-check"></i> Duyệt
                         </a>
+
                         <a th:href="@{/admin/approve/{id}(id=${owner.account_id}, status='REJECTED', page=${currentPage}, keyword=${keyword})}"
-                           class="btn btn-outline-danger btn-sm"
-                           onclick="return confirm('Từ chối tài khoản này?')">
+                           onclick="confirmReject(event, this.href)"
+                           class="btn btn-outline-danger btn-sm">
                             <i class="fa-solid fa-xmark"></i> Từ chối
                         </a>
                     </td>
@@ -183,24 +199,26 @@
             <!-- PHÂN TRANG -->
             <nav aria-label="Page navigation">
                 <ul class="pagination justify-content-center">
+
                     <li class="page-item" th:classappend="${ownersPage.first} ? 'disabled'">
                         <a class="page-link" th:href="@{/admin/browseAccount(page=${currentPage - 1}, keyword=${keyword})}">Trước</a>
                     </li>
 
-                    <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                    <li class="page-item"
+                        th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
                         th:classappend="${i} == ${currentPage} ? 'active'">
                         <a class="page-link" th:href="@{/admin/browseAccount(page=${i}, keyword=${keyword})}"
-                           th:text="${i + 1}">1</a>
+                           th:text="${i + 1}"></a>
                     </li>
 
                     <li class="page-item" th:classappend="${ownersPage.last} ? 'disabled'">
                         <a class="page-link" th:href="@{/admin/browseAccount(page=${currentPage + 1}, keyword=${keyword})}">Tiếp</a>
                     </li>
+
                 </ul>
             </nav>
         </div>
 
-        <!-- Nếu không có dữ liệu -->
         <div th:if="${ownersPage.content.size() == 0}" class="alert alert-info text-center py-4">
             <i class="fa-solid fa-folder-open fa-2x mb-3 d-block text-muted"></i>
             Chưa có tài khoản nào cần duyệt.
@@ -208,10 +226,43 @@
 
     </div>
 
-    <div th:replace="~{fragments/admin-footer :: adminFooter}"></div>
-</div>
+</div> <!-- end content -->
+
+<!-- FOOTER FULL WIDTH -->
+<footer th:replace="~{fragments/admin-footer :: adminFooter}"></footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    function confirmApprove(event, url) {
+        event.preventDefault();
+        Swal.fire({
+            title: 'Xác nhận duyệt?',
+            text: 'Bạn có chắc chắn muốn duyệt tài khoản này?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Duyệt',
+            cancelButtonColor: '#6c757d',
+            confirmButtonColor: '#28a745'
+        }).then(result => {
+            if (result.isConfirmed) window.location.href = url;
+        });
+    }
+
+    function confirmReject(event, url) {
+        event.preventDefault();
+        Swal.fire({
+            title: 'Xác nhận từ chối?',
+            text: 'Bạn có chắc chắn muốn từ chối tài khoản này?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Từ chối',
+            cancelButtonText: 'Hủy',
+            confirmButtonColor: '#dc3545'
+        }).then(result => {
+            if (result.isConfirmed) window.location.href = url;
+        });
+    }
+</script>
 
 </body>
 </html>

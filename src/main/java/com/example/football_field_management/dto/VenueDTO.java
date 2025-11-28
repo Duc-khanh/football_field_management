@@ -34,20 +34,23 @@ public class VenueDTO {
     private List<Long> existingImageIds;
     private List<MultipartFile> subImagesFiles;
     private List<CourDTO> courts;
+    private int totalCourts;
+    private double price;
 
 
     public VenueDTO(Long venueId, String venueName, String address,
                     String contactNumber, String description, Boolean status,
                     District districtEntity,
-                    Account ownerEntity,
-                    List<VenueImageDTO> imageDTOs) {
-
+                    Account ownerEntity, // ❗️ SỬA: Đổi UserEntity thành Account
+                    List<VenueImageDTO> imageDTOs,
+                    int totalCourts) {
         this.venueId = venueId;
         this.venueName = venueName;
         this.address = address;
         this.contactNumber = contactNumber;
         this.description = description;
         this.status = status;
+        this.totalCourts = totalCourts;
 
         if (districtEntity != null) {
             this.district = new DistrictDTO(districtEntity.getDistrict_id(),
@@ -61,4 +64,5 @@ public class VenueDTO {
 
         this.images = imageDTOs;
     }
+
 }
