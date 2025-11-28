@@ -29,4 +29,3 @@ public class TimeSlot {
     private Cour cour;
 
 }
-

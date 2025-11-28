@@ -36,6 +36,7 @@ public class BookingService {
         if (isBooked) {
             throw new RuntimeException("The court is already booked at this time!");
 
+
         }
 
         Booking booking = new Booking();

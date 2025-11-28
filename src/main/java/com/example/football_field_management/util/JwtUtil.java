@@ -37,7 +37,9 @@ public class JwtUtil {
 
 
     public String generateToken(Authentication authentication) {
-        String username = authentication.getName();
+        String username = ((org.springframework.security.core.userdetails.UserDetails)
+                authentication.getPrincipal()).getUsername();   // ✅ DÒNG MỚI
+
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
 
         List<String> roles = authorities.stream()

@@ -36,6 +36,8 @@ public class Booking {
     @JoinColumn(name = "court_id", nullable = false)
     private Cour cour;
 
+
+
     @ManyToOne
     @JoinColumn(name = "slots_id", nullable = false)
     private TimeSlot timeSlot;
@@ -54,6 +56,7 @@ public class Booking {
     @OneToOne
     @JoinColumn(name = "payment_id")
     private OrderPayment payment;
+
 
 
     @Column(name = "created_at")

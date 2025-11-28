@@ -60,10 +60,23 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     @Query("SELECT b FROM Booking b WHERE b.account.account_id = :accountId")
     List<Booking> findByAccountId(@Param("accountId") Long accountId);
 
-    Page<Booking> searchOrder(String keyword, String status, Pageable pageable);
+    @Query("""
+SELECT b FROM Booking b
+WHERE 
+   (:status IS NULL OR b.status = :status)
+AND (
+       LOWER(b.account.fullName) LIKE LOWER(CONCAT('%', :keyword, '%'))
+    OR LOWER(b.account.email) LIKE LOWER(CONCAT('%', :keyword, '%'))
+)
+""")
+    Page<Booking> searchOrder(
+            @Param("keyword") String keyword,
+            @Param("status") String status,
+            Pageable pageable
+    );
 
-//    List<Booking> findByAccount(Account account);
-//    List<Booking> findByAccount_Account_id(Long accountId);
+
+
 
 
 

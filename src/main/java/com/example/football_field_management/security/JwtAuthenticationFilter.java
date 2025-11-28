@@ -1,6 +1,5 @@
 package com.example.football_field_management.security;
 
-
 import com.example.football_field_management.util.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -32,6 +31,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         final String authHeader = request.getHeader("Authorization");
 
+        // Debug: xem header Authorization
+        System.out.println("==== JWT FILTER ====");
+        System.out.println("Authorization header = " + authHeader);
+
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
@@ -42,7 +45,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         try {
             username = jwtUtil.getUsernameFromToken(token);
+            System.out.println("USERNAME FROM TOKEN = " + username);
         } catch (Exception e) {
+            System.out.println("JWT PARSE ERROR: " + e.getMessage());
             filterChain.doFilter(request, response);
             return;
         }
@@ -53,7 +58,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             try {
                 userDetails = userDetailsService.loadUserByUsername(username);
+                System.out.println("USER FOUND = " + userDetails.getUsername());
             } catch (Exception e) {
+                System.out.println("LOAD USER ERROR: " + e.getMessage());
                 filterChain.doFilter(request, response);
                 return;
             }
@@ -68,10 +75,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authToken);
+
+                System.out.println("AUTHENTICATION SET FOR USER: " + username);
             }
         }
 
         filterChain.doFilter(request, response);
     }
-
 }
