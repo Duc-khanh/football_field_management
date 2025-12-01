@@ -1,0 +1,68 @@
+package com.example.football_field_management.controller.owner;
+
+import com.example.football_field_management.model.Booking;
+import com.example.football_field_management.model.Account;
+import com.example.football_field_management.service.user.order.BookingService;
+import com.example.football_field_management.repository.AccountRepository;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+
+import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Controller
+public class OwnerBookingController {
+
+    private final BookingService bookingService;
+    private final AccountRepository accountRepository;
+
+    public OwnerBookingController(BookingService bookingService, AccountRepository accountRepository) {
+        this.bookingService = bookingService;
+        this.accountRepository = accountRepository;
+    }
+
+    @GetMapping("/owner/bookings")
+    public String viewBookings(Model model, @AuthenticationPrincipal UserDetails userDetails) {
+        // Lấy thông tin Owner
+        Account owner = accountRepository.findByEmail(userDetails.getUsername())
+                .orElseThrow(() -> new RuntimeException("Owner not found"));
+
+        List<Booking> bookings = bookingService.getBookingsByOwner(owner.getEmail());
+        model.addAttribute("bookings", bookings);
+
+        return "owner/bookings";
+    }
+    @GetMapping("/owner/bookings/today")
+    public String viewTodaysBookings(Model model, @AuthenticationPrincipal UserDetails userDetails) {
+        Account owner = accountRepository.findByEmail(userDetails.getUsername())
+                .orElseThrow(() -> new RuntimeException("Owner not found"));
+
+        List<Booking> todaysBookings = bookingService.getTodaysBookingsByOwner(owner.getEmail());
+
+        model.addAttribute("bookings", todaysBookings);
+        model.addAttribute("today", LocalDate.now());
+
+        return "owner/bookings_today";
+    }
+    @GetMapping("/owner/dashboard/home")
+    public String ownerDashboard(Model model,
+                                 @AuthenticationPrincipal UserDetails userDetails) {
+
+        Account owner = accountRepository.findByEmail(userDetails.getUsername())
+                .orElseThrow(() -> new RuntimeException("Owner not found"));
+
+        Long todayCount = bookingService.countTodayBookingsByOwner(owner.getEmail());
+
+        model.addAttribute("todayCount", todayCount);
+
+        return "owner/home";
+    }
+
+
+
+
+}

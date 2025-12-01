@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/home")
 @CrossOrigin(origins = "http://localhost:3000")
 public class HomeController {
+
     private final IUserVenueService venueService;
     private final VenueRepository venueRepository;
 
@@ -32,38 +33,62 @@ public class HomeController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) Long districtId,
             @RequestParam(required = false) Boolean status
     ) {
-        return venueService.getAllVenues(page, size, keyword, status);
+        return venueService.getAllVenues(page, size, keyword, districtId, status);
     }
     @GetMapping("/top5")
     public ResponseEntity<List<VenueDTO>> getTop5Venues() {
-        List<Venue> topVenues = venueRepository.findTop5ByCompletedOrders(PageRequest.of(0, 5));
-
-        List<VenueDTO> dtos = topVenues.stream().map(v -> {
-            VenueDTO dto = new VenueDTO();
-            dto.setVenueId(v.getVenueId());
-            dto.setVenueName(v.getVenueName());
-            dto.setAddress(v.getAddress());
-            dto.setStatus(v.getStatus());
-
-            // Lấy ảnh chính
-            Optional<VenueImage> mainImage = v.getImages().stream()
-                    .filter(VenueImage::isPrimary)
-                    .findFirst();
-            dto.setMainImagePath(mainImage.map(VenueImage::getPhotoPath).orElse(null));
-
-            if (v.getDistrict() != null) {
-                dto.setDistrict(new DistrictDTO(
-                        v.getDistrict().getDistrict_id(),
-                        v.getDistrict().getDistrict_name()
-                ));
-            }
-            return dto;
-        }).collect(Collectors.toList());
-
-        return ResponseEntity.ok(dtos);
+        return ResponseEntity.ok(venueService.getTop5Venues());
     }
+
+
+//    ✅ TOP 5 VENUE
+//    @GetMapping("/top5")
+//    public ResponseEntity<List<VenueDTO>> getTop5Venues() {
+//
+//        List<Venue> topVenues =
+//                venueRepository.findTop5ByCompletedOrders(PageRequest.of(0, 5));
+//
+//        List<VenueDTO> dtos = topVenues.stream().map(v -> {
+//            VenueDTO dto = new VenueDTO();
+//            dto.setVenueId(v.getVenueId());
+//            dto.setVenueName(v.getVenueName());
+//            dto.setAddress(v.getAddress());
+//            dto.setStatus(v.getStatus());
+//
+//            // Ảnh chính
+//            Optional<VenueImage> mainImage = v.getImages().stream()
+//                    .filter(VenueImage::isPrimary)
+//                    .findFirst();
+//            dto.setMainImagePath(mainImage.map(VenueImage::getPhotoPath).orElse(null));
+//
+//            // District
+//            if (v.getDistrict() != null) {
+//                dto.setDistrict(new DistrictDTO(
+//                        v.getDistrict().getDistrict_id(),
+//                        v.getDistrict().getDistrict_name()
+//                ));
+//            }
+//
+//            // Courts + Price
+//            if (v.getCourts() != null && !v.getCourts().isEmpty()) {
+//                dto.setTotalCourts(v.getCourts().size());
+//                dto.setPrice(v.getCourts().get(0).getPricePerHour());
+//            } else {
+//                dto.setTotalCourts(0);
+//                dto.setPrice(0);
+//            }
+//
+//            return dto;
+//        }).collect(Collectors.toList());
+//
+//        return ResponseEntity.ok(dtos);
+//    }
+
+
+    // ✅ CHI TIẾT VENUE
     @GetMapping("/{venueId}")
     public ResponseEntity<VenueDTO> getVenueById(@PathVariable Long venueId) {
 
@@ -83,13 +108,13 @@ public class HomeController {
         dto.setDescription(v.getDescription());
         dto.setContactNumber(v.getContactNumber());
 
-        // Lấy ảnh chính
+        // Ảnh chính
         Optional<VenueImage> mainImage = v.getImages().stream()
                 .filter(VenueImage::isPrimary)
                 .findFirst();
         dto.setMainImagePath(mainImage.map(VenueImage::getPhotoPath).orElse(null));
 
-        // Chuyển district sang DTO
+        // District
         if (v.getDistrict() != null) {
             dto.setDistrict(new DistrictDTO(
                     v.getDistrict().getDistrict_id(),
@@ -97,8 +122,8 @@ public class HomeController {
             ));
         }
 
-        // Lấy courts và tính tổng số sân
-        if (v.getCourts() != null) {
+        // Courts
+        if (v.getCourts() != null && !v.getCourts().isEmpty()) {
             dto.setCourts(v.getCourts().stream()
                     .map(c -> new CourDTO(
                             c.getCourId(),
@@ -115,8 +140,7 @@ public class HomeController {
             dto.setPrice(0);
         }
 
-
-        // Lấy các ảnh phụ
+        // Ảnh phụ
         dto.setImages(v.getImages().stream()
                 .map(img -> {
                     VenueImageDTO imageDTO = new VenueImageDTO();
@@ -128,8 +152,7 @@ public class HomeController {
                 .toList()
         );
 
-
-        // Thông tin owner
+        // Owner
         if (v.getOwner() != null) {
             dto.setOwnerId(v.getOwner().getAccount_id());
             dto.setOwnerName(v.getOwner().getFullName());
@@ -137,6 +160,6 @@ public class HomeController {
 
         return ResponseEntity.ok(dto);
     }
-
 }
+
 

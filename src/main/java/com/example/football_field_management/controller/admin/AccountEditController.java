@@ -12,6 +12,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -49,7 +50,10 @@ public class AccountEditController {
         return "admin/account/profile";
     }
     @PostMapping
-    public String saveProfile(Account account, MultipartFile avatarFile, RedirectAttributes redirectAttributes) {
+    public String saveProfile(
+            Account account,
+            @RequestParam("avatarFile") MultipartFile avatarFile,
+            RedirectAttributes redirectAttributes) {
         try {
             Account existingAccount = accountRepo.findById(account.getAccount_id()).orElse(null);
             if (existingAccount == null) {
@@ -57,21 +61,25 @@ public class AccountEditController {
                 return "redirect:/login";
             }
 
-            // Cập nhật thông tin
+            // cập nhật info
             existingAccount.setFullName(account.getFullName());
             existingAccount.setEmail(account.getEmail());
             existingAccount.setPhone(account.getPhone());
             existingAccount.setAddress(account.getAddress());
 
-            // Upload avatar
-            if (avatarFile != null && !avatarFile.isEmpty()) {
-                String fileName = StringUtils.cleanPath(avatarFile.getOriginalFilename());
-                Path uploadPath = Paths.get(uploadDir);
+            // xử lý avatar
+            if (!avatarFile.isEmpty()) {
+                String fileName = System.currentTimeMillis() + "_" +
+                        StringUtils.cleanPath(avatarFile.getOriginalFilename());
+
+                Path uploadPath = Paths.get(uploadDir, "avatars");
                 if (!Files.exists(uploadPath)) {
                     Files.createDirectories(uploadPath);
                 }
-                Path filePath = uploadPath.resolve(fileName);
-                avatarFile.transferTo(filePath.toFile());
+
+                Files.copy(avatarFile.getInputStream(),
+                        uploadPath.resolve(fileName));
+
                 existingAccount.setAvt_path(fileName);
             }
 
@@ -80,8 +88,10 @@ public class AccountEditController {
             redirectAttributes.addFlashAttribute("successMessage", "Cập nhật hồ sơ thành công!");
         } catch (Exception e) {
             e.printStackTrace();
-            redirectAttributes.addFlashAttribute("errorMessage", "Lưu hồ sơ thất bại: ");
+            redirectAttributes.addFlashAttribute("errorMessage", "Lưu hồ sơ thất bại!");
         }
+
         return "redirect:/dashboard";
     }
+
 }
