@@ -99,4 +99,8 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     Long countTodaysBookingsByOwner(@Param("ownerEmail") String ownerEmail,
                                     @Param("today") LocalDate today);
 
+    @Query("SELECT b FROM Booking b WHERE b.cour.owner.email = :email ORDER BY b.bookingDate DESC")
+    Page<Booking> findByCour_Owner_Email_Paginated(@Param("email") String email, Pageable pageable);
+    Page<Booking> findByCour_Owner_Email(String email, Pageable pageable);
+
 }

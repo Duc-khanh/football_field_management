@@ -31,4 +31,7 @@ public interface IAccountService {
     Account findByEmail(String email);
 
     Account registerOwner(OwnerRegisterDTO registerDTO);
+
+    Optional<Object> findByUsername(String username);
+
 }

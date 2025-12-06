@@ -4,6 +4,9 @@ import com.example.football_field_management.dto.BookingDTO;
 import com.example.football_field_management.model.*;
 import com.example.football_field_management.repository.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -93,4 +96,14 @@ public class BookingService {
     public Long countTodayBookingsByOwner(String ownerEmail) {
         return bookingRepository.countTodaysBookingsByOwner(ownerEmail, LocalDate.now());
     }
+    public Page<Booking> getBookingsByOwnerPaginated(String email, int pageNo, int pageSize) {
+        // Tạo đối tượng Pageable (trang hiện tại, số lượng dòng trên 1 trang)
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        return bookingRepository.findByCour_Owner_Email_Paginated(email, pageable);
+    }
+    public Page<Booking> getBookingsByOwner(String ownerEmail, int page) {
+        Pageable pageable = PageRequest.of(page, 10); // 10 items/page
+        return bookingRepository.findByCour_Owner_Email(ownerEmail, pageable);
+    }
+
 }

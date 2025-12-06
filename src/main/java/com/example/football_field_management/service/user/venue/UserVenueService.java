@@ -116,6 +116,25 @@ public class UserVenueService implements IUserVenueService {
     }
 
     @Override
+    public List<VenueDTO> searchVenues(String keyword) {
+
+        if (keyword == null || keyword.trim().isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        List<Venue> venues = venueRepository.searchVenues(keyword.trim());
+
+        List<VenueDTO> dtos = new ArrayList<>();
+
+        for (Venue v : venues) {
+            dtos.add(mapToDTO(v));
+        }
+
+        return dtos;
+    }
+
+
+    @Override
     public List<VenueDTO> getTop5Venues() {
         List<Venue> topVenues = venueRepository.findTop5ByCompletedOrders(PageRequest.of(0, 5));
         List<VenueDTO> dtos = new ArrayList<>();

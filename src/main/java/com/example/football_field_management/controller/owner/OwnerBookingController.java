@@ -4,11 +4,13 @@ import com.example.football_field_management.model.Booking;
 import com.example.football_field_management.model.Account;
 import com.example.football_field_management.service.user.order.BookingService;
 import com.example.football_field_management.repository.AccountRepository;
+import org.springframework.data.domain.Page;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -26,16 +28,23 @@ public class OwnerBookingController {
     }
 
     @GetMapping("/owner/bookings")
-    public String viewBookings(Model model, @AuthenticationPrincipal UserDetails userDetails) {
-        // Lấy thông tin Owner
+    public String viewBookings(
+            Model model,
+            @AuthenticationPrincipal UserDetails userDetails,
+            @RequestParam(defaultValue = "0") int page) {
+
         Account owner = accountRepository.findByEmail(userDetails.getUsername())
                 .orElseThrow(() -> new RuntimeException("Owner not found"));
 
-        List<Booking> bookings = bookingService.getBookingsByOwner(owner.getEmail());
-        model.addAttribute("bookings", bookings);
+        Page<Booking> bookingPage = bookingService.getBookingsByOwner(owner.getEmail(), page);
+
+        model.addAttribute("bookings", bookingPage.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", bookingPage.getTotalPages());
 
         return "owner/bookings";
     }
+
     @GetMapping("/owner/bookings/today")
     public String viewTodaysBookings(Model model, @AuthenticationPrincipal UserDetails userDetails) {
         Account owner = accountRepository.findByEmail(userDetails.getUsername())

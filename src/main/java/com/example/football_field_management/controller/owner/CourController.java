@@ -1,6 +1,8 @@
 package com.example.football_field_management.controller.owner;
 
+import com.example.football_field_management.model.Account;
 import com.example.football_field_management.model.Cour;
+import com.example.football_field_management.repository.AccountRepository;
 import com.example.football_field_management.service.admin.venue.IVenueService;
 import com.example.football_field_management.service.owner.cour.ICourService;
 import lombok.RequiredArgsConstructor;
@@ -9,6 +11,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -33,6 +37,8 @@ public class CourController {
 
     private final ICourService courService;
     private final IVenueService venueService;
+    private final AccountRepository accountRepository;
+
     @Value("${file.upload-dir}")
     private String uploadDir;
 
@@ -90,20 +96,33 @@ public class CourController {
     public String createCour(@ModelAttribute Cour cour,
                              @RequestParam("file") MultipartFile file,
                              RedirectAttributes redirectAttributes) {
+
         if (!file.isEmpty()) {
             try {
                 String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
                 File dest = new File(uploadDir + File.separator + fileName);
                 file.transferTo(dest);
-                cour.setImage(fileName); // lưu tên file vào DB
+                cour.setImage(fileName);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
+
+        // ✅ SET OWNER
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String email = auth.getName();
+
+        Account owner = accountRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy account"));
+
+        cour.setOwner(owner);
+
         courService.save(cour);
+
         redirectAttributes.addFlashAttribute("successMessage", "Thêm sân bóng thành công!");
         return "redirect:/cour";
     }
+
 
     @PostMapping("/edit/{id}")
     public String updateCour(@PathVariable Long id,

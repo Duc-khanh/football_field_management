@@ -34,6 +34,17 @@ public interface VenueRepository extends JpaRepository<Venue, Long> {
                              @Param("status") Boolean status,
                              Pageable pageable);
 
+    @Query("""
+    SELECT v FROM Venue v
+    WHERE 
+        LOWER(v.venueName) LIKE LOWER(CONCAT('%', :keyword, '%'))
+        OR LOWER(v.address) LIKE LOWER(CONCAT('%', :keyword, '%'))
+        OR LOWER(v.description) LIKE LOWER(CONCAT('%', :keyword, '%'))
+        OR LOWER(v.district.district_name) LIKE LOWER(CONCAT('%', :keyword, '%'))
+""")
+    List<Venue> searchVenues(@Param("keyword") String keyword);
+
+
     // Đếm số sân của venue
     @Query("""
             SELECT COUNT(c)

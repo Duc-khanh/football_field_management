@@ -10,4 +10,6 @@ public interface IUserVenueService {
     Page<VenueDTO> getAllVenues(int page, int size, String keyword, Long districtId, Boolean status);
 
     List<VenueDTO> getTop5Venues();
+    List<VenueDTO> searchVenues(String keyword);
+
 }

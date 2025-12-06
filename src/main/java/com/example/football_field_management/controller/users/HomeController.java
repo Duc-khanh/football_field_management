@@ -44,48 +44,6 @@ public class HomeController {
     }
 
 
-//    ✅ TOP 5 VENUE
-//    @GetMapping("/top5")
-//    public ResponseEntity<List<VenueDTO>> getTop5Venues() {
-//
-//        List<Venue> topVenues =
-//                venueRepository.findTop5ByCompletedOrders(PageRequest.of(0, 5));
-//
-//        List<VenueDTO> dtos = topVenues.stream().map(v -> {
-//            VenueDTO dto = new VenueDTO();
-//            dto.setVenueId(v.getVenueId());
-//            dto.setVenueName(v.getVenueName());
-//            dto.setAddress(v.getAddress());
-//            dto.setStatus(v.getStatus());
-//
-//            // Ảnh chính
-//            Optional<VenueImage> mainImage = v.getImages().stream()
-//                    .filter(VenueImage::isPrimary)
-//                    .findFirst();
-//            dto.setMainImagePath(mainImage.map(VenueImage::getPhotoPath).orElse(null));
-//
-//            // District
-//            if (v.getDistrict() != null) {
-//                dto.setDistrict(new DistrictDTO(
-//                        v.getDistrict().getDistrict_id(),
-//                        v.getDistrict().getDistrict_name()
-//                ));
-//            }
-//
-//            // Courts + Price
-//            if (v.getCourts() != null && !v.getCourts().isEmpty()) {
-//                dto.setTotalCourts(v.getCourts().size());
-//                dto.setPrice(v.getCourts().get(0).getPricePerHour());
-//            } else {
-//                dto.setTotalCourts(0);
-//                dto.setPrice(0);
-//            }
-//
-//            return dto;
-//        }).collect(Collectors.toList());
-//
-//        return ResponseEntity.ok(dtos);
-//    }
 
 
     // ✅ CHI TIẾT VENUE
@@ -160,6 +118,49 @@ public class HomeController {
 
         return ResponseEntity.ok(dto);
     }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<VenueDTO>> searchVenues(
+            @RequestParam String keyword
+    ) {
+        List<Venue> venues = venueRepository.searchVenues(keyword);
+
+        List<VenueDTO> dtos = venues.stream().map(v -> {
+            VenueDTO dto = new VenueDTO();
+            dto.setVenueId(v.getVenueId());
+            dto.setVenueName(v.getVenueName());
+            dto.setAddress(v.getAddress());
+            dto.setStatus(v.getStatus());
+
+            // Main Image
+            Optional<VenueImage> mainImage = v.getImages().stream()
+                    .filter(VenueImage::isPrimary)
+                    .findFirst();
+            dto.setMainImagePath(mainImage.map(VenueImage::getPhotoPath).orElse(null));
+
+            // District
+            if (v.getDistrict() != null) {
+                dto.setDistrict(new DistrictDTO(
+                        v.getDistrict().getDistrict_id(),
+                        v.getDistrict().getDistrict_name()
+                ));
+            }
+
+            // Courts
+            if (v.getCourts() != null && !v.getCourts().isEmpty()) {
+                dto.setTotalCourts(v.getCourts().size());
+                dto.setPrice(v.getCourts().get(0).getPricePerHour());
+            } else {
+                dto.setTotalCourts(0);
+                dto.setPrice(0);
+            }
+
+            return dto;
+        }).toList();
+
+        return ResponseEntity.ok(dtos);
+    }
+
 }
 
 
