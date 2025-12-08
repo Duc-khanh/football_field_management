@@ -1,0 +1,27 @@
+<link rel="stylesheet" th:href="@{/static/css/css-admin-fragments/admin-header.css}">
+
+<div th:fragment="header" class="header d-flex align-items-center justify-content-between w-100">
+
+    <!-- Logo + Tên -->
+    <div class="left d-flex align-items-center gap-3">
+        <img src="/images/logo.png" alt="Logo" class="logo">
+        <a href="/dashboard" style="text-decoration: none;">
+            <h5 class="fw-bold text-dark mb-0">Sân Bóng 247</h5>
+        </a>
+    </div>
+
+    <!-- User info (bên phải) -->
+    <div class="right user-info d-flex align-items-center gap-3">
+        <i class="fa-regular fa-bell icon-btn"></i>
+
+        <div class="d-flex flex-column align-items-start">
+            <span th:text="${fullName}">Tên người dùng</span>
+            <small class="text-muted" th:text="${emailOrPhone}">Email/Phone</small>
+        </div>
+
+        <img th:src="@{/uploads/avatars/{avatar}(avatar=${avatar})}"
+             class="avatar-img"
+             onclick="window.location.href='/admin/account'">
+    </div>
+
+</div>

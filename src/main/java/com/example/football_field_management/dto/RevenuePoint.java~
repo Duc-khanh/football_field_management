@@ -1,0 +1,9 @@
+package com.example.football_field_management.dto;
+
+import java.math.BigDecimal;
+
+public interface RevenuePoint {
+    String getLabel();              // ngày/tháng/năm đã format
+    BigDecimal getAmount();         // tổng doanh thu
+    Long getOrders();               // số đơn
+}

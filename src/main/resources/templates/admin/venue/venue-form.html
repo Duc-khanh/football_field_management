@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Form Địa Điểm</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/home-admin.css}">
+    <style>
+        .venue-main-img {
+            width: 250px;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 0.5rem;
+        }
+        .venue-sub-img {
+            width: 120px;
+            height: 90px;
+            object-fit: cover;
+            border-radius: 0.5rem;
+        }
+        .fw-bold {
+            font-weight: 600;
+        }
+        #content {
+            max-width: 1200px;
+            width: 100%;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body class="d-flex flex-column min-vh-100">
+
+<!-- Header -->
+<div th:replace="fragments/admin-header :: header"></div>
+
+<div class="d-flex flex-grow-1">
+
+
+    <div th:replace="~{fragments/admin-sidebar :: menuAdmin}"></div>
+    <script th:src="@{/js/alert-logout.js}"></script>
+
+
+    <!-- Main content -->
+    <div class="d-flex flex-column flex-grow-1 align-items-center">
+        <div id="content" class="content p-4" style="max-width:1200px; width:100%;">
+            <!-- Tiêu đề + nút -->
+            <div class="d-flex align-items-center justify-content-between mb-4 gap-3 flex-wrap">
+                <h2 class="m-0 fw-bold"
+                    th:text="${#strings.isEmpty(venue.venueId) ? 'Thêm Địa Điểm Mới' : 'Chỉnh Sửa Địa Điểm'}"></h2>
+                <div class="d-flex gap-2 flex-wrap">
+                    <a th:href="@{/admin/venue/list}" class="btn btn-outline-secondary">
+                        <i class="fa fa-arrow-left"></i> Quay lại
+                    </a>
+                    <button type="submit" form="venueForm" class="btn btn-primary">
+                        <i class="fa fa-save"></i> Lưu
+                    </button>
+                </div>
+            </div>
+
+            <!-- Box nội dung -->
+            <div class="table-responsive shadow-sm rounded-3 bg-white p-3">
+                <form id="venueForm" th:action="@{/admin/venue/save}" th:object="${venue}" enctype="multipart/form-data"
+                      method="post" class="needs-validation" novalidate>
+                    <input type="hidden" th:field="*{venueId}"/>
+
+                    <div class="row gx-4 gy-3 align-items-start">
+                        <!-- Ảnh chính -->
+                        <div class="col-12 col-md-4 text-center mb-3 mb-md-0">
+                            <div id="mainPreviewContainer">
+                                <img id="mainPreview"
+                                     th:if="${venue.mainImagePath != null}"
+                                     th:src="@{'/uploads/avatars/' + ${venue.mainImagePath}}"
+                                     alt="Ảnh chính"
+                                     class="img-fluid venue-main-img">
+                            </div>
+                            <input type="hidden" id="mainImageId" name="mainImageId" th:value="${venue.mainImageId}">
+                            <label class="btn btn-outline-primary btn-sm mt-2">
+                                <i class="fa fa-upload"></i> Chọn ảnh chính
+                                <input type="file" id="mainImage" name="mainImageFile" accept="image/*" hidden>
+                            </label>
+                        </div>
+
+                        <!-- Thông tin chi tiết -->
+                        <div class="col-12 col-md-8">
+                            <div class="row mb-2">
+                                <div class="col-sm-6 mb-3">
+                                    <label class="fw-bold form-label">Tên địa điểm</label>
+                                    <input type="text" class="form-control" th:field="*{venueName}" required maxlength="100" placeholder="Nhập tên địa điểm">
+                                    <div class="invalid-feedback">Vui lòng nhập tên địa điểm (tối đa 100 ký tự).</div>
+                                </div>
+                                <div class="col-sm-6 mb-3">
+                                    <label class="fw-bold form-label">Địa chỉ</label>
+                                    <input type="text" class="form-control" th:field="*{address}" required maxlength="255" placeholder="Nhập địa chỉ">
+                                    <div class="invalid-feedback">Vui lòng nhập địa chỉ (tối đa 255 ký tự).</div>
+                                </div>
+                                <div class="col-sm-6 mb-3">
+                                    <label class="fw-bold form-label">Số điện thoại</label>
+                                    <input type="text" class="form-control" th:field="*{contactNumber}" required pattern="^0[0-9]{9,10}$" placeholder="Ví dụ: 0912345678">
+                                    <div class="invalid-feedback">Số điện thoại phải bắt đầu bằng 0 và có 10.</div>
+                                </div>
+                                <div class="col-sm-6 mb-3">
+                                    <label class="fw-bold form-label">Trạng thái</label>
+                                    <select class="form-select" th:field="*{status}" required>
+                                        <option th:value="true" th:selected="${venue.status == true}">Mở</option>
+                                        <option th:value="false" th:selected="${venue.status == false}">Đóng</option>
+                                    </select>
+                                    <div class="invalid-feedback">Vui lòng chọn trạng thái.</div>
+                                </div>
+                                <div class="col-sm-6 mb-3">
+                                    <label class="fw-bold form-label">Quận</label>
+                                    <select th:field="*{districtId}" class="form-select" required>
+                                        <option value="" disabled th:selected="${venue.districtId == null}">-- Chọn quận --</option>
+                                        <option th:each="d : ${districts}" th:value="${d.district_id}" th:text="${d.district_name}" th:selected="${d.district_id == venue.districtId}"></option>
+                                    </select>
+                                    <div class="invalid-feedback">Vui lòng chọn quận.</div>
+                                </div>
+                                <div class="col-sm-6 mb-3">
+                                    <label class="fw-bold form-label">Chủ sở hữu</label>
+                                    <select th:field="*{ownerId}" class="form-select" required>
+                                        <option value="" disabled th:selected="${venue.ownerId == null}">-- Chọn chủ sở hữu --</option>
+                                        <option th:each="o : ${owners}" th:value="${o.account_id}" th:text="${o.fullName}" th:selected="${o.account_id == venue.ownerId}"></option>
+                                    </select>
+                                    <div class="invalid-feedback">Vui lòng chọn chủ sở hữu.</div>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="fw-bold form-label">Mô tả</label>
+                                <textarea class="form-control" th:field="*{description}" rows="3" placeholder="Nhập mô tả"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Gallery ảnh phụ -->
+                    <div class="mt-4">
+                        <label class="fw-bold border-bottom pb-2 mb-3">Hình ảnh khác</label>
+                        <div id="subPreviewContainer" class="d-flex flex-wrap gap-3">
+                            <div th:each="img : ${venue.images}" th:if="${!img.primary}" class="position-relative">
+                                <img th:src="@{'/uploads/avatars/' + ${img.photoPath}}" alt="Ảnh phụ" class="venue-sub-img rounded">
+                                <input type="hidden" name="existingImageIds" th:value="${img.photoId}">
+                                <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0 remove-old-btn">×</button>
+                            </div>
+                        </div>
+                        <label class="btn btn-outline-success btn-sm mt-2">
+                            <i class="fa fa-images"></i> Thêm ảnh phụ
+                            <input type="file" id="subImages" name="subImagesFiles" accept="image/*" multiple hidden>
+                        </label>
+                        <div id="hiddenSubImagesContainer"></div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="footer">
+    <div th:replace="fragments/admin-footer :: adminFooter"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // JS preview ảnh chính
+    const mainImageInput = document.getElementById("mainImage");
+    const mainPreviewContainer = document.getElementById("mainPreviewContainer");
+    const hiddenMainImageId = document.getElementById("mainImageId");
+
+    mainImageInput.addEventListener("change", () => {
+        const file = mainImageInput.files[0];
+        if(file){
+            if(hiddenMainImageId) hiddenMainImageId.remove();
+            let mainPreview = document.getElementById("mainPreview");
+            if(!mainPreview){
+                mainPreview = document.createElement("img");
+                mainPreview.id = "mainPreview";
+                mainPreview.className = "venue-main-img img-fluid";
+                mainPreviewContainer.appendChild(mainPreview);
+            }
+            mainPreview.src = URL.createObjectURL(file);
+        }
+    });
+
+    // JS preview ảnh phụ
+    const subImagesInput = document.getElementById("subImages");
+    const subPreviewContainer = document.getElementById("subPreviewContainer");
+    const hiddenSubImagesContainer = document.getElementById("hiddenSubImagesContainer");
+
+    subImagesInput.addEventListener("change", () => {
+        const newFiles = Array.from(subImagesInput.files);
+        newFiles.forEach(file => {
+            const wrapper = document.createElement("div");
+            wrapper.style.position = "relative";
+            wrapper.className = "me-2 mb-2";
+
+            const img = document.createElement("img");
+            img.src = URL.createObjectURL(file);
+            img.className = "venue-sub-img rounded";
+
+            const btn = document.createElement("button");
+            btn.type = "button";
+            btn.innerHTML = "&times;";
+            btn.className = "btn btn-sm btn-danger position-absolute top-0 end-0";
+            btn.addEventListener("click", () => {
+                wrapper.remove();
+                Array.from(hiddenSubImagesContainer.querySelectorAll("input[type=file]")).forEach(input => {
+                    if(input.files[0].name === file.name) input.remove();
+                });
+            });
+
+            wrapper.appendChild(img);
+            wrapper.appendChild(btn);
+            subPreviewContainer.appendChild(wrapper);
+
+            const hiddenInput = document.createElement("input");
+            hiddenInput.type = "file";
+            hiddenInput.name = "subImagesFiles";
+            hiddenInput.files = (()=>{const dt=new DataTransfer(); dt.items.add(file); return dt.files;})();
+            hiddenInput.style.display = "none";
+            hiddenSubImagesContainer.appendChild(hiddenInput);
+        });
+        subImagesInput.value = "";
+    });
+
+    // Xóa ảnh phụ cũ
+    document.querySelectorAll('.remove-old-btn').forEach(btn => {
+        btn.addEventListener('click', function(){
+            const hiddenInput = this.parentElement.querySelector('input[type="hidden"]');
+            if(hiddenInput) hiddenInput.remove();
+            this.parentElement.remove();
+        });
+    });
+
+    // Bootstrap validation
+    (function () {
+        'use strict';
+        const forms = document.querySelectorAll('.needs-validation');
+        Array.from(forms).forEach(form => {
+            form.addEventListener('submit', event => {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        });
+    })();
+</script>
+
+</body>
+</html>
