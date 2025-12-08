@@ -77,6 +77,11 @@ public class AccountService implements IAccountService {
         return accountRepository.save(newOwner);
     }
 
+    @Override
+    public Optional<Object> findByUsername(String username) {
+        return Optional.empty();
+    }
+
     // ================== OWNER APPROVAL ==================
     // Trả về Page để phân trang
     public Page<Account> getPendingOwners(int page, int size, String keyword) {

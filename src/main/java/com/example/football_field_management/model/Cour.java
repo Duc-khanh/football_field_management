@@ -9,7 +9,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "Cour")
+@Table(name = "cour")
 public class Cour {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,5 +39,7 @@ public class Cour {
     @JoinColumn(name = "venue_id", nullable = false)
     private Venue venue;
 
-
+    @ManyToOne
+    @JoinColumn(name = "owner_id", nullable = false)
+    private Account owner; // <<< thêm dòng này
 }

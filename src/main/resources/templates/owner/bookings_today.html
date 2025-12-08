@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Booking hôm nay</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/home-admin.css}">
+    <style>
+        /* Thêm style để làm màu sáng hơn */
+        body {
+            background-color: #f8f9fa; /* Màu nền sáng cho toàn bộ trang */
+        }
+        .table thead th {
+            background-color: #e9ecef; /* Màu sáng cho header bảng */
+            color: #495057; /* Màu chữ tối hơn để dễ đọc */
+        }
+        .table tbody tr:hover {
+            background-color: #f1f3f4; /* Màu hover sáng */
+        }
+        .card {
+            background-color: #ffffff; /* Màu trắng cho card chứa bảng */
+            border: 1px solid #dee2e6;
+        }
+    </style>
+</head>
+<body class="d-flex flex-column min-vh-100"
+      th:data-success-message="${successMessage}"
+      th:data-error-message="${errorMessage}">
+
+<!-- Header -->
+<div th:replace="fragments/owner-header :: header"></div>
+
+<div class="d-flex flex-grow-1">
+    <!-- Sidebar -->
+    <div th:replace="fragments/admin-sidebar :: menuAdmin"></div>
+
+    <!-- Nội dung chính -->
+    <div class="d-flex flex-column flex-grow-1 p-4">
+        <h2 class="mb-4 text-primary">Danh sách đặt sân hôm nay: <span th:text="${today}" class="fw-bold"></span></h2>
+
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover align-middle">
+                        <thead>
+                        <tr>
+                            <th class="text-center">#</th> <!-- Thay ID thành số thứ tự -->
+                            <th>Sân</th>
+                            <th>Khách hàng</th>
+                            <th>Ngày</th>
+                            <th>Giờ</th>
+                            <th>Trạng thái</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="booking, bookingStat : ${bookings}">
+                            <td class="text-center" th:text="${bookingStat.index + 1}">1</td> <!-- Số thứ tự -->
+                            <td th:text="${booking.cour != null ? booking.cour.courName : 'N/A'}">Sân A</td>
+                            <td th:text="${booking.account != null ? booking.account.fullName : booking.customerName}">Khách</td>
+                            <td th:text="${booking.bookingDate}">2025-11-29</td>
+                            <td>
+                                <span th:text="${booking.timeSlot != null ? booking.timeSlot.startTime : ''}"></span> -
+                                <span th:text="${booking.timeSlot != null ? booking.timeSlot.endTime : ''}"></span>
+                            </td>
+                            <td>
+                                <span th:text="${booking.status}" class="badge"
+                                      th:classappend="${booking.status == 'CONFIRMED' ? 'bg-success' : booking.status == 'PENDING' ? 'bg-warning' : 'bg-secondary'}">PENDING</span>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(bookings)}">
+                            <td colspan="6" class="text-center py-4 text-muted">
+                                <i class="fas fa-calendar-times"></i> Không có booking nào hôm nay
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+<div th:replace="fragments/admin-footer :: adminFooter"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/home-admin.js}"></script>
+<script th:src="@{/js/alert-notification.js}"></script>
+</body>
+</html>
