@@ -106,4 +106,37 @@ public class BookingService {
         return bookingRepository.findByCour_Owner_Email(ownerEmail, pageable);
     }
 
+    public void approveBooking(Long id, String ownerEmail) {
+
+        Booking booking = bookingRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Booking not found"));
+
+        // Kiểm tra quyền chủ sân
+        if (!booking.getCour().getOwner().getEmail().equals(ownerEmail)) {
+            throw new RuntimeException("Owner does not have permission");
+        }
+
+        booking.setStatus("APPROVED");
+        bookingRepository.save(booking);
+    }
+
+    public void rejectBooking(Long id, String ownerEmail) {
+
+        Booking booking = bookingRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Booking not found"));
+
+        if (!booking.getCour().getOwner().getEmail().equals(ownerEmail)) {
+            throw new RuntimeException("Owner does not have permission");
+        }
+
+        booking.setStatus("REJECTED");
+        bookingRepository.save(booking);
+    }
+
+    public Page<Booking> getBookingsByOwnerAndStatus(String ownerEmail, String status, int page) {
+        Pageable pageable = PageRequest.of(page, 10);
+        return bookingRepository.findByOwnerAndStatus(ownerEmail, status, pageable);
+    }
+
+
 }

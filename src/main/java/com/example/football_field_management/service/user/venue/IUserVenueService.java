@@ -1,6 +1,7 @@
 package com.example.football_field_management.service.user.venue;
 
 import com.example.football_field_management.dto.VenueDTO;
+import com.example.football_field_management.model.Venue;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -12,4 +13,5 @@ public interface IUserVenueService {
     List<VenueDTO> getTop5Venues();
     List<VenueDTO> searchVenues(String keyword);
 
+    Object mapToDto(Venue venue);
 }

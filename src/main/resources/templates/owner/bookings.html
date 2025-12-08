@@ -1,113 +1,203 @@
-<!DOCTYPE html>
-<html lang="vi" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Danh sách Booking của Sân</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    <link rel="stylesheet" th:href="@{/css/home-admin.css}">
-    <link rel="stylesheet" th:href="@{/css/alert.css}">
-    <style>
-        .table td, .table th {
-            text-align: center;
-            vertical-align: middle;
-        }
-        .search-input {
-            width: 250px;
-        }
-    </style>
-</head>
-<body class="d-flex flex-column min-vh-100"
-      th:data-success-message="${successMessage}"
-      th:data-error-message="${errorMessage}">
+    <!DOCTYPE html>
+    <html lang="vi" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <title>Danh sách Booking của Sân</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+        <link rel="stylesheet" th:href="@{/css/home-admin.css}">
+        <link rel="stylesheet" th:href="@{/css/alert.css}">
+        <style>
+            .table td, .table th {
+                text-align: center;
+                vertical-align: middle;
+            }
 
-<!-- Header -->
-<div th:replace="fragments/owner-header :: header"></div>
+            .search-input {
+                width: 250px;
+            }
+        </style>
+    </head>
+    <body class="d-flex flex-column min-vh-100"
+          th:data-success-message="${successMessage}"
+          th:data-error-message="${errorMessage}">
 
-<div class="d-flex flex-grow-1">
-    <!-- Sidebar -->
-    <div th:replace="~{fragments/admin-sidebar :: menuAdmin}"></div>
-    <script th:src="@{/js/alert-logout.js}"></script>
+    <!-- Header -->
+    <div th:replace="fragments/owner-header :: header"></div>
 
-    <!-- Nội dung chính -->
-    <div class="d-flex flex-column flex-grow-1">
-        <div id="content" class="content p-4">
-            <h2 class="m-0 mb-4">Danh sách đặt sân của các Sân</h2>
+    <div class="d-flex flex-grow-1">
+        <!-- Sidebar -->
+        <div th:replace="~{fragments/admin-sidebar :: menuAdmin}"></div>
+        <script th:src="@{/js/alert-logout.js}"></script>
 
-            <!-- Bảng Booking -->
-            <div class="table-responsive shadow-sm rounded-3 bg-white p-2 mb-3">
-                <table class="table table-hover align-middle admin-table mb-0">
-                    <thead class="table-light">
-                    <tr>
-                        <th>#</th>
-                        <th>Sân</th>
-                        <th>Khách hàng</th>
-                        <th>Điện thoại</th>
-                        <th>Email</th>
-                        <th>Ngày đặt</th>
-                        <th>Giờ</th>
-                        <th>Trạng thái</th>
-                        <th>Giá</th>
-                        <th>Ghi chú</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="booking, iterStat : ${bookings}">
-                        <td th:text="${iterStat.count}">1</td>
-                        <td th:text="${booking.cour.courName}">Sân A</td>
-                        <td th:text="${booking.customerName}">Nguyen Van A</td>
-                        <td th:text="${booking.phone}">0123456789</td>
-                        <td th:text="${booking.email}">email@example.com</td>
-                        <td th:text="${booking.bookingDate}">2025-11-29</td>
-                        <td th:text="${booking.timeSlot.startTime} + ' - ' + ${booking.timeSlot.endTime}">07:00 - 08:00</td>
-                        <td th:text="${booking.status}">PENDING</td>
-                        <td th:text="${booking.totalPrice}">200000</td>
-                        <td th:text="${booking.note}">Ghi chú</td>
-                    </tr>
-                    <tr th:if="${#lists.isEmpty(bookings)}">
-                        <td colspan="10" class="text-center py-4 text-muted">Chưa có danh sách đặt sân nào.</td>
-                    </tr>
-                    </tbody>
-                </table>
+        <!-- Nội dung chính -->
+        <div class="d-flex flex-column flex-grow-1">
+            <div id="content" class="content p-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="m-0">Danh sách đặt sân của các Sân</h2>
+
+                    <form method="get" action="/owner/bookings" class="d-flex">
+                        <select name="status" class="form-select w-auto me-2">
+                            <option th:value="ALL" th:selected="${status == 'ALL'}">Tất cả</option>
+                            <option th:value="PENDING" th:selected="${status == 'PENDING'}">Chờ duyệt</option>
+                            <option th:value="APPROVED" th:selected="${status == 'APPROVED'}">Đã duyệt</option>
+                            <option th:value="REJECTED" th:selected="${status == 'REJECTED'}">Đã từ chối</option>
+<!--                            <option th:value="CANCELLED" th:selected="${status == 'CANCELLED'}">Khách hủy</option>-->
+                        </select>
+
+                        <button class="btn btn-primary">Lọc</button>
+                    </form>
+                </div>
+
+
+
+                <!-- Bảng Booking -->
+                <div class="table-responsive shadow-sm rounded-3 bg-white p-2 mb-3">
+                    <table class="table table-hover align-middle admin-table mb-0">
+                        <thead class="table-light">
+                        <tr>
+                            <th>#</th>
+                            <th>Sân</th>
+                            <th>Khách hàng</th>
+                            <!--                        <th>Điện thoại</th>-->
+                            <!--                        <th>Email</th>-->
+                            <th>Ngày đặt</th>
+                            <th>Giờ</th>
+                            <th>Trạng thái</th>
+                            <th>Hành động</th>
+
+                            <!--                        <th>Giá</th>-->
+                            <!--                        <th>Ghi chú</th>-->
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="booking, iterStat : ${bookings}">
+                            <td th:text="${iterStat.count}">1</td>
+                            <td th:text="${booking.cour.courName}">Sân A</td>
+                            <td th:text="${booking.customerName}">Nguyen Van A</td>
+                            <!--                        <td th:text="${booking.phone}">0123456789</td>-->
+                            <!--                        <td th:text="${booking.email}">email@example.com</td>-->
+                            <td th:text="${booking.bookingDate}">2025-11-29</td>
+                            <td th:text="${booking.timeSlot.startTime} + ' - ' + ${booking.timeSlot.endTime}">07:00 -
+                                08:00
+                            </td>
+                            <td>
+                                <span class="badge bg-warning text-dark"
+                                      th:if="${booking.status == 'PENDING'}">Đang chờ</span>
+                                <span class="badge bg-success" th:if="${booking.status == 'APPROVED'}">Đã duyệt</span>
+                                <span class="badge bg-danger" th:if="${booking.status == 'REJECTED'}">Đã từ chối</span>
+                            </td>
+                            <td>
+                                <!-- Hiện nút nếu đang chờ -->
+                                <button th:if="${booking.status == 'PENDING'}"
+                                        class="btn btn-success btn-sm me-1"
+                                        th:attr="onclick=|confirmApprove(${booking.bookingId})|">
+                                    ✔ Duyệt
+                                </button>
+
+                                <button th:if="${booking.status == 'PENDING'}"
+                                        class="btn btn-danger btn-sm"
+                                        th:attr="onclick=|confirmReject(${booking.bookingId})|">
+                                    ✘ Từ chối
+                                </button>
+
+
+                                <!-- Đã duyệt -->
+                                <span th:if="${booking.status == 'APPROVED'}" class="text-success fw-bold">✔ Đã duyệt</span>
+
+                                <!-- Đã từ chối -->
+                                <span th:if="${booking.status == 'REJECTED'}" class="text-danger fw-bold">✘ Đã từ chối</span>
+                            </td>
+
+
+
+                            <!--                        <td th:text="${booking.totalPrice}">200000</td>-->
+                            <!--                        <td th:text="${booking.note}">Ghi chú</td>-->
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(bookings)}">
+                            <td colspan="10" class="text-center py-4 text-muted">Chưa có danh sách đặt sân nào.</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Phân trang -->
+                <nav th:if="${totalPages > 1}" class="mt-3">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                            <a class="page-link"
+                               th:href="@{/owner/bookings(page=${currentPage - 1})}">
+                                Trước
+                            </a>
+                        </li>
+                        <li class="page-item"
+                            th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                            th:classappend="${i == currentPage} ? 'active'">
+                            <a class="page-link"
+                               th:href="@{/owner/bookings(page=${i})}"
+                               th:text="${i + 1}">
+                            </a>
+                        </li>
+                        <li class="page-item" th:classappend="${currentPage + 1 >= totalPages} ? 'disabled'">
+                            <a class="page-link"
+                               th:href="@{/owner/bookings(page=${currentPage + 1})}">
+                                Sau
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
             </div>
-
-            <!-- Phân trang -->
-            <nav th:if="${totalPages > 1}" class="mt-3">
-                <ul class="pagination justify-content-center">
-                    <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-                        <a class="page-link"
-                           th:href="@{/owner/bookings(page=${currentPage - 1})}">
-                            Trước
-                        </a>
-                    </li>
-                    <li class="page-item"
-                        th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
-                        th:classappend="${i == currentPage} ? 'active'">
-                        <a class="page-link"
-                           th:href="@{/owner/bookings(page=${i})}"
-                           th:text="${i + 1}">
-                        </a>
-                    </li>
-                    <li class="page-item" th:classappend="${currentPage + 1 >= totalPages} ? 'disabled'">
-                        <a class="page-link"
-                           th:href="@{/owner/bookings(page=${currentPage + 1})}">
-                            Sau
-                        </a>
-                    </li>
-                </ul>
-            </nav>
         </div>
     </div>
-</div>
 
-<!-- Footer -->
-<div id="footer">
-    <div th:replace="~{fragments/admin-footer :: adminFooter}"></div>
-</div>
+    <!-- Footer -->
+    <div id="footer">
+        <div th:replace="~{fragments/admin-footer :: adminFooter}"></div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-<script th:src="@{/js/home-admin.js}"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script th:src="@{/js/alert-notification.js}"></script>
-</body>
-</html>
+    <script>
+        // Xác nhận duyệt
+        function confirmApprove(id) {
+            Swal.fire({
+                title: "Xác nhận duyệt?",
+                text: "Bạn có chắc chắn muốn DUYỆT booking này?",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonColor: "#28a745",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Có, duyệt ngay!",
+                cancelButtonText: "Hủy"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = "/owner/bookings/approve?id=" + id;
+                }
+            });
+        }
+
+        // Xác nhận từ chối
+        function confirmReject(id) {
+            Swal.fire({
+                title: "Từ chối đặt sân?",
+                text: "Bạn có chắc chắn muốn TỪ CHỐI booking này?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#6c757d",
+                confirmButtonText: "Có, từ chối!",
+                cancelButtonText: "Hủy"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = "/owner/bookings/reject?id=" + id;
+                }
+            });
+        }
+    </script>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:src="@{/js/home-admin.js}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script th:src="@{/js/alert-notification.js}"></script>
+    </body>
+    </html>

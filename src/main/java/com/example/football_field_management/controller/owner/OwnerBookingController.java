@@ -31,19 +31,28 @@ public class OwnerBookingController {
     public String viewBookings(
             Model model,
             @AuthenticationPrincipal UserDetails userDetails,
-            @RequestParam(defaultValue = "0") int page) {
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(required = false) String status) {
 
         Account owner = accountRepository.findByEmail(userDetails.getUsername())
                 .orElseThrow(() -> new RuntimeException("Owner not found"));
 
-        Page<Booking> bookingPage = bookingService.getBookingsByOwner(owner.getEmail(), page);
+        Page<Booking> bookingPage;
+
+        if (status == null || status.equals("ALL")) {
+            bookingPage = bookingService.getBookingsByOwner(owner.getEmail(), page);
+        } else {
+            bookingPage = bookingService.getBookingsByOwnerAndStatus(owner.getEmail(), status, page);
+        }
 
         model.addAttribute("bookings", bookingPage.getContent());
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", bookingPage.getTotalPages());
+        model.addAttribute("status", status == null ? "ALL" : status);
 
         return "owner/bookings";
     }
+
 
     @GetMapping("/owner/bookings/today")
     public String viewTodaysBookings(Model model, @AuthenticationPrincipal UserDetails userDetails) {
@@ -70,6 +79,34 @@ public class OwnerBookingController {
 
         return "owner/home";
     }
+
+
+    @GetMapping("/owner/bookings/approve")
+    public String approveBooking(
+            @RequestParam Long id,
+            @AuthenticationPrincipal UserDetails userDetails,
+            Model model
+    ) {
+        String ownerEmail = userDetails.getUsername();
+        bookingService.approveBooking(id, ownerEmail);
+
+        model.addAttribute("successMessage", "Duyệt đặt sân thành công!");
+        return "redirect:/owner/bookings";
+    }
+
+    @GetMapping("/owner/bookings/reject")
+    public String rejectBooking(
+            @RequestParam Long id,
+            @AuthenticationPrincipal UserDetails userDetails,
+            Model model
+    ) {
+        String ownerEmail = userDetails.getUsername();
+        bookingService.rejectBooking(id, ownerEmail);
+
+        model.addAttribute("successMessage", "Từ chối yêu cầu đặt sân!");
+        return "redirect:/owner/bookings";
+    }
+
 
 
 

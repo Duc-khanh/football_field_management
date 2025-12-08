@@ -102,5 +102,16 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     @Query("SELECT b FROM Booking b WHERE b.cour.owner.email = :email ORDER BY b.bookingDate DESC")
     Page<Booking> findByCour_Owner_Email_Paginated(@Param("email") String email, Pageable pageable);
     Page<Booking> findByCour_Owner_Email(String email, Pageable pageable);
+    @Query("""
+       SELECT b FROM Booking b
+       WHERE b.cour.owner.email = :ownerEmail
+         AND (:status = 'ALL' OR b.status = :status)
+       """)
+    Page<Booking> findByOwnerAndStatus(
+            @Param("ownerEmail") String ownerEmail,
+            @Param("status") String status,
+            Pageable pageable);
+
+
 
 }

@@ -4,9 +4,14 @@ import com.example.football_field_management.dto.CourDTO;
 import com.example.football_field_management.dto.DistrictDTO;
 import com.example.football_field_management.dto.VenueDTO;
 import com.example.football_field_management.dto.VenueImageDTO;
+import com.example.football_field_management.model.Account;
+import com.example.football_field_management.model.Favorite;
 import com.example.football_field_management.model.Venue;
 import com.example.football_field_management.model.VenueImage;
+import com.example.football_field_management.repository.AccountRepository;
+import com.example.football_field_management.repository.FavoriteRepository;
 import com.example.football_field_management.repository.VenueRepository;
+import com.example.football_field_management.service.user.venue.FavoriteService;
 import com.example.football_field_management.service.user.venue.IUserVenueService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -27,6 +32,10 @@ public class HomeController {
 
     private final IUserVenueService venueService;
     private final VenueRepository venueRepository;
+    private final FavoriteRepository favoriteVenueRepository;
+    private final AccountRepository accountRepository;
+    private final FavoriteService favoriteService;
+
 
     @GetMapping
     public Page<VenueDTO> getVenues(
@@ -161,6 +170,41 @@ public class HomeController {
         return ResponseEntity.ok(dtos);
     }
 
+    @PostMapping("/favorite/toggle/{venueId}")
+    public ResponseEntity<Boolean> toggleFavorite(
+            @PathVariable Long venueId,
+            @RequestParam Long accountId
+    ) {
+        boolean isAdded = favoriteService.toggleFavorite(accountId, venueId);
+        // Trả về true: Đã thêm (tim đỏ), false: Đã xóa (tim trắng)
+        return ResponseEntity.ok(isAdded);
+    }
+
+    // ✅ LẤY DANH SÁCH YÊU THÍCH
+    @GetMapping("/favorite/list")
+    public ResponseEntity<List<VenueDTO>> getFavorites(@RequestParam Long accountId) {
+        List<Favorite> list = favoriteVenueRepository.findFavoritesByAccountId(accountId);
+
+        // Map dữ liệu sang DTO
+        List<VenueDTO> dtos = list.stream().map(f -> {
+            Venue v = f.getVenue();
+            VenueDTO dto = new VenueDTO();
+            dto.setVenueId(v.getVenueId());
+            dto.setVenueName(v.getVenueName());
+            dto.setAddress(v.getAddress());
+            dto.setPrice(v.getCourts().isEmpty() ? 0 : v.getCourts().get(0).getPricePerHour());
+
+            // Xử lý ảnh
+            String imgPath = v.getImages().stream()
+                    .filter(VenueImage::isPrimary).findFirst()
+                    .map(VenueImage::getPhotoPath).orElse(null);
+            dto.setMainImagePath(imgPath);
+
+            return dto;
+        }).toList();
+
+        return ResponseEntity.ok(dtos); // Trả về Mảng [ ... ]
+    }
 }
 
 

@@ -133,6 +133,10 @@ public class UserVenueService implements IUserVenueService {
         return dtos;
     }
 
+    @Override
+    public VenueDTO mapToDto(Venue venue) {
+        return mapToDTO(venue);
+    }
 
     @Override
     public List<VenueDTO> getTop5Venues() {
